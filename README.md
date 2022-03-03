@@ -1,6 +1,8 @@
 # TNAntiCheat
 アドオンで適当にチート対策してみる
 
+https://youtu.be/SZq9z7Lt2bc
+
 - NBT関連
 - spam
 - crasher(座標検知
