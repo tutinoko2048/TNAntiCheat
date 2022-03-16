@@ -1,3 +1,8 @@
+/*
+TNAntiCheat on top!
+Made by RetoRuto9900K @tutinoko_kusaa
+*/
+ 
 import { world, ItemStack, MinecraftItemTypes } from 'mojang-minecraft'
 import { dimension, sendCmd, sendMsg } from './index.js'
 
@@ -24,14 +29,13 @@ let detect = [ // ここに書いたブロック,アイテム,エンティティ
 
 
 let detectItem = true;
-let checkBreak = true;
+let checkPos = true;
 let checkName = true;
+let blockSign = true;
 let tagKick = 'ban'; // タグがついてる人にkickコマンドを実行。何も書かなければ無効化
-let breakLimit = 10;
-
 
 let loaded = false;
-let nameRegex = /[^A-Za-z0-9_\-() ]/
+//let nameRegex = /[^A-Za-z0-9_\-() ]/
 
 try {
   world.events.tick.subscribe(data => {
@@ -43,8 +47,22 @@ try {
       } catch {}
     } else {
     
-      if (detectItem) {
-        for (let player of world.getPlayers()) { // インベントリに入っていたら引っかかるよ
+      for (let player of world.getPlayers()) {
+         
+         if (checkPos) {
+           let {x,y,z} = player.location;
+           if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
+             kick(player, `Crasherの使用を検知しました`);
+           }
+         }
+          
+         if (tagKick && !player.hasTag('admin')) {
+           if (player.hasTag(tagKick)) {
+             kick(player, `You are banned by admin`);
+           }
+         }
+         
+         if (detectItem && !player.hasTag('admin')) { // インベントリに入っていたら引っかかるよ
           let container = player.getComponent('minecraft:inventory').container;
           for (let i=0; i<container.size; i++) {
             let item = container.getItem(i);
@@ -52,32 +70,38 @@ try {
             if (detect.includes(item.id)) {
               try {
                 container.setItem(i, new ItemStack(MinecraftItemTypes.air));
-                player.dimension.runCommand(`kick "${player.name}"`);
-                sendMsg(`[AC] §l§c${player.name}§r が禁止アイテム: §c${item.id}§r を所持したためkickしました`);
               } catch {}
+              kick(player, `禁止アイテム: §c${item.id}§r の所持を検知しました`);
             }
           }
         }
-      }
-      
+        
+        if (checkName) {
+          if (player.name.length > 20) {
+            kick(player, `長すぎる名前を検知しました`);
+          }
+        }
+        
+        
+      } // getPlayers
       
     }
   });
   
-  world.events.blockPlace.subscribe(data => { // 設置したら引っかかるよ
-    let {block, dimension, player} = data;
-    if (detect.includes(block.id)) {
-      let {x,y,z} = block.location;
-      let id = block.id;
-      try {
-        block.dimension.runCommand(`setblock ${x} ${y} ${z} air`);
-        player.dimension.runCommand(`kick "${player.name}"`);
-        sendMsg(`[AC] §l§c${player.name}§r が禁止ブロック: §c${id}§r を設置したためkickしました`);
-      } catch {}
+  world.events.beforeItemUseOn.subscribe(data => { // 禁止ブロックを設置したら引っかかるよ
+    let {source, item} = data;
+    if (source.hasTag('admin')) return;
+    if (blockSign && item.id.endsWith('sign')) {
+      data.cancel = true;
+      return sendMsg('§c看板の設置は許可されていません', source.name);
+    }
+    if (detect.includes(item.id)) {
+      data.cancel = true;
+      kick(source, `禁止アイテム: §c${item.id}§r の使用を検知しました`);
     }
   });
   
-  world.events.entityCreate.subscribe(data => { // エンティティが出されたら引っかかるよ
+  world.events.entityCreate.subscribe(data => { // 禁止エンティティが出されたら引っかかるよ
     let {id} = data.entity;
     if (detect.includes(id)) {
       try {
@@ -87,6 +111,19 @@ try {
     }
   });
   
+  function kick(player, reason) {
+    if (!player) return console.error('function kick >> No player data');
+    if (player.hasTag('op')) return;
+    try {
+      player.dimension.runCommand(`kick ${player.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason || 'N/A'}`); // 普通はこっち
+      sendCmd(`say "[AC] Kicked §l§c${player.name}§r >> ${reason || 'N/A'} "`);
+    } catch {
+      /* (ビヘイビア側でkickすれば§"な名前の人でも蹴れます)
+      player.triggerEvent('event_kick'); // 変な名前で蹴れない時はこっち
+      sendCmd(`say "[AC] Kicked §l§c${player.name}§r (addon) >> ${reason || 'N/A'} "`);
+      */
+    }
+  }
   
 } catch(e) {
   console.error(e);
