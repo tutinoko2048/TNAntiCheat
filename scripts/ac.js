@@ -18,11 +18,20 @@ let detect = [ // ここに書いたブロック,アイテム,エンティティ
   'minecraft:cod_bucket',
   'minecraft:pufferfish_bucket',
   'minecraft:salmon_bucket',
-  'minecraft:tropical_fish_bucket'
+  'minecraft:tropical_fish_bucket',
+  'minecraft:respawn_anchor'
 ]
 
-let loaded = false;
+
 let detectItem = true;
+let checkBreak = true;
+let checkName = true;
+let tagKick = 'ban'; // タグがついてる人にkickコマンドを実行。何も書かなければ無効化
+let breakLimit = 10;
+
+
+let loaded = false;
+let nameRegex = /[^A-Za-z0-9_\-() ]/
 
 try {
   world.events.tick.subscribe(data => {
