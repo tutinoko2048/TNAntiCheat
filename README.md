@@ -23,15 +23,16 @@ https://youtu.be/SZq9z7Lt2bc
   - salmon_bucket
   - tropical_bucket
   - respawn_anchor
+  - spawn_egg
 
-- AntiCrasher(多分動かない)
+- Crasher(多分動かない)
 - 長すぎる名前の検知
 - tagKick  
 "ban"のタグがついた人を自動でkickします
 
 ## やりたいやつ
+- チェストを設置した時に中身をスキャンする
 - spam
-- InstaBreak
 - オバエン検知(preview only
 - リーチ?(preview only
 - れんつ?(preview only
