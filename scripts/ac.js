@@ -3,7 +3,7 @@ TNAntiCheat on top!
 Made by RetoRuto9900K @tutinoko_kusaa
 */
  
-import { world, ItemStack, MinecraftItemTypes } from 'mojang-minecraft'
+import { world, ItemStack, MinecraftItemTypes, Location } from 'mojang-minecraft'
 import { dimension, sendCmd, sendMsg } from './index.js'
 
 let detect = [ // ここに書いたブロック,アイテム,エンティティを所持したり設置したり出したりすると検知されるよ
@@ -24,7 +24,8 @@ let detect = [ // ここに書いたブロック,アイテム,エンティティ
   'minecraft:pufferfish_bucket',
   'minecraft:salmon_bucket',
   'minecraft:tropical_fish_bucket',
-  'minecraft:respawn_anchor'
+  'minecraft:respawn_anchor',
+  'minecraft:spawn_egg'
 ]
 
 
@@ -52,6 +53,7 @@ try {
          if (checkPos) {
            let {x,y,z} = player.location;
            if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
+             player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
              kick(player, `Crasherの使用を検知しました`);
            }
          }
@@ -71,7 +73,7 @@ try {
               try {
                 container.setItem(i, new ItemStack(MinecraftItemTypes.air));
               } catch {}
-              kick(player, `禁止アイテム: §c${item.id}§r の所持を検知しました`);
+              kick(player, `禁止アイテム: §c${item.id}:${item.data}§r の所持を検知しました`);
             }
           }
         }
@@ -113,14 +115,14 @@ try {
   
   function kick(player, reason) {
     if (!player) return console.error('function kick >> No player data');
-    if (player.hasTag('op')) return;
+    if (player.hasTag('admin')) return;
     try {
       player.dimension.runCommand(`kick ${player.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason || 'N/A'}`); // 普通はこっち
-      sendCmd(`say "[AC] Kicked §l§c${player.name}§r >> ${reason || 'N/A'} "`);
+      sendMsg(`[AC] Kicked §l§c${player.name}§r >> ${reason || 'N/A'}`);
     } catch {
       /* (ビヘイビア側でkickすれば§"な名前の人でも蹴れます)
       player.triggerEvent('event_kick'); // 変な名前で蹴れない時はこっち
-      sendCmd(`say "[AC] Kicked §l§c${player.name}§r (addon) >> ${reason || 'N/A'} "`);
+      sendMsg(`[AC] Kicked §l§c${player.name}§r (addon) >> ${reason || 'N/A'}`);
       */
     }
   }
