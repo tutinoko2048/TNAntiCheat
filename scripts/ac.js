@@ -34,6 +34,9 @@ let checkPos = true;
 let checkName = true;
 let blockSign = true;
 let tagKick = 'ban'; // タグがついてる人にkickコマンドを実行。何も書かなければ無効化
+let chatLength = 100;
+let chatDuplicate = true;
+let chatLimit = true;
 
 let loaded = false;
 //let nameRegex = /[^A-Za-z0-9_\-() ]/
