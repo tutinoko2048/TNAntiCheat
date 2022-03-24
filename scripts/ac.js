@@ -32,7 +32,6 @@ let detect = [ // ここに書いたブロック,アイテム,エンティティ
 let detectItem = true;
 let checkPos = true;
 let checkName = true;
-let blockSign = true;
 let tagKick = 'ban'; // タグがついてる人にkickコマンドを実行。何も書かなければ無効化
 let chatLength = 100;
 let chatDuplicate = true;
@@ -53,7 +52,7 @@ try {
     
       for (let player of world.getPlayers()) {
          
-         if (checkPos) {
+         if (checkPos) { // 座標を書き換える系のCrasher対策 間に合うかは不明
            let {x,y,z} = player.location;
            if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
              player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
@@ -61,13 +60,13 @@ try {
            }
          }
           
-         if (tagKick && !player.hasTag('admin')) {
+         if (tagKick && !player.hasTag('admin')) { // 指定タグがついているプレイヤーにkickコマンド実行
            if (player.hasTag(tagKick)) {
              kick(player, `You are banned by admin`);
            }
          }
          
-         if (detectItem && !player.hasTag('admin')) { // インベントリに入っていたら引っかかるよ
+         if (detectItem && !player.hasTag('admin')) { // 禁止アイテムがインベントリに入っていたら引っかかるよ
           let container = player.getComponent('minecraft:inventory').container;
           for (let i=0; i<container.size; i++) {
             let item = container.getItem(i);
@@ -82,7 +81,7 @@ try {
         }
         
         if (checkName) {
-          if (player.name.length > 20) {
+          if (player.name.length > 20) { // 長い名前対策
             kick(player, `長すぎる名前を検知しました`);
           }
         }
@@ -96,10 +95,6 @@ try {
   world.events.beforeItemUseOn.subscribe(data => { // 禁止ブロックを設置したら引っかかるよ
     let {source, item} = data;
     if (source.hasTag('admin')) return;
-    if (blockSign && item.id.endsWith('sign')) {
-      data.cancel = true;
-      return sendMsg('§c看板の設置は許可されていません', source.name);
-    }
     if (detect.includes(item.id)) {
       data.cancel = true;
       kick(source, `禁止アイテム: §c${item.id}§r の使用を検知しました`);
@@ -115,15 +110,24 @@ try {
       } catch {}
     }
   });
+ 
+  world.events.beforeChat.subscribe(data => {
+    let {sender, message} = data;
+    if (message.length > chatLength) {
+      data.cancel = true;
+      sendMsg(`長すぎ (${message.length}>${chatLength})`, sender.name);
+      return;
+    }
+  });
   
-  function kick(player, reason) {
+  function kick(player, reason = 'No reason') {
     if (!player) return console.error('function kick >> No player data');
     if (player.hasTag('admin')) return;
     try {
-      player.dimension.runCommand(`kick ${player.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason || 'N/A'}`); // 普通はこっち
-      sendMsg(`[AC] Kicked §l§c${player.name}§r >> ${reason || 'N/A'}`);
+      player.dimension.runCommand(`kick ${player.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason}`); // 普通はこっち
+      sendMsg(`[AC] Kicked §l§c${player.name}§r >> ${reason}`);
     } catch {
-      /* (ビヘイビア側でkickすれば§"な名前の人でも蹴れます)
+      /* (ビヘイビア側でkickすれば§"な名前の人でも蹴れます。再参加可能なので注意)
       player.triggerEvent('event_kick'); // 変な名前で蹴れない時はこっち
       sendMsg(`[AC] Kicked §l§c${player.name}§r (addon) >> ${reason || 'N/A'}`);
       */
