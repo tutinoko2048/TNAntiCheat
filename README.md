@@ -1,7 +1,12 @@
 # TNAntiCheat
-アドオンで適当にチート対策してみる
+MinecraftBE用のチート対策アドオンです。  
+※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
+[ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
   
 https://youtu.be/SZq9z7Lt2bc  
+  
+![img1](docs/kick.jpeg)  
+![img2](docs/kicked.png)
   
 ## 実装済み
 - 禁止アイテム,エンティティの所持,設置検知 
