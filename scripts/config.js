@@ -1,5 +1,6 @@
 export default
 {
+  opTag: 'admin',
   detectItem: true,
   detect: [ // ここに書いたブロック,アイテム,エンティティを所持したり設置したり出したりすると検知されるよ
     'minecraft:movingBlock',
