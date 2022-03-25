@@ -16,6 +16,8 @@ https://youtu.be/SZq9z7Lt2bc
   - tnt
   - lava
   - water
+  - flowing_lava
+  - flowing_water
   - lava_bucket
   - axolotl_bucket
   - cod_bucket
@@ -25,14 +27,15 @@ https://youtu.be/SZq9z7Lt2bc
   - respawn_anchor
   - spawn_egg
 
-- Crasher(多分動かない)
+- Crasher
 - 長すぎる名前の検知
 - tagKick  
 "ban"のタグがついた人を自動でkickします
+- チェスト設置時に中身をチェック
+- 重複した内容のチャットをブロック
+- 100文字以上の長いチャットをブロック
 
 ## やりたいやつ
-- チェストを設置した時に中身をスキャンする
-- spam
 - オバエン検知(preview only
 - リーチ?(preview only
 - れんつ?(preview only
