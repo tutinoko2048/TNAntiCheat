@@ -1,18 +1,18 @@
 {
   "format_version": 2,
   "header": {
-    "name": "TNAntiCheat v1",
-    "description": "あんちちーと with GameTest",
+    "name": "TNAntiCheat v1.1",
+    "description": "AntiCheat with Gametest\nscripts/config.jsでカスタマイズすることができます。\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
-    "version": [ 1, 0, 0 ],
+    "version": [ 1, 1, 0 ],
     "min_engine_version": [ 1, 18, 0 ]
   },
   "modules": [
     {
-      "description": "あんちちーと with GameTest",
+      "description": "AntiCheat with Gametest\nscripts/config.jsでカスタマイズすることができます。\nMade by RetoRuto9900K / tutinoko2048",
       "type": "javascript",
       "uuid": "fcc8732d-300a-40e0-8a5d-613df2291a24",
-      "version": [ 1, 0, 0 ],
+      "version": [ 1, 1, 0 ],
       "entry": "scripts/index.js"
     }
   ],

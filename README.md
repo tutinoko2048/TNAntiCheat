@@ -1,11 +1,16 @@
 # TNAntiCheat
-アドオンで適当にチート対策してみる
+MinecraftBE用のチート対策アドオンです。  
+※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
+[ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
   
 https://youtu.be/SZq9z7Lt2bc  
   
+![img1](docs/kick.jpeg)  
+![img2](docs/kicked.png)
+  
 ## 実装済み
 - 禁止アイテム,エンティティの所持,設置検知 
-アイテム一覧(追加/削除可能) 
+アイテム一覧(追加/削除可能) 詳しくは[config](#config)を参照  
   - movingBlock
   - beehive
   - bee_nest
@@ -16,6 +21,8 @@ https://youtu.be/SZq9z7Lt2bc
   - tnt
   - lava
   - water
+  - flowing_lava
+  - flowing_water
   - lava_bucket
   - axolotl_bucket
   - cod_bucket
@@ -25,14 +32,19 @@ https://youtu.be/SZq9z7Lt2bc
   - respawn_anchor
   - spawn_egg
 
-- Crasher(多分動かない)
+- Crasher
 - 長すぎる名前の検知
 - tagKick  
 "ban"のタグがついた人を自動でkickします
+- チェスト設置時に中身をチェック
+- 重複した内容のチャットをブロック
+- 100文字以上の長いチャットをブロック
 
 ## やりたいやつ
-- チェストを設置した時に中身をスキャンする
-- spam
 - オバエン検知(preview only
 - リーチ?(preview only
 - れんつ?(preview only
+
+## config
+config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
+タグのついたプレイヤー(デフォルトではadmin)は検知から除外されます
