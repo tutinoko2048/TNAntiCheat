@@ -1,15 +1,16 @@
 import { world, Player, Entity } from 'mojang-minecraft'
 import './ac.js'
+import config from './config.js'
 
 const dimension = world.getDimension('overworld');
 
 Player.prototype.kick = function (reason = 'No reason') {
-  if (this.hasTag('admin')) return;
+  if (this.hasTag(config.opTag)) return;
   try {
     this.runCommand(`kick ${this.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason}`); // 普通はこっち
     sendMsg(`[AC] Kicked §l§c${this.name}§r >> ${reason}`);
   } catch {
-    // ビヘイビア側でkickすれば§"な名前の人でも蹴れます。再参加可能なので注意
+    // ビヘイビア側でinstant_despawnすれば§"な名前の人でも蹴れます。再参加可能なので注意
     this.triggerEvent('tn:kick'); // 変な名前で蹴れない時はこっち
     sendMsg(`[AC] Kicked §l§c${this.name}§r (addon) >> ${reason}`);
   }
@@ -17,7 +18,7 @@ Player.prototype.kick = function (reason = 'No reason') {
 
 Entity.prototype.kick = function (reason = 'No reason') {
   if (this.id != 'minecraft:player') return;
-  if (this.hasTag('admin')) return;
+  if (this.hasTag(config.opTag)) return;
   try {
     this.runCommand(`kick ${this.name} §f§lKicked by TNAntiCheat\n§cReason: §r${reason}`); // 普通はこっち
     sendMsg(`[AC] Kicked §l§c${this.name}§r >> ${reason}`);
