@@ -5,7 +5,7 @@ https://youtu.be/SZq9z7Lt2bc
   
 ## 実装済み
 - 禁止アイテム,エンティティの所持,設置検知 
-アイテム一覧(追加/削除可能) 
+アイテム一覧(追加/削除可能) 詳しくは[config](#config)を参照  
   - movingBlock
   - beehive
   - bee_nest
@@ -40,6 +40,6 @@ https://youtu.be/SZq9z7Lt2bc
 - リーチ?(preview only
 - れんつ?(preview only
 
-## カスタマイズ
+## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
 タグのついたプレイヤー(デフォルトではadmin)は検知から除外されます
