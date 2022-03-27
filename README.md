@@ -32,7 +32,7 @@ https://youtu.be/SZq9z7Lt2bc
   - respawn_anchor
   - spawn_egg
 
-- Crasher
+- Crasher(機種によって動いたり動かなかったりするそうです)
 - 長すぎる名前の検知
 - tagKick  
 "ban"のタグがついた人を自動でkickします
@@ -41,9 +41,9 @@ https://youtu.be/SZq9z7Lt2bc
 - 100文字以上の長いチャットをブロック
 
 ## やりたいやつ
-- オバエン検知(preview only
-- リーチ?(preview only
-- れんつ?(preview only
+- ドロップした状態のアイテムもidで検知する(なすりつけ防止, preview only)
+- オバエン検知(preview only)
+- リーチ?(preview only)
 
 ## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
