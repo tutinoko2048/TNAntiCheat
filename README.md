@@ -6,7 +6,9 @@ MinecraftBE用のチート対策アドオンです。
 https://youtu.be/SZq9z7Lt2bc  
   
 ![img1](docs/kick.jpeg)  
-![img2](docs/kicked.png)
+![img2](docs/kicked.png)  
+  
+※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
   
 ## 実装済み
 - 禁止アイテム,エンティティの所持,設置検知 
