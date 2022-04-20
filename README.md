@@ -11,7 +11,7 @@ https://youtu.be/SZq9z7Lt2bc
 ※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
   
 ## 実装済み
-- 禁止アイテム,エンティティの所持,設置検知 
+- 禁止アイテム,エンティティの所持,設置検知  
 アイテム一覧(追加/削除可能) 詳しくは[config](#config)を参照  
   - movingBlock
   - beehive
