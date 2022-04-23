@@ -8,7 +8,6 @@ import { dimension, sendCmd, sendMsg } from './index.js'
 import config from './config.js'
 
 let loaded = false;
-//let nameRegex = /[^A-Za-z0-9_\-() ]/
 
 let air = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air permutation
 try {
@@ -23,7 +22,7 @@ try {
     
       for (let player of world.getPlayers()) {
          
-         if (config.crasher) { // 座標を書き換える系のCrasher対策 間に合うかは不明
+         if (config.crasher) { // 座標を書き換える系のCrasher対策 pcで開いてれば高確率で弾けます
            let {x,y,z} = player.location;
            if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
              player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
@@ -74,11 +73,20 @@ try {
   });
   
   world.events.entityCreate.subscribe(data => { // 禁止エンティティが出されたら引っかかるよ
-    let {id} = data.entity;
-    if (config.detect.includes(id)) {
+    let {entity} = data;
+    if (config.detect.includes(entity.id)) {
+      if (entity.id == 'minecraft:item') {
+        let item = entity.getComponent('item').itemStack;
+        if (config.detect.includes(item.id)) {
+          try {
+            entity.runCommand('kill @s');
+            sendMsg(`[AC] 禁止アイテム: §c${item.id}§r を検知したためkillしました`);
+          } catch {}
+        }
+      }
       try {
-        data.entity.kill();
-        sendMsg(`[AC] 禁止エンティティ: §c${id}§r を検知したためkillしました`);
+        entity.runCommand('kill @s');
+        sendMsg(`[AC] 禁止エンティティ: §c${entity.id}§r を検知したためkillしました`);
       } catch {}
     }
   });
