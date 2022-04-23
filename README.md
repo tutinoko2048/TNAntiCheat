@@ -6,10 +6,12 @@ MinecraftBE用のチート対策アドオンです。
 https://youtu.be/SZq9z7Lt2bc  
   
 ![img1](docs/kick.jpeg)  
-![img2](docs/kicked.png)
+![img2](docs/kicked.png)  
+  
+※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
   
 ## 実装済み
-- 禁止アイテム,エンティティの所持,設置検知 
+- 禁止アイテム,エンティティの所持,設置検知  
 アイテム一覧(追加/削除可能) 詳しくは[config](#config)を参照  
   - movingBlock
   - beehive
@@ -32,7 +34,7 @@ https://youtu.be/SZq9z7Lt2bc
   - respawn_anchor
   - spawn_egg
 
-- Crasher
+- Crasher(機種によって動いたり動かなかったりするそうです)
 - 長すぎる名前の検知
 - tagKick  
 "ban"のタグがついた人を自動でkickします
@@ -41,9 +43,9 @@ https://youtu.be/SZq9z7Lt2bc
 - 100文字以上の長いチャットをブロック
 
 ## やりたいやつ
-- オバエン検知(preview only
-- リーチ?(preview only
-- れんつ?(preview only
+- ドロップした状態のアイテムもidで検知する(なすりつけ防止, preview only)
+- オバエン検知(preview only)
+- リーチ?(preview only)
 
 ## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  

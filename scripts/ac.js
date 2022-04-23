@@ -31,13 +31,13 @@ try {
            }
          }
           
-         if (config.tagKick && !player.hasTag('admin')) { // 指定タグがついているプレイヤーにkickコマンド実行
+         if (config.tagKick && !player.hasTag(config.opTag)) { // 指定タグがついているプレイヤーにkickコマンド実行
            if (player.hasTag(config.tagKick)) {
              player.kick('You are banned by admin');
            }
          }
          
-         if (config.detectItem && !player.hasTag('admin')) { // 禁止アイテムがインベントリに入っていたら引っかかるよ
+         if (config.detectItem && !player.hasTag(config.opTag)) { // 禁止アイテムがインベントリに入っていたら引っかかるよ
           let container = player.getComponent('minecraft:inventory').container;
           for (let i=0; i<container.size; i++) {
             let item = container.getItem(i);
@@ -66,7 +66,7 @@ try {
   
   world.events.beforeItemUseOn.subscribe(data => { // 禁止ブロックを設置したら引っかかるよ
     let {source, item} = data;
-    if (source.hasTag('admin')) return;
+    if (source.hasTag(config.opTag)) return;
     if (config.detect.includes(item.id)) {
       data.cancel = true;
       source.kick(`禁止アイテム: §c${item.id}:${item.data}§r の使用を検知しました`);
@@ -102,14 +102,14 @@ try {
   world.events.blockPlace.subscribe(data => { // チェスト設置時に中身をスキャン
     if (!config.detectItem) return;
     let {block,player} = data;
-    if (player.hasTag('admin') || block.id != 'minecraft:chest') return;
+    if (player.hasTag(config.opTag) || block.id != 'minecraft:chest') return;
     let container = block.getComponent('inventory').container;
     let out = []
     for (let i=0; i<container.size; i++) {
       let item = container.getItem(i);
-      if (item && config.detect.includes(item?.id)) {
+      if (item && config.detect.includes(item.id)) {
         let name = item.nameTag ? (item.nameTag.length>20 ? `${item.nameTag.slice(0,20)}§r...` : item.nameTag) : null;
-        out.push(`Slot:${i}, ID:§c${item.id}:${item.data}${name ? `, Name: ${name}§r` : ''}`);
+        out.push(`Slot:${i}, ID:§c${item.id}:${item.data}${name ? `§r, Name: §c${name}§r` : ''}`);
       }
     }
     if (out.length > 0) {

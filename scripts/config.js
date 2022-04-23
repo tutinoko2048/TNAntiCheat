@@ -1,9 +1,11 @@
 export default
 {
+  opTag: 'admin',
   detectItem: true,
   detect: [ // ここに書いたブロック,アイテム,エンティティを所持したり設置したり出したりすると検知されるよ
     'minecraft:movingBlock',
     'minecraft:movingblock',
+    'minecraft:moving_block',
     'minecraft:beehive',
     'minecraft:bee_nest',
     'minecraft:mob_spawner',
