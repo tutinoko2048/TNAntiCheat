@@ -22,7 +22,6 @@ export default
     "state": true,
     "spawnEgg": true, // trueならスポーンエッグ全てを検知
     "detect": [
-    "minecraft:writable_book",
       "minecraft:movingBlock",
       "minecraft:movingblock",
       "minecraft:moving_block",
