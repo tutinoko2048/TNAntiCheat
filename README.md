@@ -41,15 +41,13 @@ config.jsを編集することで禁止アイテムの追加/削除, 各種機�
 `state: boolean;`
 
 ### nuker
-#### state
-`state: boolean;`
-#### limit
+`state: boolean;`  
+  
 `limit: number;`
 
 ### tag
-#### op
-`op: string;`
-#### kick
+`op: string;`  
+  
 `kick: string;`
 
 ### nameCheck
