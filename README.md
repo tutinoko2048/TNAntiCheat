@@ -34,3 +34,35 @@ https://youtu.be/SZq9z7Lt2bc
 ## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
 タグのついたプレイヤー(デフォルトではadmin)は検知から除外されます
+  
+### crasher
+`state: boolean;`
+
+### nuker
+#### state
+`state: boolean;`
+#### limit
+`limit: number;`
+
+### tag
+#### op
+`op: string;`
+#### kick
+`kick: string;`
+
+### nameCheck
+
+### spamCheck
+
+### itemCheck
+
+### placeCheck
+
+### entityCheck
+
+### containerCheck
+
+### enchantCheck
+
+### sendws
+
