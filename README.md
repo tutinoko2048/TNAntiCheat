@@ -33,7 +33,9 @@ https://youtu.be/SZq9z7Lt2bc
 
 ## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
-タグのついたプレイヤー(デフォルトではadmin)は検知から除外されます
+タグのついたプレイヤー(デフォルトではadmin)は検知から除外されます  
+
+![config](docs/config.png)
   
 ### crasher
 `state: boolean;`
