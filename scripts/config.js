@@ -1,9 +1,9 @@
 export default
 {
-  "crasher": true,
+  "crasher": true, // crasher検知(pcだと動きます
   "nuker": {
     "state": true,
-    "limit": 5 // 1tickに何ブロックの破壊で検知するか
+    "limit": 8 // 1tickに何ブロックの破壊で検知するか(ラグも考慮)
   },
   "tag": {
     "op": "ac:admin", // 検知から除外するタグです
@@ -15,11 +15,12 @@ export default
   },
   "spamCheck": {
     "maxLength": 100, // -1指定で長さ制限なし
-    "duplicate": true
+    "duplicate": true // 重複するチャットを制限
   },
-  "itemCheck": { // 持つとkick, 落とすとkill
+  "itemCheck": { // 持つとkick
+    "drop": true, // ドロップ状態のアイテムを検知
     "state": true,
-    "spawnEgg": true, // trueならスポーンエッグを検知
+    "spawnEgg": true, // trueならスポーンエッグ全てを検知
     "detect": [
       "minecraft:movingBlock",
       "minecraft:movingblock",
@@ -28,6 +29,7 @@ export default
       "minecraft:bee_nest",
       "minecraft:mob_spawner",
       "minecraft:invisiblebedrock",
+      "minecraft:invisible_bedrock",
       "minecraft:tnt",
       "minecraft:lava",
       "minecraft:water",
@@ -66,10 +68,11 @@ export default
       "minecraft:salmon_bucket",
       "minecraft:tropical_fish_bucket",
       "minecraft:respawn_anchor",
-      "minecraft:bedrock"
+      "minecraft:bedrock",
+      "minecraft:barrier"
     ]
   },
-  "entityCheck": { // あったらkill
+  "entityCheck": { // いたらkill
     "state": true,
     "detect": [
       "minecraft:command_block_minecart",
@@ -80,14 +83,15 @@ export default
       "minecraft:npc"
     ]
   },
-  "containerCheck": { // 設置時に中身をチェック 一部ブロックは非対応
+  "containerCheck": { // 置いたときに中身をチェック 一部ブロックは非対応
     "state": true,
     "detect": [
       "minecraft:chest"
     ]
   },
   "enchantCheck": { // オーバーエンチャントを検知
-    "inventory": false, // インベントリ全てをチェックするので結構重いです
-    "hand": true // 手持ち検知だからまだまし
-  }
+    "state": true,
+    "mode": "hand" // inventory: 全インベントリをチェックするから負荷大きめ, hand: 手持ちだけ検知だからまだまし
+  },
+  "sendws": false // For discord-mcbe | メッセージをsayで出力します
 }

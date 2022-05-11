@@ -3,19 +3,20 @@ TNAntiCheat on top!
 Made by RetoRuto9900K @tutinoko_kusaa
 */
  
-import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from 'mojang-minecraft'
-import { dimension, sendCmd, sendMsg } from './index.js'
-import config from './config.js'
+import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from 'mojang-minecraft';
+import { sendCmd, sendMsg, detected } from './index.js';
+import config from './config.js';
+import './util/timer.js'; // timer.js v1.1 by lapis256 | https://github.com/Lapis256/timer.js/blob/main/LICENSE
 
 let loaded = false;
 
-let air = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air permutation
+let air = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air block permutation
+
 try {
   world.events.tick.subscribe(ev => {
-    //sendCmd('function ac');
     if (!loaded) {
       try {
-        dimension.runCommand('testfor @a');
+        world.getDimension('overworld').runCommand('testfor @a');
         loaded = true;
         sendMsg('ac.js loaded');
       } catch {}
@@ -40,42 +41,33 @@ try {
          if (config.itemCheck.state && !player.hasTag(config.tag.op)) { // 禁止アイテムがインベントリに入っていたら引っかかるよ
           let { container } = player.getComponent('minecraft:inventory');
           
-          if (config.enchantCheck.hand) {
-            let item = container.getItem(player.selectedItem);
-            if (!item) continue;
-            let enchant = item.getComponent('enchantments');
-            let enchantments = enchant.enchantments;
-            for (let enchantType of Object.values(MinecraftEnchantmentTypes)){
-              if (!enchantments.hasEnchantment(enchantType)) continue;
-              let {level, type: { maxLevel, id }} = enchantments.getEnchantment(enchantType);
-              if (level > maxLevel) {
-                sendMsg(`[TN-AntiCheat] §l§c${player.name}§r >> オーバーエンチャントを検知しました (Item: ${item.id}, ID: ${id}, Level: ${level})`);
-                enchant.removeAllEnchantments();
+          if (config.enchantCheck.state && config.enchantCheck.mode == 'hand') {
+            let item = container.getItem(player.selectedSlot);
+            if (item) {
+              let badEnchant = enchantCheck(item);
+              if (badEnchant) {
+                container.setItem(player.selectedSlot, badEnchant.itemStack);
+                detected(`§l§c${player.name}§r >> オーバーエンチャントを検知しました (ID: ${badEnchant.itemStack.id}, Enchant: ${badEnchant.id}, Level: ${badEnchant.level})`);
               }
-            }
+            } 
+            
           }
           
           for (let i=0; i<container.size; i++) {
             let item = container.getItem(i);
             if (!item) continue;
+            
             if (config.itemCheck.detect.includes(item.id) || (config.itemCheck.spawnEgg && item.id.endsWith('spawn_egg')) ) {
-              try {
-                container.setItem(i, new ItemStack(MinecraftItemTypes.air));
-              } catch {}
-              let name = item.nameTag ? (item.nameTag.length>20 ? `${item.nameTag.slice(0,20)}§r...` : item.nameTag) : null;
-              player.kick(`禁止アイテム: §c${item.id}:${item.data}${name ? `§r, Name: §c${name}§r` : ''} §rの所持を検知しました`);
+              container.setItem(i, new ItemStack(MinecraftItemTypes.air));
+              let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)}${item.nameTag.length>20 ? '§r...' : '§r'}` : null
+              player.kick(`禁止アイテムの所持を検知しました  (ID: §c${item.id}:${item.data}${name ? `§r, Name: ${name}§r` : ''})`);
             }
             
-            if (config.enchantCheck.inventory) {
-              let enchant = item.getComponent('enchantments');
-              let enchantments = enchant.enchantments;
-              for (let enchantType of Object.values(MinecraftEnchantmentTypes)){
-                if (!enchantments.hasEnchantment(enchantType)) continue;
-                let {level, type: { maxLevel, id }} = enchantments.getEnchantment(enchantType);
-                if (level > maxLevel) {
-                  sendMsg(`[TN-AntiCheat] §l§c${player.name}§r >> オーバーエンチャントを検知しました (Item: ${item.id}, ID: ${id}, Level: ${level})`);
-                  enchant.removeAllEnchantments();
-                }
+            if (config.enchantCheck.state && config.enchantCheck.mode == 'inventory') {
+              let badEnchant = enchantCheck(item);
+              if (badEnchant) {
+                container.setItem(i, badEnchant.itemStack);
+                detected(`§l§c${player.name}§r >> オーバーエンチャントを検知しました (ID: ${badEnchant.itemStack.id}, Enchant: ${badEnchant.id}, Level: ${badEnchant.level})`);
               }
             }
           }
@@ -87,8 +79,12 @@ try {
           }
         }
         
+        if (config.nuker.state && player.breakCount && player.breakCount > config.nuker.limit) {
+          let {x,y,z} = player.location;
+          player.kick(`Nukerの使用を検知しました [${Math.round(x)} ${Math.round(y)} ${Math.round(z)}] (§c${player.breakCount}blocks§r/tick)`);
+        }
         player.breakCount = 0;
-      } // getPlayers
+      } // getPlayers end 
       
     }
   });
@@ -98,7 +94,7 @@ try {
     if (source.hasTag(config.tag.op)) return;
     if (config.placeCheck.state && config.placeCheck.detect.includes(item.id)) {
       ev.cancel = true;
-      source.kick(`禁止アイテム: §c${item.id}:${item.data}§r の使用を検知しました`);
+      source.kick(`禁止アイテムの使用を検知しました (ID: §c${item.id}:${item.data}§r)`);
     }
   });
   
@@ -106,18 +102,24 @@ try {
     let {entity} = ev;
     let id = entity.id;
     if (config.entityCheck.state && config.entityCheck.detect.includes(entity.id)) {
-      try {
-        entity.runCommand('kill @s');
-        sendMsg(`[AC] 禁止エンティティ: §c${id}§r を検知したためkillしました`);
-      } catch {}
+      if (id == 'minecraft:command_block_minecart') {
+        entity.triggerEvent('tn:despawn');
+        return detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
+      }
+      setTimeout(() => {
+        try {
+          entity.kill();
+          detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
+        } catch {}
+      },1);
     }
     
-    if (config.itemCheck.state && entity.id == 'minecraft:item') {
+    if (config.itemCheck.drop && entity.id == 'minecraft:item') {
       let item = entity.getComponent('item').itemStack;
       if (config.itemCheck.detect.includes(item.id)) {
         try {
-          entity.kill();
-          sendMsg(`[AC] 禁止アイテム: §c${item.id}§r を検知したためkillしました`);
+          entity.runCommand('tp @s ~ -100 ~');
+          detected(`禁止アイテムを検知したためkillしました (ID: §c${item.id}§r) `);
         } catch {}
       }
     }
@@ -125,15 +127,15 @@ try {
  
   world.events.beforeChat.subscribe(ev => {
     let {sender, message} = ev;
-    if (config.spamCheck.maxLength > -1 && message.length > config.chatLength) {
+    if (config.spamCheck.maxLength > -1 && message.length > config.spamCheck.maxLength) {
       ev.cancel = true;
-      sendMsg(`長すぎ (${message.length}>${config.spamCheck.maxLength})`, sender.name);
+      sender.sendMsg(`長すぎ (${message.length}>${config.spamCheck.maxLength})`);
       return;
     }
     if (config.spamCheck.duplicate) {
       if (sender.chat && message === sender.chat) {
         ev.cancel = true;
-        sendMsg('重複したチャットは送信できません', sender.name);
+        sender.sendMsg('重複したチャットは送信できません');
       }
       sender.chat = message;
     }
@@ -142,21 +144,21 @@ try {
   world.events.blockPlace.subscribe(ev => { // チェスト設置時に中身をスキャン
     if (!config.containerCheck.state) return;
     let {block,player} = ev;
-    if (config.containerCheck.detect.includes(block.id)) return;
+    if (!config.containerCheck.detect.includes(block.id)) return;
     let container = block.getComponent('inventory')?.container;
     if (!container) return;
-    let out = []
+    let out = [];
     for (let i=0; i<container.size; i++) {
       let item = container.getItem(i);
       if (item && config.itemCheck.detect.includes(item.id)) {
-        let name = item.nameTag ? (item.nameTag.length>20 ? `${item.nameTag.slice(0,20)}§r...` : item.nameTag) : null;
-        out.push(`ID:§c${item.id}:${item.data}${name ? `§r, Name: §c${name}§r` : ''}`);
+        container.setItem(i, new ItemStack(MinecraftItemTypes.air));
+        let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)} ${item.nameTag.length>20 ? '§r...' : '§r'}` : null;
+        out.push(`ID: §c${item.id}:${item.data}${name ? `§r, Name: §c${name}§r` : ''}`);
       }
     }
     if (out.length > 0) {
-      block.setPermutation(air);
       let {x,y,z} = block;
-      sendMsg(`[TN-AntiCheat] §l§c${player.name}§r >> 禁止アイテム:\n${out.join('\n')}\nの入った ${block.id} の設置を検知しました [${x} ${y} ${z}]`);
+      detected(`§l§c${player.name}§r >> 禁止アイテムの入った ${block.id} の設置を検知しました [${x} ${y} ${z}]\n${out.slice(-5).join('\n')}\n${out.length>5 ? `more ${out.length-5} items...` : ''}`);
     }
   });
   
@@ -168,12 +170,29 @@ try {
       player.breakCount++
       
       if (player.breakCount > config.nuker.limit) {
-        let {x,y,z} = block;
         block.setPermutation(permutation);
-        player.kick(`Nukerの使用を検知しました [${Math.round(x)} ${Math.round(y)} ${Math.round(z)}] (§c${player.breakCount}blocks§r/tick)`);
       }
     }
-  })
+  });
+  
+  /**
+   *
+   * @param {ItemStack} item
+   * @return {object} badEnchant
+   */
+  function enchantCheck(item) {
+    let enchant = item.getComponent('enchantments');
+    let enchantments = enchant.enchantments;
+    for (let enchantType of Object.values(MinecraftEnchantmentTypes)) {
+      if (!enchantments.hasEnchantment(enchantType)) continue;
+      let {level, type: { maxLevel, id }} = enchantments.getEnchantment(enchantType);
+      if (level > maxLevel) {
+        enchant.removeAllEnchantments();
+        return {itemStack:item, id, level} 
+      }
+    }
+    return false;
+  }
 
 } catch(e) {
   console.error(e);
