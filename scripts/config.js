@@ -1,6 +1,8 @@
 export default
 {
-  "crasher": true, // crasher検知(pcだと動きます
+  "crasher": {
+    "state": true, // crasher検知(pcだと動きます
+  },
   "nuker": {
     "state": true,
     "limit": 8 // 1tickに何ブロックの破壊で検知するか(ラグも考慮)
@@ -93,5 +95,7 @@ export default
     "state": true,
     "mode": "hand" // inventory: 全インベントリをチェックするから負荷大きめ, hand: 手持ちだけ検知だからまだまし
   },
-  "sendws": false // For discord-mcbe | メッセージをsayで出力します
+  "others": {
+    "sendws": false // For discord-mcbe | メッセージをsayで出力します
+  }
 }
