@@ -23,7 +23,7 @@ Player.prototype.sendMsg = function (msg) {
 }
 
 export function detected(message) {
-  if (config.sendws) { // say
+  if (config.others.sendws) { // say
     sendCmd(`say "[TN-AntiCheat] ${message}"`);
   } else { // tellraw
     sendMsg(`[TN-AntiCheat] ${message}`);
