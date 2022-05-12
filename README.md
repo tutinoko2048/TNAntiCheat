@@ -51,18 +51,42 @@ config.jsを編集することで禁止アイテムの追加/削除, 各種機�
 `kick: string;`
 
 ### nameCheck
-
+`state: boolean;`  
+  
+`maxLength: number;`  
+  
 ### spamCheck
-
+`maxLength: number;`  
+  
+`duplicate: boolean;`  
+  
 ### itemCheck
-
+`drop: boolean;`  
+  
+`state: boolean;`  
+  
+`spawnEgg: boolean;`  
+  
+`detect: string[];`  
+  
 ### placeCheck
-
+`state: boolean;`  
+  
+`detect: string[];`  
+  
 ### entityCheck
+`state: boolean;`  
+  
+`detect: string[];`  
 
 ### containerCheck
-
+`state: boolean;`  
+  
+`detect: string[];`  
 ### enchantCheck
-
+`state: boolean;`  
+  
+`mode: string;`
 ### sendws
+`state: boolean;`
 
