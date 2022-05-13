@@ -1,4 +1,7 @@
 # TNAntiCheat
+  
+<img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/total?style=for-the-badge">
+  
 MinecraftBE用のチート対策アドオンです。  
 ※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
 [ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
