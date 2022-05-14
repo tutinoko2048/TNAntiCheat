@@ -90,6 +90,6 @@ config.jsを編集することで禁止アイテムの追加/削除, 各種機�
 `state: boolean;`  
   
 `mode: string;`
-### sendws
-`state: boolean;`
+### others
+`sendws: boolean;`
 
