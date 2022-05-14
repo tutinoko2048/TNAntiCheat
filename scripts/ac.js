@@ -24,7 +24,7 @@ try {
     
       for (let player of world.getPlayers()) {
          
-         if (config.crasher) { // Crasher detection by Scythe-AntiCheat
+         if (config.crasher.state) { // Crasher detection by Scythe-AntiCheat
            let {x,y,z} = player.location;
            if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
              player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
