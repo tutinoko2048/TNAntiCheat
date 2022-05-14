@@ -18,7 +18,7 @@ try {
       try {
         world.getDimension('overworld').runCommand('testfor @a');
         loaded = true;
-        sendMsg('ac.js loaded');
+        sendMsg('[TN-AntiCheat] ac.js >> loaded');
       } catch {}
     } else {
     
@@ -195,5 +195,5 @@ try {
   }
 
 } catch(e) {
-  console.error(e);
+  //console.error(e);
 }
