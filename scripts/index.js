@@ -2,6 +2,7 @@ import { world, Player } from 'mojang-minecraft';
 import './ac.js';
 import config from './config.js';
 
+console.warn('[TN-AntiCheat] index.js >> loaded');
 
 Player.prototype.kick = function (reason = 'No reason') {
   if (this.hasTag(config.tag.op)) return;
