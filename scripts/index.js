@@ -7,7 +7,7 @@ console.warn('[TN-AntiCheat] index.js >> loaded');
 Player.prototype.kick = function (reason = 'No reason') {
   if (this.hasTag(config.tag.op)) return;
   try {
-    this.runCommand(`kick ${this.name} §f§lKicked by TN-AntiCheat\n§cReason: §r${reason}`); // 普通はこっち
+    this.runCommand(`kick "${this.name}" §f§lKicked by TN-AntiCheat\n§cReason: §r${reason}`); // 普通はこっち
     detected(`Kicked §l§c${this.name}§r >> ${reason}`);
   } catch {
     // ビヘイビア側でinstant_despawnすれば§"な名前の人でも蹴れます。再参加可能なので注意
