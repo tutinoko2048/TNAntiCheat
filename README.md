@@ -33,7 +33,9 @@ https://youtu.be/SZq9z7Lt2bc
 - ドロップ状態の禁止アイテムの検知
 - オーバーエンチャントの検知
 - Nukerの検知
-
+  
+質問などあればどうぞ: [Discord](https://discord.gg/tnserver)
+  
 ## config
 config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
 タグのついたプレイヤー(デフォルトでは`ac:admin`)は検知から除外されます  
