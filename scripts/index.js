@@ -1,8 +1,12 @@
-import { world, Player } from 'mojang-minecraft';
+import { system, world, Player } from 'mojang-minecraft';
 import './ac.js';
 import config from './config.js';
 
 console.warn('[TN-AntiCheat] index.js >> loaded');
+
+system.events.beforeWatchdogTerminate.subscribe(ev => {
+  ev.cancel = true;
+});
 
 Player.prototype.kick = function (reason = 'No reason') {
   if (this.hasTag(config.tag.op)) return;
