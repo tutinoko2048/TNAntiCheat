@@ -13,4 +13,4 @@ jobs:
         with:
           node-version: "16"
       - run: npm install --save-dev eslint
-      - run: eslint . --ext .js,.jsx,.ts,.tsx
+      - run: npm run lint
