@@ -103,7 +103,7 @@ try {
     let id = entity.id;
     if (config.entityCheck.state && config.entityCheck.detect.includes(entity.id)) {
       if (id == 'minecraft:command_block_minecart') {
-        entity.triggerEvent('tn:despawn');
+        entity.kill();
         return detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
       }
       setTimeout(() => {
@@ -117,10 +117,10 @@ try {
     if (config.itemCheck.drop && entity.id == 'minecraft:item') {
       let item = entity.getComponent('item').itemStack;
       if (config.itemCheck.detect.includes(item.id)) {
-        try {
-          entity.runCommand('tp @s ~ -100 ~');
+        setTimeout(() => {
+          entity.kill();
           detected(`禁止アイテムを検知したためkillしました (ID: §c${item.id}§r) `);
-        } catch {}
+        }, 1);
       }
     }
   });
