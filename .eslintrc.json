@@ -2,11 +2,13 @@
     "extends": ["eslint:recommended"],
     "plugins": [],
     "env": {
-      "es6": true
+      "es6": true,
+      "node": true
     },
     "globals": {},
     "rules": {
-      "no-unused-vars": "off"
+      "no-unused-vars": "off",
+      "no-empty": ["error", { "allowEmptyCatch": true }]
     },
     "parserOptions": {
       "ecmaVersion": 2020,
