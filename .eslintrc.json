@@ -1,0 +1,14 @@
+{
+    "extends": ["eslint:recommended"],
+    "plugins": [],
+    "env": {
+      "es6": true
+    },
+    "globals": {},
+    "rules": {
+      "no-unused-vars": "off"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2020
+    }
+}
