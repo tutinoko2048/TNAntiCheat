@@ -9,6 +9,7 @@
       "no-unused-vars": "off"
     },
     "parserOptions": {
-      "ecmaVersion": 2020
+      "ecmaVersion": 2020,
+      "sourceType": "module"
     }
 }
