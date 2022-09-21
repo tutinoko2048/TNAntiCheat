@@ -4,7 +4,7 @@ Made by RetoRuto9900K @tutinoko_kusaa
 */
  
 import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from 'mojang-minecraft';
-import { sendCmd, sendMsg, detected } from './index.js';
+import { sendCmd, detected } from './index.js';
 import config from './config.js';
 import './util/timer.js'; // timer.js v1.1 by lapis256 | https://github.com/Lapis256/timer.js/blob/main/LICENSE
 
@@ -18,7 +18,7 @@ world.events.tick.subscribe(ev => {
     try {
       world.getDimension('overworld').runCommand('testfor @a');
       loaded = true;
-      sendMsg('[TN-AntiCheat] ac.js >> loaded');
+      world.say('[TN-AntiCheat] ac.js >> loaded');
     } catch {}
   } else {
   
@@ -129,13 +129,13 @@ world.events.beforeChat.subscribe(ev => {
   let {sender, message} = ev;
   if (config.spamCheck.maxLength > -1 && message.length > config.spamCheck.maxLength) {
     ev.cancel = true;
-    sender.sendMsg(`長すぎ (${message.length}>${config.spamCheck.maxLength})`);
+    sender.tell(`長すぎ (${message.length}>${config.spamCheck.maxLength})`);
     return;
   }
   if (config.spamCheck.duplicate) {
     if (sender.chat && message === sender.chat) {
       ev.cancel = true;
-      sender.sendMsg('重複したチャットは送信できません');
+      sender.tell('重複したチャットは送信できません');
     }
     sender.chat = message;
   }
