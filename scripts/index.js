@@ -20,18 +20,11 @@ Player.prototype.kick = function (reason = 'No reason') {
   }
 }
 
-Player.prototype.sendMsg = function (msg) {
-  let rawtext = JSON.stringify({
-    rawtext: [{ text: String(msg) }]
-  });
-  this.runCommand(`tellraw @s ${rawtext}`);
-}
-
 export function detected(message) {
   if (config.others.sendws) { // say
     sendCmd(`say "[TN-AntiCheat] ${message}"`);
   } else { // tellraw
-    sendMsg(`[TN-AntiCheat] ${message}`);
+    world.say(`[TN-AntiCheat] ${message}`);
   }
 }
 
