@@ -10,7 +10,8 @@ import './util/timer.js'; // timer.js v1.1 by lapis256 | https://github.com/Lapi
 
 let loaded = false;
 
-const air = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air block permutation
+const airBlock = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air block permutation
+const airItem = new ItemStack(MinecraftItemTypes.stick, 0, 0);
 
 world.events.tick.subscribe(ev => {
   if (!loaded) {
@@ -57,7 +58,7 @@ world.events.tick.subscribe(ev => {
           if (!item) continue;
           
           if (config.itemCheck.detect.includes(item.id) || (config.itemCheck.spawnEgg && item.id.endsWith('spawn_egg')) ) {
-            container.setItem(i, new ItemStack(MinecraftItemTypes.air));
+            container.setItem(i, airItem);
             let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)}${item.nameTag.length>20 ? '§r...' : '§r'}` : null
             player.kick(`禁止アイテムの所持を検知しました  (ID: §c${item.id}:${item.data}${name ? `§r, Name: ${name}§r` : ''})`);
           }
@@ -150,7 +151,7 @@ world.events.blockPlace.subscribe(ev => { // チェスト設置時に中身を�
   for (let i=0; i<container.size; i++) {
     let item = container.getItem(i);
     if (item && config.itemCheck.detect.includes(item.id)) {
-      container.setItem(i, new ItemStack(MinecraftItemTypes.air));
+      container.setItem(i, airItem);
       let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)} ${item.nameTag.length>20 ? '§r...' : '§r'}` : null;
       out.push(`ID: §c${item.id}:${item.data}${name ? `§r, Name: §c${name}§r` : ''}`);
     }
