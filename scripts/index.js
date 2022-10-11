@@ -1,4 +1,4 @@
-import { system, world, Player } from 'mojang-minecraft';
+import { system, world, Player } from '@minecraft/server';
 import './ac.js';
 import config from './config.js';
 
