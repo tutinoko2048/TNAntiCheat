@@ -1,6 +1,6 @@
 /*! timer.js v1.1 | MIT license | https://github.com/Lapis256/timer.js/blob/main/LICENSE */
 
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 
 class Timer {
