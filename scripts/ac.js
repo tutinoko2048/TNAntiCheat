@@ -3,7 +3,7 @@ TNAntiCheat on top!
 Made by RetoRuto9900K @tutinoko_kusaa
 */
  
-import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from 'mojang-minecraft';
+import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from '@minecraft/server';
 import { sendCmd, detected } from './index.js';
 import config from './config.js';
 import './util/timer.js'; // timer.js v1.1 by lapis256 | https://github.com/Lapis256/timer.js/blob/main/LICENSE
