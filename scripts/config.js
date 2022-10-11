@@ -88,7 +88,8 @@ export default
   "containerCheck": { // 置いたときに中身をチェック 一部ブロックは非対応
     "state": true,
     "detect": [
-      "minecraft:chest"
+      "minecraft:chest",
+      "minecraft:trapped_chest"
     ]
   },
   "enchantCheck": { // オーバーエンチャントを検知

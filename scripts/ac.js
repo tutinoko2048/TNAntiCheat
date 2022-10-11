@@ -106,6 +106,13 @@ world.events.entityCreate.subscribe(ev => { // 禁止エンティティが出さ
       entity.kill();
       return detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
     }
+    if (id === 'minecraft:npc') {
+      try {
+        entity.kill();
+        entity.triggerEvent('tn:despawn');
+      } catch {}
+      return detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
+    }
     setTimeout(() => {
       try {
         entity.kill();
