@@ -1,0 +1,31 @@
+name: Upload mcpack
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload-mcpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        
+      - name: Set Name
+        id: set-name
+        run: |
+          FILENAME=$(cat ./package.json | jq '.name + "_v" + .version' -r).mcpack
+          echo "::set-output name=filename::$FILENAME"
+          
+      - name: Make Archive
+        run: |
+          zip -r ${{ steps.set-name.outputs.filename }} ./ -x "*.git*"
+          
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./${{ steps.set-name.outputs.filename }}
+          asset_name: ${{ steps.set-name.outputs.filename }}
+          asset_content_type: application/zip
