@@ -45,7 +45,8 @@ export default
       "minecraft:tropical_fish_bucket",
       "minecraft:respawn_anchor",
       "minecraft:bedrock",
-      "minecraft:barrier"
+      "minecraft:barrier",
+      "minecraft:tadpole_bucket"
     ]
   },
   "placeCheck": { // 置くとkick
@@ -71,7 +72,8 @@ export default
       "minecraft:tropical_fish_bucket",
       "minecraft:respawn_anchor",
       "minecraft:bedrock",
-      "minecraft:barrier"
+      "minecraft:barrier",
+      "minecraft:tadpole_bucket"
     ]
   },
   "entityCheck": { // いたらkill
