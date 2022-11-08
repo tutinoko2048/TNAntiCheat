@@ -9,7 +9,13 @@
   },
   "modules": [
     {
-      "description": "AntiCheat with Gametest\nscripts/config.jsでカスタマイズすることができます\nMade by RetoRuto9900K / tutinoko2048",
+      "description": "Data module",
+      "type": "data",
+      "uuid": "91a60c53-392b-4007-859a-a1e087a62d1a",
+      "version": [ 2, 4, 0 ]
+    },
+    {
+      "description": "Script module",
       "type": "script",
       "language": "javascript",
       "uuid": "fcc8732d-300a-40e0-8a5d-613df2291a24",
