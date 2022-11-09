@@ -18,15 +18,12 @@ MinecraftBE用のチート対策アドオンです。
   
 ※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
   
-質問やアップデート情報はこちらから！！  
+> **Note**: 質問やアップデート情報はこちらから！！  
 https://discord.gg/XGR8FcCeFc  
 
 ## Modules
 - AutoClicker(β)  
 高すぎるCPSを検知
-
-- ContainerCheck  
-禁止アイテムの入ったチェストの設置を検知
 
 - Crasher  
 クラッシャー(座標をいじるタイプ)を検知
@@ -58,8 +55,11 @@ https://discord.gg/XGR8FcCeFc
 - Nuker  
 Nukerの使用を検知
 
-- PlaceCheck  
+- PlaceCheck/A  
 禁止アイテム・ブロックの設置を検知
+
+- PlaceCheck/B  
+禁止アイテムの入ったチェストの設置を検知
 
 - Reach  
 長すぎるリーチを検知(エンティティへの攻撃とブロックの設置・破壊)
@@ -81,61 +81,8 @@ Nukerの使用を検知
 ワールド内でConfig(このアドオンの設定)を編集できます
   
 ## config
-config.jsを編集することで禁止アイテムの追加/削除, 各種機能の有効化/無効化をすることができます  
+config.jsファイルで各種機能の設定をすることができます  
 タグのついたプレイヤー(デフォルトでは`ac:admin`)は検知から除外されます  
 
 ![config](docs/config.png)
-  
-### crasher
-`state: boolean;`
-
-### nuker
-`state: boolean;`  
-  
-`limit: number;`
-
-### tag
-`op: string;`  
-  
-`kick: string;`
-
-### nameCheck
-`state: boolean;`  
-  
-`maxLength: number;`  
-  
-### spamCheck
-`maxLength: number;`  
-  
-`duplicate: boolean;`  
-  
-### itemCheck
-`drop: boolean;`  
-  
-`state: boolean;`  
-  
-`spawnEgg: boolean;`  
-  
-`detect: string[];`  
-  
-### placeCheck
-`state: boolean;`  
-  
-`detect: string[];`  
-  
-### entityCheck
-`state: boolean;`  
-  
-`detect: string[];`  
-
-### containerCheck
-`state: boolean;`  
-  
-`detect: string[];`  
-### enchantCheck
-`state: boolean;`  
-  
-`mode: string;`
-### others
-`sendws: boolean;`
 
