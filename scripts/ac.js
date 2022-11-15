@@ -1,187 +1,204 @@
-/*
-TNAntiCheat on top!
-Made by RetoRuto9900K @tutinoko_kusaa
-*/
- 
-import { world, ItemStack, MinecraftItemTypes, MinecraftBlockTypes, MinecraftEnchantmentTypes, Location } from '@minecraft/server';
-import { detected } from './util/util';
+import { world, system, Location } from '@minecraft/server';
+import { version, properties } from './util/constants';
+import { events } from './lib/events/index';
 import config from './config.js';
-import './util/timer'; // timer.js v1.1 by lapis256 | https://github.com/Lapis256/timer.js/blob/main/LICENSE
-let loaded = false;
-let startTime = Date.now();
+import unbanQueue from './unbanQueue.js';
+import chatFilter from './chatFilter.js';
+import { Util } from './util/util';
+import * as modules from './modules/index';
+import { CommandHandler } from './util/CommandHandler';
+import { register } from './commands/register';
+import { AdminPanel } from './modules/AdminPanel';
 
-const airBlock = MinecraftBlockTypes.air.createDefaultBlockPermutation(); // air block permutation
-const airItem = new ItemStack(MinecraftItemTypes.stick, 0, 0);
-
-world.events.tick.subscribe(ev => {
-  if (!loaded) {
-    world.getDimension('overworld').runCommandAsync('testfor @a')
-      .then(() => {
-        loaded = true;
-        world.say(`[TN-AntiCheat] ac.js >> loaded (${Date.now() - startTime}ms)`);
-      })
-      .catch(() => {});
-  } else {
-    for (const player of world.getPlayers()) {
-       
-       if (config.crasher.state) { // Crasher detection by Scythe-AntiCheat
-         let {x,y,z} = player.location;
-         if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
-           player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
-           player.kick('Crasherの使用を検知しました');
-         }
-       }
-        
-       if (config.tag.kick && !player.hasTag(config.tag.op)) { // 指定タグがついているプレイヤーにkickコマンド実行
-         if (player.hasTag(config.tag.kick)) {
-           player.kick('You are banned by admin');
-         }
-       }
-       
-       if (config.itemCheck.state && !player.hasTag(config.tag.op)) { // 禁止アイテムがインベントリに入っていたら引っかかるよ
-        let { container } = player.getComponent('minecraft:inventory');
-        
-        if (config.enchantCheck.state && config.enchantCheck.mode == 'hand') {
-          let item = container.getItem(player.selectedSlot);
-          if (item) {
-            let badEnchant = enchantCheck(item);
-            if (badEnchant) {
-              container.setItem(player.selectedSlot, badEnchant.itemStack);
-              detected(`§l§c${player.name}§r >> オーバーエンチャントを検知しました (ID: ${badEnchant.itemStack.typeId}, Enchant: ${badEnchant.id}, Level: ${badEnchant.level})`);
-            }
-          } 
-          
-        }
-        
-        for (let i=0; i<container.size; i++) {
-          let item = container.getItem(i);
-          if (!item) continue;
-          
-          if (config.itemCheck.detect.includes(item.typeId) || (config.itemCheck.spawnEgg && item.typeId.endsWith('spawn_egg')) ) {
-            container.setItem(i, airItem);
-            let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)}${item.nameTag.length>20 ? '§r...' : '§r'}` : null
-            player.kick(`禁止アイテムの所持を検知しました  (ID: §c${item.typeId}:${item.data}§r${name ? `, Name: ${name}§r` : ''})`);
-          }
-          
-          if (config.enchantCheck.state && config.enchantCheck.mode == 'inventory') {
-            let badEnchant = enchantCheck(item);
-            if (badEnchant) {
-              container.setItem(i, badEnchant.itemStack);
-              detected(`§l§c${player.name}§r >> オーバーエンチャントを検知しました (ID: ${badEnchant.itemStack.typeId}, Enchant: ${badEnchant.id}, Level: ${badEnchant.level})`);
-            }
-          }
-        }
-      }
-      
-      if (config.nameCheck.state) {
-        if (player.name.length > config.nameCheck.maxLength) { // 長い名前対策
-          player.kick('長すぎる名前を検知しました');
-        }
-      }
-      
-      if (config.nuker.state && player.breakCount && player.breakCount > config.nuker.limit) {
-        let {x,y,z} = player.location;
-        player.kick(`Nukerの使用を検知しました [${Math.round(x)} ${Math.round(y)} ${Math.round(z)}] (§c${player.breakCount}blocks§r/tick)`);
-      }
-      player.breakCount = 0;
-    } // getPlayers end 
-    
-  }
-});
-
-world.events.beforeItemUseOn.subscribe(ev => { // 禁止ブロックを設置したら引っかかるよ
-  let {source, item} = ev;
-  if (source.hasTag(config.tag.op)) return;
-  if (config.placeCheck.state && config.placeCheck.detect.includes(item.typeId)) {
-    ev.cancel = true;
-    source.kick(`禁止アイテムの使用を検知しました (ID: §c${item.typeId}:${item.data}§r)`);
-  }
-});
-
-const despawnable = [ 'minecraft:command_block_minecart', 'minecraft:npc'];
-world.events.entityCreate.subscribe(ev => { // 禁止エンティティが出されたら引っかかるよ
-  let {entity} = ev;
-  if (config.entityCheck.state && config.entityCheck.detect.includes(entity.typeId)) {
-    const id = entity.typeId;
-    entity.kill();
-    detected(`禁止エンティティを検知したためkillしました (ID: §c${id}§r)`);
-    if (despawnable.includes(id)) 
-      try { entity.triggerEvent('tn:despawn') } catch {}
-    
-  } else if (config.itemCheck.drop && entity.typeId == 'minecraft:item') {
-    let item = entity.getComponent('item').itemStack;
-    if (config.itemCheck.detect.includes(item.typeId)) {
-      entity.kill();
-      detected(`禁止アイテムを検知したためkillしました (ID: §c${item.typeId}§r) `);
-    }
-  }
-});
-
-world.events.beforeChat.subscribe(ev => {
-  let {sender, message} = ev;
-  if (config.spamCheck.maxLength > -1 && message.length > config.spamCheck.maxLength) {
-    ev.cancel = true;
-    sender.tell(`長すぎ (${message.length}>${config.spamCheck.maxLength})`);
-    return;
-  }
-  if (config.spamCheck.duplicate) {
-    if (sender.chat && message === sender.chat) {
-      ev.cancel = true;
-      sender.tell('重複したチャットは送信できません');
-    }
-    sender.chat = message;
-  }
-});
-
-world.events.blockPlace.subscribe(ev => { // チェスト設置時に中身をスキャン
-  if (!config.containerCheck.state) return;
-  let {block,player} = ev;
-  if (!config.containerCheck.detect.includes(block.typeId)) return;
-  let container = block.getComponent('inventory')?.container;
-  if (!container) return;
-  let out = [];
-  for (let i=0; i<container.size; i++) {
-    let item = container.getItem(i);
-    if (item && config.itemCheck.detect.includes(item.typeId)) {
-      container.setItem(i, airItem);
-      let name = item.nameTag ? `${item.nameTag.replace(/\n/g, '\\n').slice(0,20)} ${item.nameTag.length>20 ? '§r...' : '§r'}` : null;
-      out.push(`ID: §c${item.typeId}:${item.data}${name ? `§r, Name: §c${name}§r` : ''}`);
-    }
-  }
-  if (out.length > 0) {
-    let {x,y,z} = block;
-    detected(`§l§c${player.name}§r >> 禁止アイテムの入った ${block.typeId} の設置を検知しました [${x} ${y} ${z}]\n${out.slice(-5).join('\n')}\n${out.length>5 ? `more ${out.length-5} items...` : ''}`);
-  }
-});
-
-world.events.blockBreak.subscribe(ev => { // Nuker detection by Scythe-AntiCheat
-  let {brokenBlockPermutation: permutation, block, player} = ev;
+export class TNAntiCheat {
+  #joinedPlayers;
+  #deltaTimes;
   
-  if (config.nuker.state) {
-    if (player.breakCount == undefined) player.breakCount = 0;
+  constructor() {
+    console.warn(`[TN-AntiCheat v${version}] loaded`);
+    this.startTime = Date.now();
+    this.commands = new CommandHandler(this);
+    register(this.commands);
+    this.#deltaTimes = [];
+  }
+  
+  enable() {
+    world.say(`[TN-AntiCheat v${version}] enabled (${Date.now() - this.startTime} ms)`);
+    this.#loadConfig();
+    this.#loadFilter();
+    
+    world.events.tick.subscribe(({deltaTime}) => { // system.runSchedule(() => { 
+      if (config.entityCheckC.state) {
+        world.arrowSpawnCount = 0;
+        world.itemSpawnCount = 0;
+        world.cmdSpawnCount = 0;
+      }
+      
+      for (const player of world.getAllPlayers()) {
+        modules.crasher(player);
+        if (!Util.isOP(player)) modules.itemCheck(player);
+        if (!Util.isOP(player)) modules.nuker(player);
+        modules.creative(player); 
+        player.breakCount = 0;
+        if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
+      }
+      
+      this.#deltaTimes.push(deltaTime);
+      if (this.#deltaTimes.length > 20) this.#deltaTimes.shift();
+    });
+    
+    world.events.blockBreak.subscribe(ev => this.#breakHandler(ev));
+    
+    world.events.beforeChat.subscribe(ev => this.#chatHandler(ev));
+    
+    world.events.entityCreate.subscribe(ev => {
+      modules.entityCheck(ev.entity);
+    });
+    
+    world.events.beforeItemUseOn.subscribe(ev => {
+      if (!Util.isOP(ev.source)) modules.placeCheckA(ev);
+      if (!Util.isOP(ev.source)) modules.reach(ev);
+    });
+    
+    world.events.blockPlace.subscribe(ev => {
+      if (!Util.isOP(ev.player)) modules.placeCheckB(ev);
+    });
+    
+    world.events.entityHit.subscribe(ev => {
+      if (!Util.isOP(ev.entity)) modules.reach(ev);
+      if (!Util.isOP(ev.entity)) modules.autoClicker(ev);
+      if (
+        ev.hitEntity?.typeId === 'minecraft:player' &&
+        ev.entity.typeId === 'minecraft:player' &&
+        Util.isOP(ev.entity) && 
+        AdminPanel.isPanelItem(Util.getHoldingItem(ev.entity))
+      ) new AdminPanel(this, ev.entity).playerInfo(ev.hitEntity);
+    });
+    
+    world.events.beforeItemUse.subscribe(ev => {
+      if (
+        ev.source.typeId == 'minecraft:player' &&
+        Util.isOP(ev.source) &&
+        AdminPanel.isPanelItem(ev.item)
+      ) {
+        new AdminPanel(this, ev.source).show();
+        ev.cancel = true;
+      }
+    });
+    
+    events.playerSpawn.subscribe(ev => this.#joinHandler(ev.player));
+  }
+  
+  #chatHandler(ev) {
+    // Check is passed if player is OP or message is command
+    const isSpam = Util.isOP(ev.sender)
+      ? false
+      : modules.spammerC(ev);
+    if (this.commands.isCommand(ev.message)) {
+      if (!isSpam) this.commands.handle(ev);
+      
+    } else {
+      if (!Util.isOP(ev.sender)) {
+        modules.spammerA(ev);
+        modules.spammerB(ev);
+        modules.chatFilter(ev);
+      }
+    }
+  }
+  
+  #joinHandler(player) {
+    modules.namespoof(player);
+    if (unbanQueue.includes(player.name)) {
+      Util.unban(player);
+      Util.notify(`§aUnbanned: ${player.name}`);
+    }
+    if (Util.isBanned(player)) Util.ban(player); // DPとconfigから取得
+    for (const xuid of config.permission.ban.xuid) { // xuidを試す
+      player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aX`).then(() => {
+        Util.notify(`BANリストに含まれるXUID: §c${xuid} のプレイヤーをキックしました`);
+      });
+    }
+    if (player.getDynamicProperty(properties.mute)) {
+      Util.notify(`§7あなたはミュートされています`, player);
+      player.runCommandAsync('ability @s mute true');
+    }
+  }
+  
+  #breakHandler(ev) { // Nuker detection by Scythe-AC
+    const { brokenBlockPermutation: permutation, block, player } = ev;
+    player.breakCount ??= 0;
     player.breakCount++
     
-    if (player.breakCount > config.nuker.limit) {
+    if (Util.isOP(player)) return;
+    
+    if (config.nuker.state && config.nuker.place && player.breakCount > config.nuker.limit) {
+      const { x, y, z } = block;
       block.setPermutation(permutation);
+      setTimeout(() => {
+        const items = block.dimension.getEntities({
+          location: new Location(x, y, z),
+          maxDistance: 1.5,
+          type: 'minecraft:item'
+        });
+        for (const i of items) i.kill();
+      }, 1);
+      return;
+    }
+    
+    modules.reach(ev);
+    //modules.autoTool(ev);
+  }
+  
+  #loadConfig() {
+    const data = this.#getConfig();
+    for (const [k, v] of Object.entries(data)) {
+      if (k === 'itemList') {
+        for (const [type, array] of Object.entries(v)) {
+          if (config.others.debug) console.warn(`[DEBUG] config.itemList.${type} = ${JSON.stringify(array, null, 2)}`);
+          config.itemList[type] = array;
+        }
+      } else {
+        if (config.others.debug) console.warn(`[DEBUG] config.${k} = ${JSON.stringify(v, null, 2)}`);
+        config[k] = v;
+      }
     }
   }
-});
+  
+  #getConfig() {
+    const data = JSON.parse(world.getDynamicProperty(properties.configData) ?? "{}");
+    let isDuplicate = false;
+    for (const [moduleName, obj] of Object.entries(data)) {
+      if (moduleName === 'itemList') {
+        for (const [type, array] of Object.entries(obj)) {
+          if (isSameObject(config.itemList[type], array)) {
+            isDuplicate = true;
+            delete data.itemList[type];
+          }
+        }
+      } else {
+        if (isSameObject(config[moduleName], obj)) {
+          isDuplicate = true;
+          delete data[moduleName];
+        }
+      }
+    }
+    if (isDuplicate) world.setDynamicProperty(properties.configData, JSON.stringify(data));
+    return data;
+  }
+  
+  #loadFilter() {
+    const data = JSON.parse(world.getDynamicProperty(properties.chatFilter) ?? "{}");
+    for (const [k,v] of Object.entries(data)) {
+      chatFilter[k] = v;
+    }
+    if (config.others.debug) console.warn('[DEBUG] loaded ChatFilter data');
+  }
+  
+  getTPS() {
+    return Util.average(this.#deltaTimes.map(n => 1 / n));
+  }
+}
 
-/**
- *
- * @param {ItemStack} item
- * @return {object} badEnchant
- */
-function enchantCheck(item) {
-  let enchant = item.getComponent('enchantments');
-  let enchantments = enchant.enchantments;
-  for (let enchantType of Object.values(MinecraftEnchantmentTypes)) {
-    if (!enchantments.hasEnchantment(enchantType)) continue;
-    let {level, type: { maxLevel, id }} = enchantments.getEnchantment(enchantType);
-    if (level > maxLevel) {
-      enchant.removeAllEnchantments();
-      return {itemStack:item, id, level} 
-    }
-  }
-  return false;
+function isSameObject(obj1, obj2) { // compare objects
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
