@@ -22,6 +22,6 @@ export function register(handler) {
   handler.create(tempkick);
   handler.create(ban);
   handler.create(mute);
-  handler.create(runjs);
+  //handler.create(runjs);
   handler.create(about);
 }
