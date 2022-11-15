@@ -1,7 +1,7 @@
 {
   "name": "TN-AntiCheat",
   "version": "2.4.0",
-   "scripts": {
-     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
-   }
+  "scripts": {
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  }
 }
