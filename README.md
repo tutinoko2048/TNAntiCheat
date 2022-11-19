@@ -7,13 +7,13 @@ MinecraftBE用のチート対策アドオンです。
 ※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
 [ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
   
-![img1](docs/hasitem.jpeg)  
+![img1](docs/hasitem.png)  
   
 ![img2](docs/kicked.jpeg)  
   
-![img3](docs/enchant.jpeg)  
+![img3](docs/enchant.png)  
   
-![img4](docs/container.jpeg)  
+![img4](docs/config_editor.png)  
 
   
 ※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
@@ -35,7 +35,10 @@ https://discord.gg/XGR8FcCeFc
 禁止アイテムがドロップしたことを検知
 
 - EntityCheck/C  
-1tickにスポーンできる矢の量を制限(クロスボウのマルチショット対策)
+1tickにスポーンできるエンティティの量を制限
+
+- EntityCheck/C  
+チェスト付きトロッコやボートの中身をチェック
 
 - ItemCheck/A  
 禁止アイテムの所持を検知
@@ -61,14 +64,20 @@ Nukerの使用を検知
 - PlaceCheck/B  
 禁止アイテムの入ったチェストの設置を検知
 
-- Reach  
+- PlaceCheck/C  
+設置時にディスペンサーなどの指定したブロックのNBTを削除
+
+- Reach(β)  
 長すぎるリーチを検知(エンティティへの攻撃とブロックの設置・破壊)
 
 - Spammer/A  
+文字数の多すぎるチャットを制限
 
 - Spammer/B  
+重複するチャットを制限
 
 - Spammer/C  
+タイピング速度が速すぎるチャットを制限
 
 ## その他の機能
 - AdminPanel  
