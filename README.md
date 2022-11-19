@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/latest/total?style=for-the-badge">  
 
 MinecraftBE用のチート対策アドオンです。  
-※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
+※ワールドの設定から "ベータ API" を必ず有効にしてください  
 [ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
   
 ![img1](docs/hasitem.png)  
@@ -13,8 +13,6 @@ MinecraftBE用のチート対策アドオンです。
   
 ![img3](docs/enchant.png)  
   
-![img4](docs/config_editor.png)  
-
   
 ※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
   
@@ -87,11 +85,9 @@ Nukerの使用を検知
 設定した単語を非表示にできます
 
 - ConfigEditor  
-ワールド内でConfig(このアドオンの設定)を編集できます
-  
+ワールド内でConfig(このアドオンの設定)を編集できます  
+![config](docs/config_editor.png)  
 ## config
 config.jsファイルで各種機能の設定をすることができます  
 タグのついたプレイヤー(デフォルトでは`ac:admin`)は検知から除外されます  
-
-![config](docs/config.png)
 
