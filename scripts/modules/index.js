@@ -111,17 +111,17 @@ export function itemCheck(player) {
     const item = container.getItem(i);
     if (!item) continue;
     if (config.itemCheckA.state && isIllegalItem(item.typeId)) {
-      container.setItem(i, ITEM_AIR);
+      container.clearItem(i);
       Util.flag(player, 'ItemCheck/A', getItemPunishment(item.typeId), `禁止アイテムの所持を検知しました (${itemMessageBuilder(item)})`, config.itemCheckA.notifyCreative);
       continue;
     }
     if (config.itemCheckB.state && isSpawnEgg(item.typeId)) {
-      container.setItem(i, ITEM_AIR);
+      container.clearItem(i);
       Util.flag(player, 'ItemCheck/B', config.itemCheckB.punishment, `スポーンエッグの所持を検知しました (${itemMessageBuilder(item)})`);
       continue;
     }
     if (config.itemCheckC.state && item.amount > config.itemCheckC.maxAmount) {
-      container.setItem(i, ITEM_AIR);
+      container.clearItem(i);
       Util.flag(player, 'ItemCheck/C', config.itemCheckC.punishment, `不正なアイテムの個数を検知しました (${itemMessageBuilder(item, 'amount')})`);
       continue;
     }
@@ -176,7 +176,7 @@ function entityCheckD(container) {
     if (
       isIllegalItem(item?.typeId) ||
       (config.entityCheckD.spawnEgg && isSpawnEgg(item?.typeId))
-    ) container.setItem(i, ITEM_AIR);
+    ) container.clearItem(i);
   }
 }
 
@@ -204,7 +204,7 @@ export function placeCheckB(ev) {
     const item = container.getItem(i);
     if (isIllegalItem(item?.typeId) || (config.placeCheckB.spawnEgg && isSpawnEgg(item?.typeId))) {
       checkedItems.push(item);
-      container.setItem(i, ITEM_AIR);
+      container.clearItem(i);
     }
   }
   if (checkedItems.length > 0) {
@@ -315,8 +315,6 @@ export function chatFilter(ev) {
     ev.message = ev.message.replace(new RegExp(word, 'g'), '*'.repeat(word.length)); // replace bad characters into *
   }
 }
-
-
 
 function itemMessageBuilder(item, needs = 'name') {
   return `§c${item.typeId}:${item.data}§r${needs == 'amount' ? `, Amount: ${item.amount}` : ''}${item.nameTag && needs == 'name' ? `, Name: ${safeItemName(item.nameTag)}` : ''}§r`

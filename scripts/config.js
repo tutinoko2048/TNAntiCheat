@@ -86,11 +86,11 @@ export default
     minInterval: 2000 // ミリ秒で指定 1000ms = 1s
   },
   itemCheckA: { // 持っていたら検知 アイテムはitemList参照
-    state: false,
+    state: true,
     notifyCreative: true // クリエの人は削除だけしてbanやkickはしない
   },
   itemCheckB: { // スポーンエッグを持っていたら検知
-    state: false,
+    state: true,
     punishment: "notify"
   },
   itemCheckC: { // 1スタックに値より大きい数を持っていたら検知
