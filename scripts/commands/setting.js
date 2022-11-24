@@ -1,12 +1,12 @@
 import { Util } from '../util/util';
 import { AdminPanel } from '../modules/AdminPanel';
 
-export const setting = {
+export default {
   name: 'setting',
   description: '管理者用パネルを表示します',
   aliases: [ 'settings', 'config', 'seting' ],
   permission: (player) => Util.isOP(player),
-  func: (sender, args, handler) => {
-    new AdminPanel(handler.ac, sender).show(true);
+  func: (sender, args, manager) => {
+    new AdminPanel(manager.ac, sender).show(true);
   }
 }

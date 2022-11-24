@@ -2,13 +2,13 @@ import { Util } from '../util/util';
 import { CommandError } from '../util/CommandError';
 import { properties } from '../util/constants';
 
-export const mute = {
+export default {
   name: 'mute',
   description: 'プレイヤーをミュートします',
   args: [ '<name: playerName> <value: boolean>' ],
   aliases: [],
   permission: (player) => Util.isOP(player),
-  func: (sender, args, handler) => {
+  func: (sender, args) => {
     const [ playerName, value ] = args;
     if (!playerName) throw new CommandError('プレイヤー名を入力してください');
     

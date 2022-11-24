@@ -6,20 +6,21 @@ import unbanQueue from './unbanQueue.js';
 import chatFilter from './chatFilter.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
-import { CommandHandler } from './util/CommandHandler';
-import { register } from './commands/register';
+import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
 
 export class TNAntiCheat {
   #joinedPlayers;
   #deltaTimes;
+  #lastTick;
   
   constructor() {
     console.warn(`[TN-AntiCheat v${version}] loaded`);
     this.startTime = Date.now();
-    this.commands = new CommandHandler(this);
-    register(this.commands);
     this.#deltaTimes = [];
+    this.#lastTick;
+    
+    this.commands = new CommandManager(this);
   }
   
   enable() {
@@ -27,12 +28,15 @@ export class TNAntiCheat {
     this.#loadConfig();
     this.#loadFilter();
     
-    world.events.tick.subscribe(({deltaTime}) => { // system.runSchedule(() => { 
+    system.runSchedule(() => { 
       if (config.entityCheckC.state) {
         world.arrowSpawnCount = 0;
         world.itemSpawnCount = 0;
         world.cmdSpawnCount = 0;
       }
+      world.entityCheck ??= {};
+      
+      if (!(system.currentTick % 20)) modules.notify();
       
       for (const player of world.getAllPlayers()) {
         modules.crasher(player);
@@ -41,10 +45,15 @@ export class TNAntiCheat {
         modules.creative(player); 
         player.breakCount = 0;
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
+        
+        player.onScreenDisplay.setActionBar(String(world.isOP))
       }
-      
-      this.#deltaTimes.push(deltaTime);
+      world.isOP = 0;
+  
+      const now = Date.now();
+      if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
       if (this.#deltaTimes.length > 20) this.#deltaTimes.shift();
+      this.#lastTick = now;
     });
     
     world.events.blockBreak.subscribe(ev => this.#breakHandler(ev));
@@ -62,6 +71,7 @@ export class TNAntiCheat {
     
     world.events.blockPlace.subscribe(ev => {
       if (!Util.isOP(ev.player)) modules.placeCheckB(ev);
+      if (!Util.isOP(ev.player)) modules.placeCheckC(ev);
     });
     
     world.events.entityHit.subscribe(ev => {
@@ -113,8 +123,8 @@ export class TNAntiCheat {
       Util.notify(`§aUnbanned: ${player.name}`);
     }
     if (Util.isBanned(player)) Util.ban(player); // DPとconfigから取得
-    for (const xuid of config.permission.ban.xuid) { // xuidを試す
-      player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aX`).then(() => {
+    for (const xuid of config.permission.ban.xuids) { // xuidを試す
+      player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
         Util.notify(`BANリストに含まれるXUID: §c${xuid} のプレイヤーをキックしました`);
       });
     }
@@ -195,7 +205,7 @@ export class TNAntiCheat {
   }
   
   getTPS() {
-    return Util.average(this.#deltaTimes.map(n => 1 / n));
+    return Util.average(this.#deltaTimes.map(n => 1000 / n));
   }
 }
 

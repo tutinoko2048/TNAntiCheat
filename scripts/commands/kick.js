@@ -1,13 +1,13 @@
 import { Util } from '../util/util';
 import { CommandError } from '../util/CommandError';
 
-export const kick = {
+export default {
   name: 'kick',
   description: 'プレイヤーをKickします',
   args: [ '<name: playerName> [reason: string] [expects: boolean]' ],
   aliases: [],
   permission: (player) => Util.isOP(player),
-  func: (sender, args, handler) => {
+  func: (sender, args) => {
     const [ playerName, reason, expect ] = args;
     if (!playerName) throw new CommandError('プレイヤー名を入力してください');
     const player = Util.getPlayerByName(playerName, expect === 'true');

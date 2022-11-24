@@ -1,7 +1,7 @@
 import { Util } from '../util/util';
 import { AdminPanel } from '../modules/AdminPanel';
 
-export const settingitem = {
+export default {
   name: 'settingitem',
   description: '管理者用パネルを表示するためのアイテムを取得します',
   aliases: [ 'setingitem', 'adminitem', 'panelitem', 'configitem' ],

@@ -6,15 +6,22 @@ export default
 {
   permission: {
     admin: { // 全ての検知から除外される権限
-      tag: "ac:admin",
+      encrypt: true, // タグを難読化して不正に権限を取られにくくする
+      tag: "ac:admin", // encryptがtrueの場合は使わない
+      players: [],
+      ids: []
     },
     builder: { // クリエイティブが許可される権限
-      tag: "ac:builder"
+      encrypt: true,
+      tag: "ac:builder",
+      players: [],
+      ids: []
     },
     ban: {
+      encrypt: false,
       tag: "ac:kick", // banするタグです
       players: [], // banするプレイヤーを書く
-      xuid: [] // xuidでbanするプレイヤーを指定できます
+      xuids: [] // xuidでbanするプレイヤーを指定できます
       // xuidでbanとは: https://twitter.com/tutinoko_kusaa/status/1587356291734773760
     }
   },
@@ -110,6 +117,16 @@ export default
       "minecraft:trapped_chest"
     ]
   },
+  placeCheckC: { // 設置時に指定したブロックのデータをクリア
+    state: true,
+    excludeCreative: false,
+    detect: [
+      "minecraft:hopper",
+      "minecraft:dropper",
+      "minecraft:dispenser",
+      "minecraft:barrel"
+    ]
+  },
   entityCheckA: { // いたらkill
     state: true,
     punishment: 'notify',
@@ -132,6 +149,16 @@ export default
     maxArrowSpawns: 10, // 矢の数
     maxItemSpawns: 20, // アイテムの数
     maxCmdMinecartSpawns: 3
+  },
+  entityCheckD: { // エンティティのインベントリの中をチェック
+    state: true,
+    spawnEgg: true,
+    detect: [
+      "minecraft:chest_minecart",
+      "minecraft:hopper_minecart",
+      "minecraft:chest_boat",
+      "minecraft:mule"
+    ]
   },
   reach: { // ブロックの設置/破壊 攻撃の長すぎるリーチを検知 (ベータ)
     state: true,

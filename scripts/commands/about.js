@@ -1,10 +1,10 @@
 import { version, discord } from '../util/constants';
 
-export const about = {
+export default {
   name: 'about',
   description: 'このアドオンに関する情報を表示します',
   aliases: [ 'contact' ],
-  func: (sender, args, handler) => {
+  func: (sender, args) => {
     sender.tell('-'.repeat(20));
     sender.tell(` §l§aTN-AntiCheat v${version}§r `);
     sender.tell([
@@ -15,6 +15,6 @@ export const about = {
       '- 開発者: tutinoko2048 / RetoRuto9900K',
       '- Twitter: @tutinoko_kusaa'
     ].join('\n'));
-    sender.tell('-'.repeat(20))
+    sender.tell('-'.repeat(20));
   }
 }

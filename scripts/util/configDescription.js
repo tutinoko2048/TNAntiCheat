@@ -85,6 +85,12 @@ export const description = {
     spawnEgg: 'スポーンエッグを含めるかどうか',
     detect: '検知するインベントリ付きブロックのID'
   },
+  placeCheckC: {
+    desc: '設置時にブロックのデータをリセットします (ディスペンサーNBT対策)',
+    state: '有効/無効の設定',
+    excludeCreative: 'クリエの人は除外する',
+    detect: '検知するブロックのID'
+  },
   entityCheckA: {
     desc: '指定されたエンティティのスポーンを検知',
     state: '有効/無効の設定',
@@ -103,6 +109,12 @@ export const description = {
     maxArrowSpawns: '1tickにスポーンできる矢の数',
     maxItemSpawns: '1tickにスポーンできるアイテムの数',
     maxCmdMinecartSpawns: '1tickにスポーンできるコマブロ付きトロッコの数'
+  },
+  entityCheckD: {
+    desc: 'エンティティのインベントリの中をチェック',
+    state: '有効/無効の設定',
+    spawnEgg: 'スポーンエッグを含めるかどうか',
+    detect: '検知するエンティティ'
   },
   reach: {
     desc: 'ブロックの設置/破壊 攻撃の長すぎるリーチを検知 (ベータ)',

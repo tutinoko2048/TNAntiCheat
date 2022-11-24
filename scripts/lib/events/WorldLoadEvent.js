@@ -1,4 +1,7 @@
-import { world } from '@minecraft/server';
+import { world, system } from '@minecraft/server';
+import { BaseEventSignal } from './BaseEventSignal';
+
+let loaded = false;
 
 export class WorldLoadEvent {
   #state;
@@ -12,32 +15,18 @@ export class WorldLoadEvent {
   }
 }
 
-export class WorldLoadEventSignal {
-  #callbacks;
-  #loaded;
-  
+export class WorldLoadEventSignal extends BaseEventSignal {
   constructor() {
-    this.#callbacks = new Set();
-    this.#loaded = false;
-    const tick = world.events.tick.subscribe(() => {
-      if (this.#loaded) return;
+    super();
+    
+    const run = system.runSchedule(() => {
       world.getDimension('overworld').runCommandAsync('testfor @a').then(() => {
-        this.#loaded = true;
-        this.#callbacks.forEach(fn => fn(new WorldLoadEvent(true)));
-        world.events.tick.unsubscribe(tick);
+        if (loaded) return;
+        this.callbacks.forEach(fn => fn(new WorldLoadEvent(true)));
+        loaded = true;
+        
+        system.clearRunSchedule(run);
       });
     });
-  }
-  
-  subscribe(callback) {
-    this.#callbacks.add(callback);
-    return callback;
-  }
-  
-  unsubscribe(callback) {
-    if (!callback) throw Error("callback must be specified.");
-    if (!this.#callbacks.has(callback)) throw Error("This funtion is not subscribed.");
-    this.#callbacks.delete(callback);
-    return callback;
   }
 }

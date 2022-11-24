@@ -1,8 +1,8 @@
-import { Util } from '../util/util';
 import { world, Location, ItemStack, MinecraftBlockTypes, MinecraftItemTypes, MinecraftEnchantmentTypes, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent } from '@minecraft/server';
+import { Util } from '../util/util';
 import config from '../config.js';
 import chatFilterData from '../chatFilter.js';
-import toJson from '../util/toJson';
+import toJson from '../lib/toJson';
 
 // MinecraftItemTypes.air returns undefined so we create item which amount is zero
 const ITEM_AIR = new ItemStack(MinecraftItemTypes.stick, 0, 0);
@@ -21,6 +21,28 @@ export function flag(player) { // don't run every tick not to spam
     Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
     player.autoClickerFlag = null;
   }
+}
+
+export function notify() {
+  if (Object.keys(world.entityCheck).length > 0) {
+    const entityCheck = Object.values(world.entityCheck);
+    let msg = entityCheck
+      .slice(0, 3)
+      .map(e => `§c${e.item ? `${e.item}§f (item)` : e.typeId}§r §7[${e.x}, ${e.y}, ${e.z}] ${e.count > 1 ? `§6x${e.count}` : ''}§r`)
+      .join('\n');
+    if (entityCheck.length > 3) msg += `\n§amore ${entityCheck.length - 3} entities...`;
+    Util.notify(`禁止エンティティをkillしました\n${msg}`);
+    world.entityCheck = {}
+  }
+}
+
+function queueNotify(type, obj) {
+  const key = Object.values(obj).join('-');
+  if (key in world[type]) {
+    world[type][key].count ??= 1;
+    return world[type][key].count++
+  }
+  world[type][key] = obj;
 }
 
 export function crasher(player) {
@@ -103,40 +125,58 @@ export function itemCheck(player) {
       Util.flag(player, 'ItemCheck/C', config.itemCheckC.punishment, `不正なアイテムの個数を検知しました (${itemMessageBuilder(item, 'amount')})`);
       continue;
     }
-    if (config.itemCheckD.state && config.itemCheckD.mode == 'inventory') {
+    if (config.itemCheckD.state && config.itemCheckD.mode == 'inventory')
       enchantCheck(item, container, i, player);
-    }
   }
 }
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
 export function entityCheck(entity) {
-   if (config.entityCheckC.state) {
-    world.arrowSpawnCount ??= 0;
-    world.itemSpawnCount ??= 0;
-    world.cmdSpawnCount ??= 0;
-    if (entity.typeId == 'minecraft:arrow') world.arrowSpawnCount++
-    if (entity.typeId == 'minecraft:item') world.itemSpawnCount++
-    if (entity.typeId == 'minecraft:command_block_minecart') world.cmdSpawnCount++
-    
-    if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) entity.kill();
-    if (world.itemSpawnCount > config.entityCheckC.maxItemSpawns) entity.kill();
-    if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.kill(); // prevent spamming by entityCheckB
+  const { typeId, location } = entity;
+  
+  if (config.entityCheckC.state) {
+  
+    if (typeId == 'minecraft:arrow') {
+      world.arrowSpawnCount++
+      if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) return entity.kill();
+      
+    } else if (typeId == 'minecraft:item') {
+      world.itemSpawnCount++
+      if (world.itemSpawnCount > config.entityCheckC.maxItemSpawns) return entity.kill();
+      
+    } else if (typeId == 'minecraft:command_block_minecart') {
+      world.cmdSpawnCount++
+      if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.kill();
+    }
   }
   
-  if (config.entityCheckA.state && config.entityCheckA.detect.includes(entity.typeId)) {
-    const id = entity.typeId;
-    const { x, y, z } = entity.location;
+  if (config.entityCheckA.state && config.entityCheckA.detect.includes(typeId)) {
+    const loc = Util.vectorNicely(location);
     entity.kill();
-    if (config.entityCheckA.punishment != 'none') Util.notify(`禁止エンティティをkillしました (§c${id}§r) §7[${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}]§r`);
-    if (despawnable.includes(id)) try { entity.triggerEvent('tn:despawn') } catch {};
+    if (config.entityCheckA.punishment != 'none') queueNotify('entityCheck', { typeId, ...loc });
+    if (despawnable.includes(typeId)) try { entity.triggerEvent('tn:despawn') } catch {};
     
-  } else if (config.entityCheckB.state && entity?.typeId === 'minecraft:item') {
+  } else if (config.entityCheckB.state && typeId === 'minecraft:item') {
     const item = entity.getComponent('minecraft:item')?.itemStack;
     if (isIllegalItem(item?.typeId) || (config.entityCheckB.spawnEgg && isSpawnEgg(item?.typeId))) {
+      const loc = Util.vectorNicely(location);
       entity.kill();
-      if (config.entityCheckB.punishment != 'none') Util.notify(`禁止アイテムをkillしました (Item: §c${item.typeId}§r)`);
+      if (config.entityCheckB.punishment != 'none') queueNotify('entityCheck', { typeId, item: item.typeId, ...loc });
     }
+    
+  } else if (config.entityCheckD.state && config.entityCheckD.detect.includes(typeId)) {
+    const container = entity.getComponent('minecraft:inventory')?.container;
+    entityCheckD(container);
+  }
+}
+
+function entityCheckD(container) {
+  for (let i = 0; i < container.size; i++) {
+    const item = container.getItem(i);
+    if (
+      isIllegalItem(item?.typeId) ||
+      (config.entityCheckD.spawnEgg && isSpawnEgg(item?.typeId))
+    ) container.setItem(i, ITEM_AIR);
   }
 }
 
@@ -172,6 +212,16 @@ export function placeCheckB(ev) {
     if (checkedItems.length > 3) flagMsg += `\n§amore ${checkedItems.length - 3} items...`;
     Util.flag(player, 'PlaceCheck/B', config.placeCheckB.punishment, `設置した ${block.typeId} に禁止アイテムが含まれています\n${flagMsg}`);
   }
+}
+
+/** @param {BlockPlaceEvent} ev */
+export async function placeCheckC(ev) {
+  const { block, player } = ev;
+  if (!config.placeCheckC.state || !config.placeCheckC.detect.includes(block.typeId)) return;
+  const permutation = block.permutation.clone();
+  await player.runCommandAsync(`setblock ${block.x} ${block.y} ${block.z} ${block.typeId}`);
+  block.setPermutation(permutation);
+  if (config.others.debug) console.warn(`[DEBUG] PlaceCheckC: Reset: ${block.typeId}`);
 }
 
 export function reach(ev) {

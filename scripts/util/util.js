@@ -2,6 +2,8 @@ import { world, system, Player, Vector, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { properties } from './constants';
+import { Permissions } from './Permissions';
+
 
 const overworld = world.getDimension('overworld');
 
@@ -16,7 +18,6 @@ export class Util {
    */
   static flag(player, type, punishment, message, notifyCreative) {
     if (notifyCreative && Util.isCreative(player)) punishment = 'notify';
-    world.say(punishment)
     const reason = `§7Type: §c${type}§r\n§7Punishment: §c${punishment}§r\n§l§6>>§r ${message}`;
     
     if (punishment === 'ban') {
@@ -54,7 +55,7 @@ export class Util {
       return true;
     } catch {
       return player.triggerEvent('tn:kick');
-      this.notify('Kickに失敗したため強制退出させました'); // translate: failed to use kick command so used minecraft:explode
+      this.notify('Kickに失敗したため強制退出させました');
       return false;
     }
   }
@@ -79,16 +80,15 @@ export class Util {
   }
   
   static isBanned(player) {
-    return this.hasPermission(player, 'ban') || player.getDynamicProperty(properties.ban);
+    return Permissions.has(player, 'ban') || player.getDynamicProperty(properties.ban);
   }
   
   static isOP(player) {
-    return player && player.typeId === 'minecraft:player' && player.isOp() && this.hasPermission(player, 'admin');
+    world.isOP ??= 0;
+    world.isOP++
+    return player && player.typeId === 'minecraft:player' && player.isOp() && Permissions.has(player, 'admin');
   }
   
-  static hasPermission(player, permission) {
-    return player.hasTag(config.permission[permission].tag) || config.permission[permission].players?.includes(player.name);
-  }
   
   static isHost(player) {
     return player.id === '-4294967295';
@@ -193,7 +193,7 @@ export class Util {
       system.run(async function run() {
         const response = await form.show(player);
         const {canceled, cancelationReason: reason} = response;
-        if (reason === UI.FormCancelationReason.userBusy) return system.run(run);
+        if (canceled && reason === UI.FormCancelationReason.userBusy) return system.run(run);
         res(response);
       });
     });
@@ -204,7 +204,7 @@ export class Util {
   }
   
   static getHoldingItem(player) {
-    return player.getComponent('minecraft:inventory').container.getItem(player.selectedSlot)
+    return player.getComponent('minecraft:inventory').container.getItem(player.selectedSlot);
   }
   
   static getPlayerByName(playerName, expect = false) {
@@ -213,5 +213,7 @@ export class Util {
     return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
   }
   
-  
+  static vectorNicely(vec) {
+    return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
+  }
 }
