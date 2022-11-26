@@ -11,5 +11,5 @@ export const COMMANDS = [
   'mute',
   'about',
   'tps',
-  //'runjs', // for debug
+  'runjs', // for debug
 ]

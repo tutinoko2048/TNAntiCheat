@@ -1,9 +1,9 @@
-import { world, system, Location } from '@minecraft/server';
+import { world, system, Player } from '@minecraft/server';
 import { version, properties } from './util/constants';
 import { events } from './lib/events/index';
 import config from './config.js';
-import unbanQueue from './unbanQueue.js';
-import chatFilter from './chatFilter.js';
+import unbanQueue from './unban_queue.js';
+import chatFilter from './chat_filter.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
@@ -40,15 +40,14 @@ export class TNAntiCheat {
       
       for (const player of world.getAllPlayers()) {
         modules.crasher(player);
-        if (!Util.isOP(player)) modules.itemCheck(player);
-        if (!Util.isOP(player)) modules.nuker(player);
+        modules.itemCheck(player);
+        modules.nukerFlag(player);
         modules.creative(player); 
-        player.breakCount = 0;
+        
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         
-        player.onScreenDisplay.setActionBar(String(world.isOP))
+        player.breakCount = 0;
       }
-      world.isOP = 0;
   
       const now = Date.now();
       if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
@@ -56,7 +55,10 @@ export class TNAntiCheat {
       this.#lastTick = now;
     });
     
-    world.events.blockBreak.subscribe(ev => this.#breakHandler(ev));
+    world.events.blockBreak.subscribe(ev => {
+      const isNuker = modules.nukerBreak(ev);
+      !isNuker && modules.reach(ev);
+    });
     
     world.events.beforeChat.subscribe(ev => this.#chatHandler(ev));
     
@@ -65,33 +67,34 @@ export class TNAntiCheat {
     });
     
     world.events.beforeItemUseOn.subscribe(ev => {
-      if (!Util.isOP(ev.source)) modules.placeCheckA(ev);
-      if (!Util.isOP(ev.source)) modules.reach(ev);
+      modules.placeCheckA(ev);
+      modules.reach(ev);
     });
     
     world.events.blockPlace.subscribe(ev => {
-      if (!Util.isOP(ev.player)) modules.placeCheckB(ev);
-      if (!Util.isOP(ev.player)) modules.placeCheckC(ev);
+      modules.placeCheckB(ev);
+      modules.placeCheckC(ev);
     });
     
     world.events.entityHit.subscribe(ev => {
-      if (!Util.isOP(ev.entity)) modules.reach(ev);
-      if (!Util.isOP(ev.entity)) modules.autoClicker(ev);
+      modules.reach(ev);
+      modules.autoClicker(ev);
+      
       if (
-        ev.hitEntity?.typeId === 'minecraft:player' &&
-        ev.entity.typeId === 'minecraft:player' &&
+        ev.entity instanceof Player &&
+        ev.hitEntity instanceof Player &&
         Util.isOP(ev.entity) && 
         AdminPanel.isPanelItem(Util.getHoldingItem(ev.entity))
-      ) new AdminPanel(this, ev.entity).playerInfo(ev.hitEntity);
+      ) new AdminPanel(this, ev.entity).playerInfo(ev.hitEntity); // show playerInfo
     });
     
     world.events.beforeItemUse.subscribe(ev => {
       if (
-        ev.source.typeId == 'minecraft:player' &&
+        ev.source instanceof Player &&
         Util.isOP(ev.source) &&
         AdminPanel.isPanelItem(ev.item)
       ) {
-        new AdminPanel(this, ev.source).show();
+        new AdminPanel(this, ev.source).show(); // show AdminPanel
         ev.cancel = true;
       }
     });
@@ -132,31 +135,6 @@ export class TNAntiCheat {
       Util.notify(`§7あなたはミュートされています`, player);
       player.runCommandAsync('ability @s mute true');
     }
-  }
-  
-  #breakHandler(ev) { // Nuker detection by Scythe-AC
-    const { brokenBlockPermutation: permutation, block, player } = ev;
-    player.breakCount ??= 0;
-    player.breakCount++
-    
-    if (Util.isOP(player)) return;
-    
-    if (config.nuker.state && config.nuker.place && player.breakCount > config.nuker.limit) {
-      const { x, y, z } = block;
-      block.setPermutation(permutation);
-      setTimeout(() => {
-        const items = block.dimension.getEntities({
-          location: new Location(x, y, z),
-          maxDistance: 1.5,
-          type: 'minecraft:item'
-        });
-        for (const i of items) i.kill();
-      }, 1);
-      return;
-    }
-    
-    modules.reach(ev);
-    //modules.autoTool(ev);
   }
   
   #loadConfig() {

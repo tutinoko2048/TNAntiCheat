@@ -3,8 +3,8 @@ import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { properties, icons, panelItem, version, discord } from '../util/constants';
-import chatFilter from '../chatFilter.js';
-import { description } from '../util/configDescription';
+import chatFilter from '../chat_filter.js';
+import { description } from '../util/config_description';
 
 const defaultConfig = Util.cloneObject(config);
 const defaultFilter = Util.cloneObject(chatFilter);
@@ -67,10 +67,10 @@ export class AdminPanel {
   async playerList() {
     const players = world.getAllPlayers();
     const form = new UI.ActionFormData();
-    form.body(`§7Players: §f${players.length}`);
-    for (const p of players) form.button(Util.isOP(p) ? `§2[OP]§8 ${p.name}` : p.name);
-    form.title('プレイヤーリスト / Player List')
+    form.body(`§7Players: §f${players.length}`)
+      .title('プレイヤーリスト / Player List')
       .button('戻る / Return', icons.returnBtn);
+    for (const p of players) form.button(Util.isOP(p) ? `§2[OP]§8 ${p.name}` : p.name);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === players.length) return await this.main(); // return button
@@ -266,17 +266,19 @@ export class AdminPanel {
 
   async selectModule() {
     const form = new UI.ActionFormData();
-    form.title('Config Selector')
-      .body('編集したいConfigを選択してください');
     const keys = Object.keys(config);
     for (const k of keys) {
       const color = config[k].state ? '§2' : (config[k].state === false ? '§c' : '');
       form.button(`${color}${k}`);
     }
-    form.button('戻る / Return', icons.returnBtn);
+    form.title('Config Selector')
+      .body('編集したいConfigを選択してください')
+      .button('直接編集する / Raw Editor')
+      .button('戻る / Return', icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === keys.length) return await this.main(); // return button
+    if (selection === keys.length) return await this.rawEditor();
+    if (selection === keys.length + 1) return await this.main(); // return button
     const moduleName = keys[selection];
     const data = await this.selectKey(moduleName);
     if (isChanged(data, config[moduleName])) {
@@ -363,6 +365,27 @@ export class AdminPanel {
       return value; // not change value if not a number
     }
     return useDropdown ? dropdowns[key][edited].value : edited;
+  }
+  
+  async rawEditor() {
+    const form = new UI.ModalFormData();
+    form.title('Raw Editor')
+      .textField('config (コピーして別のところで編集してください)', 'Put json here', JSON.stringify(config));
+    const { canceled, formValues } = await form.show(this.player);
+    if (canceled) return;
+    let data;
+    try {
+      data = JSON.parse(formValues[0]);
+    } catch {
+      return Util.notify('§c[Error] JSONのパースに失敗しました');
+    }
+    const changed = [];
+    for (const moduleName of Object.keys(data)) {
+      if (!config[moduleName] || !isChanged(config[moduleName], data[moduleName])) continue;
+      changeConfig(data[moduleName], moduleName);
+      changed.push(moduleName);
+    }
+    if (changed.length > 0) Util.notify(`§aConfigを保存しました§r\n${changed.map(x => `- ${x}`).join('\n')}`, this.player);
   }
   
   async chatFilter() {
