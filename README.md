@@ -6,6 +6,7 @@
 MinecraftBE用のチート対策アドオンです。  
 ※ワールドの設定から "ゲームテスト フレームワーク" を必ず有効にしてください  
 [ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
+> **Note** 近いうちに大型アップデートを予定しています！
   
 https://youtu.be/SZq9z7Lt2bc  
   
