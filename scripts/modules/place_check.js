@@ -4,9 +4,8 @@ import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';
 
 export function placeCheckA(ev) {
-  if (!config.placeCheckA.state) return;
   const { source, item } = ev;
-  if (!(source instanceof Player) || Util.isOP(source)) return;
+  if (!config.placeCheckA.state || !(source instanceof Player) || Util.isOP(source)) return;
   if (isIllegalItem(item?.typeId)) {
     ev.cancel = true;
     Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);

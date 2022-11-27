@@ -103,19 +103,14 @@ export class TNAntiCheat {
   }
   
   #chatHandler(ev) {
-    // Check is passed if player is OP or message is command
-    const isSpam = Util.isOP(ev.sender)
-      ? false
-      : modules.spammerC(ev);
+    const tooFast = modules.spammerC(ev);
     if (this.commands.isCommand(ev.message)) {
-      if (!isSpam) this.commands.handle(ev);
+      !tooFast && this.commands.handle(ev);
       
     } else {
-      if (!Util.isOP(ev.sender)) {
-        modules.spammerA(ev);
-        modules.spammerB(ev);
-        modules.chatFilter(ev);
-      }
+      modules.spammerA(ev);
+      modules.spammerB(ev);
+      modules.chatFilter(ev);
     }
   }
   

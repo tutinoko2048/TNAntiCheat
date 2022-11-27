@@ -6,8 +6,8 @@ export function nukerFlag(player) {
   if (!config.nuker.state || Util.isOP(player)) return;
   const { location, breakCount = 0 } = player;
   if (breakCount > config.nuker.limit) {
-    const { x, y, z } = player.location;
-    Util.flag(player, 'Nuker', config.nuker.punishment, `Nukerの使用を検知しました [${Math.round(x)}, ${Math.round(y)}, ${Math.round(z)}] (§c${breakCount}blocks/tick§r)`);
+    const { x, y, z } = Util.vectorNicely(player.location);
+    Util.flag(player, 'Nuker', config.nuker.punishment, `Nukerの使用を検知しました [${x}, ${y}, ${z}] (§c${breakCount}blocks/tick§r)`);
   }
 }
 
@@ -31,6 +31,6 @@ export function nukerBreak(ev) {
       
       if (config.nuker.place) block.setPermutation(brokenBlockPermutation);
     }, 1); // 1tick delay
-    return true;
+    return true; // illegal destruction -> return true
   }
 }

@@ -3,6 +3,8 @@ import { Util } from '../util/util';
 import config from '../config.js';
 
 export function reach(ev) {
+  if (!config.reach.state) return;
+  
   if (ev instanceof BeforeItemUseOnEvent) {
     const { source, blockLocation } = ev;
     if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
@@ -37,7 +39,7 @@ export function reach(ev) {
 
 export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
-  if (!hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;
+  if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;
    entity.cps ??= [];
    
   if (entity.lastHitAt && Date.now() - entity.lastHitAt < 1000) {
