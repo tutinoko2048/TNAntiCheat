@@ -26,6 +26,9 @@ https://discord.gg/XGR8FcCeFc
 - Crasher  
 クラッシャー(座標をいじるタイプ)を検知
 
+- Creative  
+Builder権限がないプレイヤーのクリエイティブを検知
+
 - EntityCheck/A  
 禁止エンティティのスポーンを検知
 
@@ -35,7 +38,7 @@ https://discord.gg/XGR8FcCeFc
 - EntityCheck/C  
 1tickにスポーンできるエンティティの量を制限
 
-- EntityCheck/C  
+- EntityCheck/D  
 チェスト付きトロッコやボートの中身をチェック
 
 - ItemCheck/A  
@@ -78,16 +81,27 @@ Nukerの使用を検知
 タイピング速度が速すぎるチャットを制限
 
 ## その他の機能
-- AdminPanel  
+- Command  
+コマンド一覧は `!help` でチェックしてみよう！
+
+- Ban  
+プレイヤーをbanできます。プレイヤー名やXUIDで指定することもできます。  
+banを解除したい場合はアドオンフォルダ内の`unban_queue.js`に名前を入力してください。
+
+- Permission  
+プレイヤーごとの権限を管理できます。(`admin`, `builder`)  
+`permission`コマンドで追加や削除ができます。
+
+- Admin Panel  
 管理者用のForm画面です。
 
-- ChatFilter  
-設定した単語を非表示にできます
+- Chat Filter  
+設定した単語を非表示にできます。単語はアドオンフォルダ内の`chat_filter.js`で追加できます。
 
-- ConfigEditor  
+- Config Editor  
 ワールド内でConfig(このアドオンの設定)を編集できます  
 ![config](docs/config_editor.png)  
+
 ## config
 config.jsファイルで各種機能の設定をすることができます  
-タグのついたプレイヤー(デフォルトでは`ac:admin`)は検知から除外されます  
 
