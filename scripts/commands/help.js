@@ -1,4 +1,4 @@
-import { discord } from '../util/constants';
+import { DISCORD_URL } from '../util/constants';
 import { CommandError } from '../util/CommandError';
 
 export default {

@@ -1,5 +1,5 @@
 import { world, system, Player } from '@minecraft/server';
-import { version, properties } from './util/constants';
+import { VERSION, properties } from './util/constants';
 import { events } from './lib/events/index';
 import config from './config.js';
 import unbanQueue from './unban_queue.js';
@@ -15,7 +15,7 @@ export class TNAntiCheat {
   #lastTick;
   
   constructor() {
-    console.warn(`[TN-AntiCheat v${version}] loaded`);
+    console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
     this.startTime = Date.now();
     this.#deltaTimes = [];
     this.#lastTick;
@@ -24,7 +24,7 @@ export class TNAntiCheat {
   }
   
   enable() {
-    world.say(`[TN-AntiCheat v${version}] enabled (${Date.now() - this.startTime} ms)`);
+    world.say(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
     this.#loadConfig();
     this.#loadFilter();
     

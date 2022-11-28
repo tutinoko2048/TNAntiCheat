@@ -1,4 +1,4 @@
-import { Player, Location } from '@minecraft/server';
+import { system, Player, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -14,14 +14,14 @@ export function nukerFlag(player) {
 /** @param {BlockBreakEvent} ev */
 export function nukerBreak(ev) {
   const { brokenBlockPermutation, block, player } = ev;
+  if (!config.nuker.state && Util.isOP(player)) return;
   
   player.breakCount ??= 0;
   player.breakCount++
   
-  if (!config.nuker.state && Util.isOP(player)) return;
   if (player.breakCount > config.nuker.limit) {
     const { x, y, z } = block;
-    setTimeout(() => {
+    system.run(() => {
       const items = block.dimension.getEntities({
         location: new Location(x, y, z),
         maxDistance: 1.5,
@@ -30,7 +30,7 @@ export function nukerBreak(ev) {
       for (const i of items) i.kill();
       
       if (config.nuker.place) block.setPermutation(brokenBlockPermutation);
-    }, 1); // 1tick delay
+    }); // 1tick delay
     return true; // illegal destruction -> return true
   }
 }

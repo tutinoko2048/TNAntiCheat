@@ -53,8 +53,8 @@ export class CommandManager extends BaseManager {
   
   load() {
     const showError = (msg) => {
-      console.error(message);
-      world.say(message);
+      console.error(msg);
+      world.say(msg);
     }
     
     const wait = COMMANDS.map(name => {

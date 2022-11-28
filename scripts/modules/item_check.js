@@ -1,6 +1,6 @@
 import { Util } from '../util/util';
 import config from '../config.js';
-import { getItemPunishment, itemMessageBuilder, isSpawnEgg } from './util';
+import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
 
 export function itemCheck(player) {
   if (Util.isOP(player)) return;

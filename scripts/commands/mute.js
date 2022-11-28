@@ -6,7 +6,7 @@ export default {
   name: 'mute',
   description: 'プレイヤーをミュートします',
   args: [ '<name: playerName> <value: boolean>' ],
-  aliases: [],
+  aliases: [ 'muto', 'myuto' ],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
     const [ playerName, value ] = args;

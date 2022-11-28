@@ -1,4 +1,4 @@
-import { Player } from '@minecraft/server';
+import { Player, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 

@@ -1,4 +1,4 @@
-import { world, Location, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent } from '@minecraft/server';
+import { world, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -8,6 +8,7 @@ export * from './spammer';
 export * from './place_check';
 export * from './entity_check';
 export * from './combat';
+export * from './nuker';
 
 export function flag(player) { // don't run every tick not to spam
   if (player.attackReachFlag) {

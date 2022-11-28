@@ -36,4 +36,8 @@ export class Permissions {
   static isValid(permission) {
     return PERMISSIONS.includes(permission);
   }
+  
+  static list() {
+    return PERMISSIONS;
+  }
 }

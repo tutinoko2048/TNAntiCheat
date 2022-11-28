@@ -2,29 +2,14 @@ import { world, system, MinecraftItemTypes, MinecraftDimensionTypes, ItemStack, 
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { properties, icons, panelItem, version, discord } from '../util/constants';
+import { properties, ICONS, panelItem } from '../util/constants';
 import chatFilter from '../chat_filter.js';
 import { description } from '../util/config_description';
+import { FORMS, DROPDOWNS } from './static_form';
 
 const defaultConfig = Util.cloneObject(config);
 const defaultFilter = Util.cloneObject(chatFilter);
 const AIR = new ItemStack(MinecraftItemTypes.stick, 0, 0);
-const dropdowns = {
-  punishment: [
-    { value: 'ban', desc: 'プレイヤーをBANします' },
-    { value: 'kick', desc: 'プレイヤーをKickします' },
-    { value: 'tempkick', desc: 'プレイヤーをKickします(再参加可能)' },
-    { value: 'notify', desc: 'チャット欄に通知します' },
-    { value: 'none', desc: '何もしません' }
-  ],
-  mode: [
-    { value: 'hand', desc: '手持ちアイテムのオーバーエンチャントを検知' },
-    { value: 'inventory', desc: 'インベントリ内全てのアイテムを検知' }
-  ],
-  defaultGamemode: Object.values(GameMode).map(value => {
-    return { value }
-  })
-}
 
 export class AdminPanel {
   constructor(ac, player) {
@@ -45,14 +30,7 @@ export class AdminPanel {
       `§l§7プレイヤー数: §r${players.length}`,
       `§l§7TPS: §r${this.ac.getTPS().toFixed(1)}`
     ].join('\n');
-    const form = new UI.ActionFormData();
-    form.title('TN-AntiCheat AdminPanel')
-      .body(`TN-AntiCheatの管理者用パネルです\n\n§l§b--- World Info ---§r\n${info}\n `)
-      .button('§lプレイヤーリスト / Player List', icons.playerList)
-      .button('§lエンティティ数を表示 / Show entities', icons.entities)
-      .button('§l設定 / Config', icons.config)
-      .button('§lチャットフィルター / Chat filter', icons.mute)
-      .button('§lこのアドオンについて / About', icons.about);
+    const form = FORMS.main.body(`TN-AntiCheatの管理者用パネルです\n\n§l§b--- World Info ---§r\n${info}\n `);
     const { selection, canceled } = busy
       ? await Util.showFormToBusy(this.player, form)
       : await form.show(this.player);
@@ -67,10 +45,10 @@ export class AdminPanel {
   async playerList() {
     const players = world.getAllPlayers();
     const form = new UI.ActionFormData();
+    for (const p of players) form.button(Util.isOP(p) ? `§2[OP]§8 ${p.name}` : p.name);
     form.body(`§7Players: §f${players.length}`)
       .title('プレイヤーリスト / Player List')
-      .button('戻る / Return', icons.returnBtn);
-    for (const p of players) form.button(Util.isOP(p) ? `§2[OP]§8 ${p.name}` : p.name);
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === players.length) return await this.main(); // return button
@@ -78,28 +56,17 @@ export class AdminPanel {
   }
   
   async playerInfo(player) {
-    const { x, y, z } = player.location;
+    const { x, y, z } = Util.vectorNicely(player.location);
     const { current, value } = player.getComponent('minecraft:health');
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
-      `§7Location: §f${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}`,
+      `§7Location: §f${x}, ${y}, ${z}`,
       `§7Health: §f${current} / ${value}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`
     ].join('\n');
-    const form = new UI.ActionFormData();
-    form.title('PlayerInfo')
-      .body(`${info}\n `)
-      .button('§lインベントリを表示 / Show inventory', icons.inventory)
-      .button('§lミュートする / Mute', icons.mute)
-      .button('§lkickする / Kick', icons.kick)
-      .button('§lbanする / Ban', icons.ban)
-      .button('§lテレポート / Teleport', icons.teleport)
-      .button('§l自分にテレポート / Teleport here', icons.teleportHere)
-      .button('§lタグ一覧を表示 / Show tags', icons.tags)
-      .button('§lスコア一覧を表示 / Show scores', icons.scores)
-      .button('戻る / Return', icons.returnBtn);
+    const form = FORMS.playerInfo.body(`${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.showInventory(player);
@@ -108,7 +75,7 @@ export class AdminPanel {
     if (selection === 3) return await this.banPlayer(player);
     if (selection === 4) {
       this.player.teleport(player.location, player.dimension, player.rotation.x, player.rotation.y);
-      Util.notify(`${player.name} §rにテレポートしました §7[${Math.floor(x)}, ${Math.floor(y)}, ${Math.floor(z)}]§r`, this.player);
+      Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
     }
     if (selection === 5) {
       player.teleport(this.player.location, this.player.dimension, this.player.rotation.x, this.player.rotation.y);
@@ -120,7 +87,6 @@ export class AdminPanel {
   }
   
   async showInventory(player) {
-    const form = new UI.ActionFormData();
     const container = player.getComponent('minecraft:inventory').container;
     const items = Array(container.size).fill(null).map((_,i) => {
       const item = container.getItem(i);
@@ -128,44 +94,44 @@ export class AdminPanel {
       return item;
     }).filter(Boolean);
     
+    const form = new UI.ActionFormData();
+    form.button('§l§1更新 / Reload', ICONS.reload);
     items.forEach(item => form.button(`§r${item.typeId}:${item.data}\n§7slot: ${item._slot}, amount: ${item.amount}`));
     form.title(`${player.name}'s inventory`)
-      .button('§l§c全て削除 / Clear all')
-      .button('§l§cエンダーチェストをクリア / Clear enderchest')
-      .button('戻る / Return', icons.returnBtn);
-      
+      .button('§l§c全て削除 / Clear all', ICONS.clear)
+      .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
+      .button('戻る / Return', ICONS.returnBtn);
+    
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === items.length) {
+    
+    if (selection === 0) {
+      return this.showInventory(player);
+    
+    } else if (selection === items.length + 1) {
       const res = await this.confirmForm('確認', `§l§c${player.name}§r の全てのアイテムを削除しますか？`, '§lはい / YES', '§lいいえ / NO');
       if (res) {
         await player.runCommandAsync('clear @s');
         Util.notify(`${player.name} の全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === items.length + 1) {
+    } else if (selection === items.length + 2) {
       const res = await this.confirmForm('確認', `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`, '§lはい / YES', '§lいいえ / NO');
       if (res) {
         await player.runCommandAsync('function util/clear_ec');
         Util.notify(`${player.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === items.length + 2) {
+    } else if (selection === items.length + 3) {
       return await this.playerInfo(player);
       
     } else {
-      return await this.itemInfo(player, items[selection]);
+      return await this.itemInfo(player, items[selection - 1]);
     }
   }
   
   async itemInfo(player, item) {
-    const form = new UI.ActionFormData();
-    form.title('ItemInfo')
-      .body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}:${item.data}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `)
-      .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', icons.clear)
-      .button('§l複製 / Duplicate\n§r§8アイテムを複製して受け取ります', icons.duplicate)
-      .button('§l移動 / Move\n§r§8アイテムを自分のインベントリに移動させます', icons.move)
-      .button('戻る / Return', icons.returnBtn);
+    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}:${item.data}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) {
@@ -225,7 +191,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s tags`)
       .body(tags.length > 0 ? `タグ一覧:\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
-      .button('戻る / Return', icons.returnBtn);
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.playerInfo(player);
@@ -241,7 +207,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
-      .button('戻る / Return', icons.returnBtn);
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.playerInfo(player);
@@ -258,7 +224,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`Entities`)
       .body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません')
-      .button('戻る / Return', icons.returnBtn);
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.main();
@@ -274,7 +240,7 @@ export class AdminPanel {
     form.title('Config Selector')
       .body('編集したいConfigを選択してください')
       .button('直接編集する / Raw Editor')
-      .button('戻る / Return', icons.returnBtn);
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === keys.length) return await this.rawEditor();
@@ -294,8 +260,8 @@ export class AdminPanel {
       .body(`§l§6Module: ${moduleName}§r\n${descriptionBuilder(moduleName) ?? ' '}\n `);
     const keys = Object.keys(data);
     for (const k of keys) form.button(`${k}\n§7${getPreview(data[k])}`);
-    if (showReset) form.button('§l§c初期設定に戻す / Reset settings', icons.reset)
-    form.button('戻る / Return', icons.returnBtn);
+    if (showReset) form.button('§l§c初期設定に戻す / Reset settings', ICONS.reset)
+    form.button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return data;
     if (showReset && selection === keys.length) {
@@ -322,8 +288,8 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title('Array Selector');
     for (const value of array) form.button(String(value));
-    form.button('§l§2値を追加する / Add value', icons.plus)
-      .button('戻る / Return', icons.returnBtn);
+    form.button('§l§2値を追加する / Add value', ICONS.plus)
+      .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return array;
     if (selection === array.length + 1) {
@@ -339,10 +305,10 @@ export class AdminPanel {
   async editValue(value, key, deletable = false) { // string | number | boolean
     const form = new UI.ModalFormData();
     form.title('Config Editor');
-    const useDropdown = Object.keys(dropdowns).includes(key);
+    const useDropdown = Object.keys(DROPDOWNS).includes(key);
     switch (typeof value) {
       case 'string':
-        if (useDropdown) form.dropdown(key, dropdowns[key].map(x => `${x.value} §l§7${x.desc ?? ''}`), dropdowns[key].findIndex(x => x.value === value));
+        if (useDropdown) form.dropdown(key, DROPDOWNS[key].map(x => `${x.value} §l§7${x.desc ?? ''}`), DROPDOWNS[key].findIndex(x => x.value === value));
           else form.textField(key, '<String>', value);
         break;
       case 'number':
@@ -364,7 +330,7 @@ export class AdminPanel {
       Util.notify(`§cError: ${formValues[0]} は無効な値です。数字を入力してください`, this.player);
       return value; // not change value if not a number
     }
-    return useDropdown ? dropdowns[key][edited].value : edited;
+    return useDropdown ? DROPDOWNS[key][edited].value : edited;
   }
   
   async rawEditor() {
@@ -389,11 +355,7 @@ export class AdminPanel {
   }
   
   async chatFilter() {
-    const form = new UI.ActionFormData();
-    form.title('Chat Filter')
-      .body('チャットフィルターの設定をします')
-      .button('編集 / Edit', icons.edit)
-      .button('戻る / Return', icons.returnBtn);
+    const form = FORMS.chatFilter;
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) {
@@ -430,18 +392,7 @@ export class AdminPanel {
   }
   
   async about() {
-    const form = new UI.ActionFormData();
-    form.title('About')
-      .body([
-        ` §l§aTN-AntiCheat v${version}§r \n`,
-        'ScriptAPIを使った軽量で使いやすいアンチチートアドオンです\n',
-        '- §eダウンロード:§r https://github.com/tutinoko2048/TNAntiCheat',
-        `- §9Discordサポートサーバー:§r ${discord}`,
-        '  §7(バグや§6bypass§7の報告・機能の提案などはこちらからどうぞ)§r',
-        '- 開発者: tutinoko2048 / RetoRuto9900K',
-        '- Twitter: @tutinoko_kusaa\n '
-      ].join('\n'))
-      .button('戻る / Return', icons.returnBtn);
+    const form = FORMS.about;
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.main();

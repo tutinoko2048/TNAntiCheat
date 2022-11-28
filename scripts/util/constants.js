@@ -1,4 +1,5 @@
-export const version = '3.0.0-beta';
+export const VERSION = '3.0.0-beta';
+export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const properties = {
   ban: 'tn:isBanned',
@@ -8,7 +9,7 @@ export const properties = {
   mute: 'tn:isMuted'
 }
 
-export const icons = {
+export const ICONS = {
   playerList: 'textures/ui/icon_multiplayer',
   entities: 'textures/items/egg_creeper',
   config: 'textures/ui/icon_setting',
@@ -36,5 +37,3 @@ export const panelItem = {
   nameTag: '§r§f[§aTN-AntiCheat§f] 管理者用パネルを開く',
   lore: 'TNAC_AdminPanel'
 }
-
-export const discord = 'discord.gg/XGR8FcCeFc';
