@@ -1,4 +1,4 @@
-# TNAntiCheat
+# TN-AntiCheat
   
 <img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/total?style=for-the-badge">  
 <img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/latest/total?style=for-the-badge">  
