@@ -11,12 +11,13 @@ system.events.beforeWatchdogTerminate.subscribe(ev => {
 
 Player.prototype.kick = async function (reason = 'No reason') {
   if (this.hasTag(config.tag.op)) return;
+  const name = this.name;
   try {
     await this.runCommandAsync(`kick "${this.name}" §f§lKicked by TN-AntiCheat\n§cReason: §r${reason}`); // 普通はこっち
-    detected(`Kicked §l§c${this.name}§r >> ${reason}`);
+    detected(`Kicked §l§c${name}§r >> ${reason}`);
   } catch {
     // 再参加可能なkickを実行
     this.triggerEvent('tn:kick'); // 変な名前で蹴れない時はこっち
-    detected(`Kicked §l§c${this.name}§r (addon) >> ${reason}`);
+    detected(`Kicked §l§c${name}§r (addon) >> ${reason}`);
   }
 }
