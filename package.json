@@ -1,6 +1,6 @@
 {
-  "name": "TN-AntiCheat",
-  "version": "2.4.0",
+  "name": "tn-anticheat",
+  "version": "2.5.0",
    "scripts": {
      "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
    }
