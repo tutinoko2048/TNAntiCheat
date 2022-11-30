@@ -1,0 +1,8 @@
+name: 'Get filename'
+
+outputs:
+  fileName:
+    description: 'the name of the file.'
+runs:
+  using: 'node16'
+  main: 'index.js'
