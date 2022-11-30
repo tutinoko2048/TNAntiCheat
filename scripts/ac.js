@@ -17,10 +17,10 @@ world.events.tick.subscribe(ev => {
   if (!loaded) {
     world.getDimension('overworld').runCommandAsync('testfor @a')
       .then(() => {
-        loaded = true;
+        if (loaded) return;
         world.say(`[TN-AntiCheat] ac.js >> loaded (${Date.now() - startTime}ms)`);
-      })
-      .catch(() => {});
+        loaded = true;
+      });
   } else {
     for (const player of world.getPlayers()) {
        
