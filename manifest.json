@@ -1,11 +1,11 @@
 {
   "format_version": 2,
   "header": {
-    "name": "TNAntiCheat v3.0.0-beta",
+    "name": "TN-AntiCheat v3.0.0-beta",
     "description": "AntiCheat with ScriptAPI\n軽量で使いやすいアンチチートアドオンです\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
     "version": "3.0.0-beta",
-    "min_engine_version": [ 1, 18, 30 ]
+    "min_engine_version": [ 1, 19, 50 ]
   },
   "modules": [
     {

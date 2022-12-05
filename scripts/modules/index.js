@@ -2,6 +2,7 @@ import { world, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
+import unbanQueue from '../unban_queue.js';
 
 export * from './item_check';
 export * from './spammer';
@@ -9,6 +10,25 @@ export * from './place_check';
 export * from './entity_check';
 export * from './combat';
 export * from './nuker';
+
+export function ban(player) {
+  if (unbanQueue.includes(player.name)) {
+    Util.unban(player);
+    Util.notify(`§aUnbanned: ${player.name}`);
+    return;
+  }
+  
+  if (Util.isBanned(player)) { // ban by DP, tag, name, id
+    Util.ban(player);
+    return true;
+  }
+  
+  for (const xuid of config.permission.ban.xuids) { // ban by xuid
+    player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
+      Util.notify(`BANリストに含まれるXUID: §c${xuid} のプレイヤーをキックしました`);
+    });
+  }
+}
 
 export function flag(player) { // don't run every tick not to spam
   if (player.attackReachFlag) {

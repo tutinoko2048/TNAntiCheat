@@ -2,12 +2,13 @@ import { world, system, Player } from '@minecraft/server';
 import { VERSION, properties } from './util/constants';
 import { events } from './lib/events/index';
 import config from './config.js';
-import unbanQueue from './unban_queue.js';
 import chatFilter from './chat_filter.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
+
+const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
 export class TNAntiCheat {
   #joinedPlayers;
@@ -79,14 +80,14 @@ export class TNAntiCheat {
     world.events.entityHit.subscribe(ev => {
       modules.reach(ev);
       modules.autoClicker(ev);
-      
       if (
         ev.entity instanceof Player &&
         ev.hitEntity instanceof Player &&
         Util.isOP(ev.entity) && 
         AdminPanel.isPanelItem(Util.getHoldingItem(ev.entity))
       ) new AdminPanel(this, ev.entity).playerInfo(ev.hitEntity); // show playerInfo
-    });
+      
+    }, entityOption);
     
     world.events.beforeItemUse.subscribe(ev => {
       if (
@@ -106,26 +107,17 @@ export class TNAntiCheat {
     const tooFast = modules.spammerC(ev);
     if (this.commands.isCommand(ev.message)) {
       !tooFast && this.commands.handle(ev);
-      
-    } else {
-      modules.spammerA(ev);
-      modules.spammerB(ev);
-      modules.chatFilter(ev);
+      return;
     }
+    modules.spammerA(ev);
+    modules.spammerB(ev);
+    modules.chatFilter(ev);
   }
   
   #joinHandler(player) {
     modules.namespoof(player);
-    if (unbanQueue.includes(player.name)) {
-      Util.unban(player);
-      Util.notify(`§aUnbanned: ${player.name}`);
-    }
-    if (Util.isBanned(player)) Util.ban(player); // DPとconfigから取得
-    for (const xuid of config.permission.ban.xuids) { // xuidを試す
-      player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
-        Util.notify(`BANリストに含まれるXUID: §c${xuid} のプレイヤーをキックしました`);
-      });
-    }
+    modules.ban(player);
+    
     if (player.getDynamicProperty(properties.mute)) {
       Util.notify(`§7あなたはミュートされています`, player);
       player.runCommandAsync('ability @s mute true');

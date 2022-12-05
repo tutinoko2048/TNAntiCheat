@@ -7,6 +7,7 @@ import { encode } from '../util/secret';
 export default {
   name: 'runjs',
   aliases: [ 'eval' ],
+  args: [ '<code: string>' ],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
     eval(args.join(' '));

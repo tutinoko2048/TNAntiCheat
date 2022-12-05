@@ -20,8 +20,9 @@ export default
     ban: {
       encrypt: false,
       tag: "ac:kick", // banするタグです
-      players: [], // banするプレイヤーを書く
-      xuids: [] // xuidでbanするプレイヤーを指定できます
+      players: [], // banするプレイヤーの名前
+      ids: [], // banするプレイヤーのuniqueID
+      xuids: [] // banするプレイヤーのxuid
       // xuidでbanとは: https://twitter.com/tutinoko_kusaa/status/1587356291734773760
     }
   },
@@ -98,7 +99,7 @@ export default
     punishment: "notify",
     maxAmount: 64
   },
-  itemCheckD: { // オーバーエンチャントを検知
+  itemCheckD: { // 不正なエンチャントを検知
     state: true,
     mode: "hand", // inventory: 全インベントリをチェックするから負荷大きめ, hand: 手持ちだけ検知だからまだまし
     punishment: "notify"

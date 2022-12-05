@@ -4,7 +4,8 @@ import { AdminPanel } from '../modules/AdminPanel';
 export default {
   name: 'settingitem',
   description: '管理者用パネルを表示するためのアイテムを取得します',
-  aliases: [ 'setingitem', 'adminitem', 'panelitem', 'configitem' ],
+  args: [ '' ],
+  aliases: [ 'item', 'wand', 'setingitem', 'adminitem', 'panelitem', 'configitem' ],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
     sender.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());

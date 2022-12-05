@@ -6,7 +6,7 @@ import { CommandError } from '../util/CommandError';
 export default {
   name: 'op',
   description: 'TN-AntiCheatの管理者権限を取得します',
-  args: [ '', '<name: playerName>' ],
+  args: [ '[name: playerName]' ],
   aliases: [],
   permission: (player) => player.isOp(),
   func: (sender, args, manager) => {

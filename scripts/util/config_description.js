@@ -1,12 +1,14 @@
 export const description = {
   permission: {
     desc: '権限の設定',
-    admin: '全ての検知から除外されます',
-    builder: 'クリエイティブの使用が許可されます',
+    admin: '全ての検知から除外される権限',
+    builder: 'クリエイティブの使用が許可される権限',
     ban: 'BANされます',
-    tag: '使用するタグ名',
-    players: '名前からbanするプレイヤーを指定',
-    xuid: 'xuidからbanするプレイヤーを指定'
+    encrypt: 'タグを難読化して不正に権限を取られにくくする',
+    tag: '使用するタグ名 (encryptが有効な場合は使われない)',
+    players: '名前でプレイヤーを指定',
+    ids: 'ID(Form上で見られます)でプレイヤーを指定',
+    xuids: 'xuidでプレイヤーを指定'
   },
   command: {
     desc: 'コマンド関係の設定',
@@ -67,9 +69,9 @@ export const description = {
     maxAmount: '最大スタック数'
   },
   itemCheckD: {
-    desc: 'オーバーエンチャントを検知',
+    desc: '不正なエンチャントを検知',
     state: '有効/無効の設定',
-    mode: '検知する範囲の設定',
+    mode: '検知レベルの設定',
     punishment: '検知された場合の対応'
   },
   placeCheckA: {

@@ -6,7 +6,7 @@ import { CommandError } from '../util/CommandError';
 export default {
   name: 'deop',
   description: '管理者権限を削除します',
-  args: [ '', '<name: playerName>' ],
+  args: [ '[name: playerName]' ],
   aliases: [],
   permission: (player) => player.isOp(),
   func: (sender, args) => {

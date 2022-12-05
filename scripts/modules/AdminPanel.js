@@ -9,7 +9,6 @@ import { FORMS, DROPDOWNS } from './static_form';
 
 const defaultConfig = Util.cloneObject(config);
 const defaultFilter = Util.cloneObject(chatFilter);
-const AIR = new ItemStack(MinecraftItemTypes.stick, 0, 0);
 
 export class AdminPanel {
   constructor(ac, player) {
@@ -135,7 +134,7 @@ export class AdminPanel {
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) {
-      player.getComponent('minecraft:inventory').container.setItem(item._slot, AIR);
+      player.getComponent('minecraft:inventory').container.clearItem(item._slot);
       Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を削除しました`, this.player);
     }
     if (selection === 1) {
@@ -144,7 +143,7 @@ export class AdminPanel {
     }
     if (selection === 2) {
       this.player.getComponent('minecraft:inventory').container.addItem(item);
-      player.getComponent('minecraft:inventory').container.setItem(item._slot, AIR);
+      player.getComponent('minecraft:inventory').container.clearItem(item._slot);
       Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
@@ -198,12 +197,9 @@ export class AdminPanel {
   }
   
   async showScores(player) {
-    const messages = [];
-    for (const obj of world.scoreboard.getObjectives()) {
-      try {
-        messages.push(`- ${obj.id} (${obj.displayName}) : ${obj.getScore(player.scoreboard) ?? 'null'}`);
-      } catch {}
-    }
+    const messages = world.scoreboard
+      .getObjectives()
+      .map(obj => `- ${obj.id} (${obj.displayName}) : ${obj.getScore(player.scoreboard) ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
@@ -219,8 +215,9 @@ export class AdminPanel {
       count[e.typeId] ??= 0;
       count[e.typeId]++
     }
-    const messages = [];
-    for (const [type, n] of Object.entries(count)) messages.push(`- ${type} : ${n}`);
+    const messages = Object.entries(count)
+      .sort((a,b) => b[1] - a[1])
+      .map(([ type, n ]) => `- ${type} : ${n}`);
     const form = new UI.ActionFormData();
     form.title(`Entities`)
       .body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません')
@@ -239,12 +236,22 @@ export class AdminPanel {
     }
     form.title('Config Selector')
       .body('編集したいConfigを選択してください')
+      .button('§l§c初期設定に戻す')
       .button('直接編集する / Raw Editor')
       .button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === keys.length) return await this.rawEditor();
-    if (selection === keys.length + 1) return await this.main(); // return button
+    if (selection === keys.length) {
+      const res = await this.confirmForm('確認', `全てのConfigを初期設定に戻しますか？`, '§lはい / YES', '§lいいえ / NO');
+      if (res) {
+        for (const k of keys) resetModule(k);
+        world.setDynamicProperty(properties.configData, '{}');
+        Util.notify(`§aConfigをリセットしました`);
+      } else return await this.selectModule();
+      return;
+    }
+    if (selection === keys.length + 1) return await this.rawEditor();
+    if (selection === keys.length + 2) return await this.main(); // return button
     const moduleName = keys[selection];
     const data = await this.selectKey(moduleName);
     if (isChanged(data, config[moduleName])) {
@@ -308,8 +315,12 @@ export class AdminPanel {
     const useDropdown = Object.keys(DROPDOWNS).includes(key);
     switch (typeof value) {
       case 'string':
-        if (useDropdown) form.dropdown(key, DROPDOWNS[key].map(x => `${x.value} §l§7${x.desc ?? ''}`), DROPDOWNS[key].findIndex(x => x.value === value));
-          else form.textField(key, '<String>', value);
+        if (useDropdown) form.dropdown(
+          key,
+          DROPDOWNS[key].map(x => `${x.value} §l§7${x.desc ?? ''}`),
+          DROPDOWNS[key].findIndex(x => x.value === value)
+        )
+        else form.textField(key, '<String>', value);
         break;
       case 'number':
         form.textField(key, '<Number>', String(value));
@@ -412,8 +423,8 @@ export class AdminPanel {
 }
 
 function resetModule(moduleName) {
-  if (moduleName === 'ChatFilter') return defaultFilter;
-  return defaultConfig[moduleName];
+  if (moduleName === 'ChatFilter') return Util.cloneObject(defaultFilter);
+  return Util.cloneObject(defaultConfig[moduleName]);
 }
 
 function changeConfig(data, moduleName) {

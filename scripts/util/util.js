@@ -4,7 +4,6 @@ import config from '../config.js';
 import { properties } from './constants';
 import { Permissions } from './Permissions';
 
-
 const overworld = world.getDimension('overworld');
 
 export class Util {
@@ -12,9 +11,10 @@ export class Util {
   /**
    *
    * @param {Player} player
-   * @param {string} punishment
    * @param {string} type
+   * @param {string} punishment
    * @param {string} message
+   * @param {boolean} notifyCreative
    */
   static flag(player, type, punishment, message, notifyCreative) {
     if (notifyCreative && Util.isCreative(player)) punishment = 'notify';
@@ -208,7 +208,7 @@ export class Util {
   }
   
   static getPlayerByName(playerName, expect = false) {
-    const player = [...world.getPlayers({ name: playerName })][0];
+    const player = world.getPlayers({ name: playerName }).next().value ?? null;
     if (player || !expect) return player;
     return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
   }

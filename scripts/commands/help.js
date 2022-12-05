@@ -3,9 +3,9 @@ import { CommandError } from '../util/CommandError';
 
 export default {
   name: 'help',
-  description: 'ヘルプを表示します。 /help <コマンド名> でコマンドの詳細な説明を表示します',
+  description: 'ヘルプを表示します。 !help <コマンド名> でコマンドの詳細な説明を表示します',
   args: [ '', '[command: commandName]' ],
-  aliases: [ 'herupu', 'helupu' ],
+  aliases: [ 'herp', 'herupu', 'helupu' ],
   func: (sender, args, manager) => {
     const [ commandName ] = args;
     const available = manager.getAll().filter(c => !c.permission || c.permission(sender));
@@ -22,7 +22,7 @@ export default {
         '\n§lCommands:§r',
         ...available.map(c => `  §6${manager.prefix}${c.name}§r - ${c.description || ''}`),
         '\n§l§bDiscord Support:§r',
-        `  ${discord}`
+        `  ${DISCORD_URL}`
       ].join('\n'));
       sender.tell('-'.repeat(20));
     }
