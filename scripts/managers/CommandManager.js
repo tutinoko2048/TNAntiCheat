@@ -11,17 +11,12 @@ export class CommandManager extends BaseManager {
     
     if (config.others.debug) console.warn('[CommandManager] initialized');
     this.registeredCommands = new Map();
-    try {
+    
     this.load();
-    } catch(e) { console.error(e) }
   }
   
   get prefix() {
     return config.command.prefix;
-  }
-  
-  getCommand(commandName) {
-    return this.registeredCommands.get(commandName) ?? this.getAll().find(c => c.aliases?.includes(commandName));
   }
   
   handle(ev) {
@@ -37,7 +32,7 @@ export class CommandManager extends BaseManager {
     try {
       command.func(sender, args, this);
     } catch(e) {
-      sender.tell(`[CommandManager] §c[Error] ${e}`);
+      sender.tell(`[CommandManager] §c${e}`);
       if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.tell(`§c${e.stack}`);
     }
     
@@ -49,6 +44,10 @@ export class CommandManager extends BaseManager {
   
   isCommand(message) {
     return message.startsWith(this.prefix);
+  }
+  
+  getCommand(commandName) {
+    return this.registeredCommands.get(commandName) ?? this.getAll().find(c => c.aliases?.includes(commandName));
   }
   
   load() {

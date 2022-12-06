@@ -95,6 +95,7 @@ export class AdminPanel {
     
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
+    if (items.length === 0) form.body('何も持っていないようです\n ');
     items.forEach(item => form.button(`§r${item.typeId}:${item.data}\n§7slot: ${item._slot}, amount: ${item.amount}`));
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', ICONS.clear)
@@ -197,9 +198,14 @@ export class AdminPanel {
   }
   
   async showScores(player) {
+    const getScore = (obj, p) => {
+      try { 
+        return obj.getScore(p.scoreboard);
+      } catch { return null }
+    }
     const messages = world.scoreboard
       .getObjectives()
-      .map(obj => `- ${obj.id} (${obj.displayName}) : ${obj.getScore(player.scoreboard) ?? 'null'}`);
+      .map(obj => `- ${obj.id} (${obj.displayName}) : ${Util.getScore(player, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
@@ -244,7 +250,7 @@ export class AdminPanel {
     if (selection === keys.length) {
       const res = await this.confirmForm('確認', `全てのConfigを初期設定に戻しますか？`, '§lはい / YES', '§lいいえ / NO');
       if (res) {
-        for (const k of keys) resetModule(k);
+        for (const k of keys) config[k] = resetModule(k);
         world.setDynamicProperty(properties.configData, '{}');
         Util.notify(`§aConfigをリセットしました`);
       } else return await this.selectModule();

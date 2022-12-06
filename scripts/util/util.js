@@ -1,4 +1,4 @@
-import { world, system, Player, Vector, GameMode } from '@minecraft/server';
+import { world, system, Player, Entity, Vector, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { properties } from './constants';
@@ -18,24 +18,27 @@ export class Util {
    */
   static flag(player, type, punishment, message, notifyCreative) {
     if (notifyCreative && Util.isCreative(player)) punishment = 'notify';
-    const reason = `§7Type: §c${type}§r\n§7Punishment: §c${punishment}§r\n§l§6>>§r ${message}`;
+    const reasons = [
+      `§7Type: §c${type}§r`,
+      `§7Punishment: §c${punishment}§r`,
+      `§l§6>>§r ${message}`
+    ];
     
     if (punishment === 'ban') {
-      player.setDynamicProperty(properties.ban, true);
-      player.setDynamicProperty(properties.banReason, type);
-      this.ban(player, type);
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reason}`);
+      this.ban(player, message, type);
+      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'kick') {
-      this.kick(player, reason);
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reason}`);
+      this.kick(player, reasons.join('\n'));
+      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'tempkick') {
       player.triggerEvent('tn:kick');
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reason}`);
+      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'notify') {
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reason}`);
+      reasons.splice(1, 1);
+      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'none') {
     } else {
@@ -44,12 +47,14 @@ export class Util {
     }
   }
   
-  static async ban(player, reason) {
-    reason ??= player.getDynamicProperty(properties.banReason) ?? 'none';
-    return await this.kick(player, `Reason: §c${reason}§f`, true);
+  static async ban(player, reason, type) {
+    player.setDynamicProperty(properties.ban, true);
+    type && player.setDynamicProperty(properties.banReason, type);
+    return await this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
   }
 
   static async kick(player, reason, ban = false) {
+    if (Util.isOwner(player)) return console.warn('kick failed: cannot kick owner');
     try {
       await overworld.runCommandAsync(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`);
       return true;
@@ -84,14 +89,16 @@ export class Util {
   }
   
   static isOP(player) {
-    world.isOP ??= 0;
-    world.isOP++
     return player && player.typeId === 'minecraft:player' && player.isOp() && Permissions.has(player, 'admin');
   }
   
   
   static isHost(player) {
     return player.id === '-4294967295';
+  }
+  
+  static isOwner(player) {
+    return world.getDynamicProperty(properties.ownerId) === player.id;
   }
   
   static sendMsg(msg, target = '@a') {
@@ -112,11 +119,6 @@ export class Util {
   }
   
   static distance(vec1, vec2) {
-  /*
-    const { x: x1, y: y1, z: z1 } = loc1;
-    const { x: x2, y: y2, z: z2 } = loc2;
-    return Math.sqrt((x1-x2) ** 2 + (y1-y2) ** 2 + (z1-z2) ** 2);
-  */
     return Vector.distance(vec1, vec2);
   }
   
@@ -208,12 +210,39 @@ export class Util {
   }
   
   static getPlayerByName(playerName, expect = false) {
-    const player = world.getPlayers({ name: playerName }).next().value ?? null;
+    const [ player ] = [...world.getPlayers({ name: playerName })];
     if (player || !expect) return player;
     return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
   }
   
   static vectorNicely(vec) {
     return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
+  }
+
+  /**
+   *
+   * @param {Player|Entity|string} target
+   * @param {string} obj
+   * @returns {number|null}
+   */
+  static getScore(target, obj) {
+    try {
+      return (typeof target === 'string')
+        ? world.scoreboard.getObjective(obj).getScores().find(({ participant }) => participant.displayName === target).score
+        : world.scoreboard.getObjective(obj).getScore(target.scoreboard);
+    } catch {
+      return null;
+    }
+  }
+  
+  /**
+   *
+   * @param {Player|Entity|string} target
+   * @param {string} obj
+   * @param {number} score
+   */
+  static async setScore(target, obj, score) {
+    const name = (typeof target === 'string') ? target : (target.name ?? target.nameTag);
+    await overworld.runCommandAsync(`scoreboard players set "${name}" ${obj} ${score}`);
   }
 }

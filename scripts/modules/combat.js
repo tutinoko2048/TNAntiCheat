@@ -1,4 +1,4 @@
-import { Player, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent } from '@minecraft/server';
+import { system, Player, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -10,7 +10,7 @@ export function reach(ev) {
     if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
     const distance = Util.distance(source.headLocation, blockLocation);
     if (distance > config.reach.blockReach) {
-      source.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)}, event: ${ev.constructor.name})`;
+      source.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)})`;
       ev.cancel = true;
     }
       
@@ -19,8 +19,16 @@ export function reach(ev) {
     if (Util.isCreative(player) || Util.isOP(player)) return;
     const distance = Util.distance(player.headLocation, block.location);
     if (distance > config.reach.blockReach) {
-      player.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)}, event: ${ev.constructor.name})`;
-      block.setPermutation(brokenBlockPermutation);
+      player.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)})`;
+      system.run(() => {
+        const items = block.dimension.getEntities({
+          location: new Location(block.x, block.y, block.z),
+          maxDistance: 1.5,
+          type: 'minecraft:item'
+        });
+        for (const i of items) i.kill();
+        block.setPermutation(brokenBlockPermutation);
+      }); // 1tick delay
     }
     
   } else if (ev instanceof EntityHitEvent) {
@@ -33,7 +41,7 @@ export function reach(ev) {
     
     const distance = Util.distance(entity.headLocation, hitEntity.location);
     if (distance > config.reach.attackReach)
-      entity.attackReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)}, event: ${ev.constructor.name})`;
+      entity.attackReachFlag = `長いリーチを検知しました (${hitEntity.typeId}, length: ${distance.toFixed(2)})`;
   }
 }
 

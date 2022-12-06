@@ -2,7 +2,7 @@ import { Util } from '../util/util';
 import * as mc from '@minecraft/server';
 const { world, system } = mc;
 import toJson from '../lib/toJson';
-import { encode } from '../util/secret';
+import { Permissions } from '../util/Permissions';
 
 export default {
   name: 'runjs',

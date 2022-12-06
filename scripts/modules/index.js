@@ -19,8 +19,8 @@ export function ban(player) {
   }
   
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
-    Util.ban(player);
-    return true;
+    Util.notify(`Kicked §l§c${player.name}§r\n§7Reason:§r ban`);
+    return Util.ban(player);
   }
   
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
@@ -50,9 +50,9 @@ export function notify() {
     const entityCheck = Object.values(world.entityCheck);
     let msg = entityCheck
       .slice(0, 3)
-      .map(e => `§c${e.item ? `${e.item}§f (item)` : e.typeId}§r §7[${e.x}, ${e.y}, ${e.z}] ${e.count > 1 ? `§6x${e.count}` : ''}§r`)
+      .map(e => `- §c${e.item ? `${e.item}§f (item)` : e.typeId}§r §7[${e.x}, ${e.y}, ${e.z}] ${e.count > 1 ? `§6x${e.count}` : ''}§r`)
       .join('\n');
-    if (entityCheck.length > 3) msg += `\n§amore ${entityCheck.length - 3} entities...`;
+    if (entityCheck.length > 3) msg += `\n§7more ${entityCheck.length - 3} entities...`;
     Util.notify(`禁止エンティティをkillしました\n${msg}`);
     world.entityCheck = {};
   }
@@ -76,7 +76,9 @@ export function namespoof(player) {
 }
 
 export async function creative(player) {
-  if (!Util.isCreative(player) || Util.isOP(player) || Permissions.has(player, 'builder')) return;
-  await player.runCommandAsync(`gamemode ${config.creative.defaultGamemode} @s`);
-  Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');
+  if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
+  if (Util.isCreative(player)) {
+    await player.runCommandAsync(`gamemode ${config.creative.defaultGamemode} @s`);
+    Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');
+  }
 }

@@ -39,6 +39,7 @@ export class TNAntiCheat {
       
       if (!(system.currentTick % 20)) modules.notify();
       
+      
       for (const player of world.getAllPlayers()) {
         modules.crasher(player);
         modules.itemCheck(player);
@@ -105,12 +106,11 @@ export class TNAntiCheat {
   
   #chatHandler(ev) {
     const tooFast = modules.spammerC(ev);
-    if (this.commands.isCommand(ev.message)) {
-      !tooFast && this.commands.handle(ev);
-      return;
-    }
-    modules.spammerA(ev);
-    modules.spammerB(ev);
+    if (!tooFast && this.commands.isCommand(ev.message)) this.commands.handle(ev);
+    
+    !tooFast &&
+    !modules.spammerA(ev) &&
+    !modules.spammerB(ev) &&
     modules.chatFilter(ev);
   }
   
@@ -170,7 +170,7 @@ export class TNAntiCheat {
   }
   
   getTPS() {
-    return Util.average(this.#deltaTimes.map(n => 1000 / n));
+    return Math.min(Util.average(this.#deltaTimes.map(n => 1000 / n)),20)
   }
 }
 

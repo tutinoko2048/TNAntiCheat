@@ -6,7 +6,8 @@ export const properties = {
   banReason: 'tn:banReason',
   configData: 'tn:configData',
   chatFilter: 'tn:chatFilter',
-  mute: 'tn:isMuted'
+  mute: 'tn:isMuted',
+  ownerId: 'tn:ownerId'
 }
 
 export const ICONS = {
