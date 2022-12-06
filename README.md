@@ -4,8 +4,8 @@
 <img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/latest/total?style=for-the-badge">  
 
 MinecraftBE用のチート対策アドオンです。  
-※ワールドの設定から "ベータ API" を必ず有効にしてください  
-[ここ](https://github.com/tutinoko2048/TNAntiCheat/releases)から最新のものをダウンロードできます。  
+  
+[ダウンロードはこちらから](https://github.com/tutinoko2048/TNAntiCheat/releases)
   
 ![img1](docs/hasitem.png)  
   
@@ -18,6 +18,11 @@ MinecraftBE用のチート対策アドオンです。
   
 > **Note**: 質問やアップデート情報はこちらから！！  
 https://discord.gg/XGR8FcCeFc  
+
+## 使い方
+まずはアドオンをインポートし、ワールドに適用してください。  
+__このときワールドの設定から `"ベータ API"` と `"Edication Edition"` をオンにしておいてください。__  
+初回はワールドを開いた後に `/function start` コマンドを打ってください。これによりアドオンが有効化され、権限を取得できます。
 
 ## Modules
 - AutoClicker(β)  
