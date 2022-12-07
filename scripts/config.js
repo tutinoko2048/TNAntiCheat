@@ -38,7 +38,6 @@ export default
     kick: [
       "minecraft:beehive",
       "minecraft:bee_nest",
-      "minecraft:mob_spawner",
       "minecraft:lava",
       "minecraft:water",
       "minecraft:flowing_lava",
@@ -57,7 +56,8 @@ export default
       "minecraft:respawn_anchor",
       "minecraft:tnt",
       "minecraft:bedrock",
-      "minecraft:barrier"
+      "minecraft:barrier",
+      "minecraft:mob_spawner"
     ]
   },
   crasher: {

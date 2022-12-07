@@ -13,6 +13,7 @@ export default {
       const command = available.find(c => c.name === commandName);
       if (!command) throw new CommandError(`コマンド ${commandName} が見つかりませんでした`);
       sender.tell(`§e${command.name}: ${command.description}`);
+      if (command.aliases?.length > 0) sender.tell(`aliases: ${command.aliases.map(x => `${manager.prefix}${x}`).join(', ')}`);
       sender.tell('使い方:');
       sender.tell(command.args?.map(v => `- ${manager.prefix}${command.name} ${v}`).join('\n'));
     } else {
