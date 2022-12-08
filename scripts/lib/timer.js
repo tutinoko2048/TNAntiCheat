@@ -1,7 +1,6 @@
-/*! timer.js v1.1 | MIT license | https://github.com/Lapis256/timer.js/blob/main/LICENSE */
+/*! timer.js v1.2 | MIT license | https://github.com/Lapis256/timer.js/blob/main/LICENSE */
 
-import { world } from "@minecraft/server";
-
+import { system } from "@minecraft/server";
 
 class Timer {
     currentTick = 1;
@@ -18,7 +17,11 @@ class Handler {
     timers = new Map();
 
     constructor() {
-        world.events.tick.subscribe(() => this.tick());
+        const tick = () => {
+            system.run(tick);
+            this.tick();
+        };
+        system.run(tick);
     }
 
     addTimer(callback, interval, once, args) {
@@ -33,28 +36,28 @@ class Handler {
 
     tick() {
         this.timers.forEach((timer, id) => {
-            if(timer.currentTick++ % timer.interval !== 0) return;
+            if (timer.currentTick++ % timer.interval !== 0) return;
 
-            if(timer.once) this.deleteTimer(id);
+            if (timer.once) this.deleteTimer(id);
             timer.callback();
         });
     }
 }
 
-void function() {
+void (function () {
     const handler = new Handler();
 
-    globalThis.setInterval = function(callback, interval, ...args) {
+    globalThis.setInterval = function (callback, interval, ...args) {
         return handler.addTimer(callback, interval, false, args);
-    }
-    globalThis.clearInterval = function(id) {
+    };
+    globalThis.clearInterval = function (id) {
         handler.deleteTimer(id);
-    }
+    };
 
-    globalThis.setTimeout = function(callback, interval, ...args) {
+    globalThis.setTimeout = function (callback, interval, ...args) {
         return handler.addTimer(callback, interval, true, args);
-    }
-    globalThis.clearTimeout = function(id) {
+    };
+    globalThis.clearTimeout = function (id) {
         handler.deleteTimer(id);
-    }
-}();
+    };
+})();

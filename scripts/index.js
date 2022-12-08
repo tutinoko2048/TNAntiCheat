@@ -1,23 +1,33 @@
-import { system, world, Player } from '@minecraft/server';
-import './ac.js';
-import config from './config.js';
-import { detected } from './util/util';
+import { world, Player } from '@minecraft/server';
+import { TNAntiCheat } from './ac';
+import { events } from './lib/events/index';
+import { properties } from './util/constants';
+import { Permissions } from './util/Permissions';
+import './lib/timer.js';
+import './system/dog.js';
+import './system/register_properties.js';
+import './system/polyfill.js';
 
-console.warn('[TN-AntiCheat] index.js >> loaded');
-
-system.events.beforeWatchdogTerminate.subscribe(ev => {
-  ev.cancel = true;
+const ac = new TNAntiCheat();
+events.worldLoad.subscribe(() => {
+  if (world.getDynamicProperty(properties.ownerId)) {
+    ac.enable();
+  } else {
+    world.say('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
+  }
 });
 
-Player.prototype.kick = async function (reason = 'No reason') {
-  if (this.hasTag(config.tag.op)) return;
-  const name = this.name;
-  try {
-    await this.runCommandAsync(`kick "${this.name}" §f§lKicked by TN-AntiCheat\n§cReason: §r${reason}`); // 普通はこっち
-    detected(`Kicked §l§c${name}§r >> ${reason}`);
-  } catch {
-    // 再参加可能なkickを実行
-    this.triggerEvent('tn:kick'); // 変な名前で蹴れない時はこっち
-    detected(`Kicked §l§c${name}§r (addon) >> ${reason}`);
-  }
-}
+world.events.dataDrivenEntityTriggerEvent.subscribe(ev => {
+  const { entity, id } = ev;
+  if (!(entity instanceof Player) || id != 'ac:start') return;
+  
+  if (world.getDynamicProperty(properties.ownerId)) return entity.tell('TNAC is already registered!');
+  
+  world.setDynamicProperty(properties.ownerId, entity.id);
+  Permissions.add(entity, 'admin');
+  
+  ac.enable();
+}, {
+  entityTypes: [ 'minecraft:player' ],
+  eventTypes: [ 'ac:start' ]
+});

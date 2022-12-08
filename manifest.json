@@ -1,26 +1,26 @@
 {
   "format_version": 2,
   "header": {
-    "name": "TN-AntiCheat v2.5.0",
-    "description": "AntiCheat with Gametest\nscripts/config.jsでカスタマイズすることができます\nMade by RetoRuto9900K / tutinoko2048",
+    "name": "TN-AntiCheat v3.0.0-beta",
+    "description": "AntiCheat with ScriptAPI\n軽量で使いやすいアンチチートアドオンです\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
-    "version": [ 2, 5, 0 ],
+    "version": "3.0.0-beta",
     "min_engine_version": [ 1, 19, 50 ]
   },
   "modules": [
     {
-      "description": "Data module",
+      "version": "3.0.0-beta",
       "type": "data",
       "uuid": "91a60c53-392b-4007-859a-a1e087a62d1a",
-      "version": [ 2, 5, 0 ]
+      "description": "data module"
     },
     {
-      "description": "Script module",
+      "version": "3.0.0-beta",
       "type": "script",
       "language": "javascript",
+      "entry": "scripts/index.js",
       "uuid": "fcc8732d-300a-40e0-8a5d-613df2291a24",
-      "version": [ 2, 5, 0 ],
-      "entry": "scripts/index.js"
+      "description": "script module"
     }
   ],
   "dependencies": [
