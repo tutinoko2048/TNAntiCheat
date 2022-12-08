@@ -28,7 +28,7 @@ export function entityCheck(entity) {
     const loc = Util.vectorNicely(location);
     entity.kill();
     if (config.entityCheckA.punishment != 'none') queueNotify('entityCheck', { typeId, ...loc });
-    if (despawnable.includes(typeId)) try { entity.triggerEvent('tn:despawn') } catch {};
+    if (despawnable.includes(typeId)) try { entity.triggerEvent('tn:despawn') } catch {}
     
   } else if (config.entityCheckB.state && typeId === 'minecraft:item') {
     const item = entity.getComponent('minecraft:item')?.itemStack;

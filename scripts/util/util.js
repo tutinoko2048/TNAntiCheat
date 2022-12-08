@@ -59,7 +59,7 @@ export class Util {
       await overworld.runCommandAsync(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`);
       return true;
     } catch {
-      return player.triggerEvent('tn:kick');
+      player.triggerEvent('tn:kick');
       this.notify('Kickに失敗したため強制退出させました');
       return false;
     }
