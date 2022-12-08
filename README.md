@@ -98,7 +98,8 @@ banを解除したい場合はアドオンフォルダ内の`unban_queue.js`に�
 `permission`コマンドで追加や削除ができます。
 
 - Admin Panel  
-管理者用のForm画面です。
+管理者用のForm画面です。  
+`!settings`コマンドや`!settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。
 
 - Chat Filter  
 設定した単語を非表示にできます。単語はアドオンフォルダ内の`chat_filter.js`で追加できます。
