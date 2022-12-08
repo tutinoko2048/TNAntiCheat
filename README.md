@@ -7,11 +7,11 @@ MinecraftBE用のチート対策アドオンです。
   
 [ダウンロードはこちらから](https://github.com/tutinoko2048/TNAntiCheat/releases)
   
-![img1](docs/hasitem.png)  
+![img1](docs/hasitem.jpeg)  
   
-![img2](docs/kicked.jpeg)  
+![img2](docs/kick.jpeg)  
   
-![img3](docs/enchant.png)  
+![img3](docs/enchant.jpeg)  
   
   
 ※一部のコードはMrDiamond64様の[Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)を参考にしています。
@@ -23,6 +23,16 @@ https://discord.gg/XGR8FcCeFc
 まずはアドオンをインポートし、ワールドに適用してください。  
 __このときワールドの設定から `"ベータ API"` と `"Edication Edition"` をオンにしておいてください。__  
 初回はワールドを開いた後に `/function start` コマンドを打ってください。これによりアドオンが有効化され、権限を取得できます。
+
+### よくある質問
+Q. 禁止アイテムを持っても検知されません
+A. もう1度READMEを見返してみてください。ワールドの試験的設定をオンにし忘れてることが多いかもです
+
+Q. 運営だけ検知から除外したいです
+A. opコマンドを使いましょう。`!op [プレイヤー名]`で指定したプレイヤーにadminの権限を与えることができます。
+
+Q. 使えるコマンド一覧は？
+A. ワールド内で`!help`してみてください。各コマンドの詳細は`!help <コマンド名>`で見られます。
 
 ## Modules
 - AutoClicker(β)  
@@ -96,18 +106,26 @@ banを解除したい場合はアドオンフォルダ内の`unban_queue.js`に�
 - Permission  
 プレイヤーごとの権限を管理できます。(`admin`, `builder`)  
 `permission`コマンドで追加や削除ができます。
+`!permission add <権限名> <プレイヤー名>`
+builder権限をつけることでCreativeの検知から除外されることができます。
 
 - Admin Panel  
 管理者用のForm画面です。  
-`!settings`コマンドや`!settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。
+<details>
+`!settings`コマンドや`!settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。  
+プレイヤーやインベントリの管理ができます  
+
+![panel](docs/panel.jpeg)  
+![player-info](docs/player_info.jpeg)  
+![item-info](docs/item_info.jpeg)
+</details>  
 
 - Chat Filter  
 設定した単語を非表示にできます。単語はアドオンフォルダ内の`chat_filter.js`で追加できます。
 
 - Config Editor  
 ワールド内でConfig(このアドオンの設定)を編集できます  
-![config](docs/config_editor.png)  
+![config](docs/config_editor.jpeg)  
 
 ## config
-アドオンフォルダ内の`config.js`ファイルで各種機能の設定をすることができます  
-
+アドオンフォルダ内の`config.js`ファイルで各種機能の設定をすることができます。AdminPanel内からでも同じ設定ができます。
