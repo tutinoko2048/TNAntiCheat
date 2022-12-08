@@ -7,17 +7,19 @@ jobs:
   upload-mcpack:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-        
-      - name: Set Name
-        id: set-name
+      - uses: actions/checkout@master 
+      - name: Install
         run: |
-          FILENAME=$(cat ./package.json | jq '.name + "_v" + .version' -r).mcpack
-          echo "::set-output name=filename::$FILENAME"
+          npm i --save-dev @actions/core 
+          npm i --save-dev @actions/github 
+          
+      - name: Get Name
+        id: get-name
+        uses: ./.github/workflows/manifest/
           
       - name: Make Archive
         run: |
-          zip -r ${{ steps.set-name.outputs.filename }} ./ -x "*.git*"
+          zip -r ${{ steps.get-name.outputs.fileName }} ./ -x "*.git*" "*node_modules*" "package-lock.json"
           
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -26,6 +28,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./${{ steps.set-name.outputs.filename }}
-          asset_name: ${{ steps.set-name.outputs.filename }}
+          asset_path: ./${{ steps.get-name.outputs.fileName }}
+          asset_name: ${{ steps.get-name.outputs.fileName }}
           asset_content_type: application/zip
