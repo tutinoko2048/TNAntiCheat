@@ -9,7 +9,7 @@
     "globals": {},
     "rules": {
       "no-unused-vars": "off",
-      "no-empty": ["error", { "allowEmptyCatch": true }]
+      "no-empty": "off"
     },
     "parserOptions": {
       "ecmaVersion": 2020,
