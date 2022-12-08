@@ -189,6 +189,6 @@ export default
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
-    debug: true
+    debug: false
   }
 }

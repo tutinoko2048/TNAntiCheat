@@ -197,6 +197,7 @@
           ]
         }
       },
+      "ac:start": {},
       "minecraft:gain_bad_omen": {
         "add": {
           "component_groups": [

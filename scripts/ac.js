@@ -39,7 +39,6 @@ export class TNAntiCheat {
       
       if (!(system.currentTick % 20)) modules.notify();
       
-      
       for (const player of world.getAllPlayers()) {
         modules.crasher(player);
         modules.itemCheck(player);
@@ -170,7 +169,10 @@ export class TNAntiCheat {
   }
   
   getTPS() {
-    return Math.min(Util.average(this.#deltaTimes.map(n => 1000 / n)),20)
+    return Math.min(
+      Util.average(this.#deltaTimes.map(n => 1000 / n)),
+      20
+    );
   }
 }
 
