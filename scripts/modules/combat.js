@@ -49,9 +49,10 @@ export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
   if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;
    entity.cps ??= [];
-   
+  
   if (entity.lastHitAt && Date.now() - entity.lastHitAt < 1000) {
     const cps = 1000 / (Date.now() - entity.lastHitAt);
+    if (cps === Infinity) return;
     if (entity.cps.length > 4) entity.cps.shift();
     entity.cps.push(cps);
     const avg = Util.average(entity.cps);
