@@ -29,7 +29,7 @@ export const description = {
     desc: 'Nukerを検知',
     state: '有効/無効の設定',
     limit: '1tickに何ブロックの破壊で検知するかの設定(ラグも考慮)',
-    place: '壊されたブロックを置き直すかどうかの設定',
+    place: '壊されたブロックを再設置する',
     punishment: '検知された場合の対応'
   },
   namespoof: {
@@ -51,6 +51,13 @@ export const description = {
     desc: '速すぎるチャットを制限',
     state: '有効/無効の設定',
     minInterval: '最小の間隔 (ミリ秒で指定)'
+  },
+  instaBreak: {
+    desc: '壊せないブロックの破壊を検知',
+    state: '有効/無効の設定',
+    punishment: '検知された場合の対応',
+    place: '壊されたブロックを再設置する',
+    detect: '検知するブロックのID'
   },
   itemCheckA: {
     desc: '禁止アイテムを持っていたら検知',

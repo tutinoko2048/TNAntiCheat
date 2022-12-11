@@ -86,6 +86,26 @@ export default
     state: true,
     minInterval: 2000 // ミリ秒で指定 1000ms = 1s
   },
+  instaBreak: { // 壊せないブロックの破壊を検知
+    state: true,
+    punishment: "kick",
+    place: true,
+    detect: [
+      "minecraft:bedrock",
+      "minecraft:barrier",
+      "minecraft:command_block",
+      "minecraft:repeating_command_block",
+      "minecraft:chain_command_block",
+      "minecraft:deny",
+      "minecraft:allow",
+      "minecraft:border_block",
+      "minecraft:light_block",
+      "minecraft:end_portal",
+      "minecraft:end_gateway",
+      "minecraft:portal",
+      "minecraft:end_portal_frame"
+    ]
+  },
   itemCheckA: { // 持っていたら検知 アイテムはitemList参照
     state: true,
     notifyCreative: true // クリエの人は削除だけしてbanやkickはしない
