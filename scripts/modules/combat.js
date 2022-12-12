@@ -1,7 +1,8 @@
 import { system, Player, EntityHitEvent, BeforeItemUseOnEvent, BlockBreakEvent, Location } from '@minecraft/server';
 import { Util } from '../util/util';
+import { killDroppedItem } from './util';
 import config from '../config.js';
-
+/*
 export function reach(ev) {
   if (!config.reach.state) return;
   
@@ -44,6 +45,45 @@ export function reach(ev) {
       entity.attackReachFlag = `長いリーチを検知しました (${hitEntity.typeId}, length: ${distance.toFixed(2)})`;
   }
 }
+*/
+export function reachA(ev) { // attacking
+  if (!config.reachA.state) return;
+  const { entity, hitEntity } = ev;
+  if (!hitEntity || !(entity instanceof Player) || Util.isCreative(entity) || Util.isOP(entity)) return;
+  if (
+    (config.reachA.excludeCustomEntities && !hitEntity.typeId.startsWith('minecraft:')) ||
+    config.reachA.excludeEntities.includes(hitEntity.typeId)
+  ) return;
+  
+  const distance = Util.distance(entity.headLocation, hitEntity.location);
+  if (distance > config.reachA.maxReach)
+    entity.attackReachFlag = `長いリーチを検知しました (${hitEntity.typeId}, length: ${distance.toFixed(2)})`;
+}
+
+export function reachB(ev) { // placement
+  if (!config.reachB.state) return;
+  const { source, blockLocation } = ev;
+  if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
+  const distance = Util.distance(source.headLocation, blockLocation);
+  if (distance > config.reachB.maxReach) {
+    source.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)})`;
+    if (config.reachB.cancel) ev.cancel = true;
+  }
+}
+
+export function reachC(ev) { // destruction
+  if (!config.reachC.state) return;
+  const { player, block, brokenBlockPermutation } = ev;
+  if (Util.isCreative(player) || Util.isOP(player)) return;
+  const distance = Util.distance(player.headLocation, block.location);
+  if (distance > config.reachC.maxReach) {
+    player.blockReachFlag = `長いリーチを検知しました (length: ${distance.toFixed(2)})`;
+    system.run(() => {
+      killDroppedItem(block.location, block.dimension);
+      if (config.reachC.cancel) block.setPermutation(brokenBlockPermutation);
+    }); // 1tick delay
+  }
+}
 
 export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
@@ -52,7 +92,7 @@ export function autoClicker(ev) {
   
   if (entity.lastHitAt && Date.now() - entity.lastHitAt < 1000) {
     const cps = 1000 / (Date.now() - entity.lastHitAt);
-    if (cps === Infinity) return;
+    if (cps === Infinity) return entity.lastHitAt = Date.now();
     if (entity.cps.length > 4) entity.cps.shift();
     entity.cps.push(cps);
     const avg = Util.average(entity.cps);

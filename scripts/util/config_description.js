@@ -125,15 +125,27 @@ export const description = {
     spawnEgg: 'スポーンエッグを含めるかどうか',
     detect: '検知するエンティティ'
   },
-  reach: {
-    desc: 'ブロックの設置/破壊 攻撃の長すぎるリーチを検知 (ベータ)',
+  reachA: {
+    desc: '攻撃の長すぎるリーチを検知 (ベータ)',
     state: '有効/無効の設定',
-    blockReach: '設置/破壊時の最大リーチ',
-    attackReach: '攻撃時の最大リーチ',
-    cancel: 'ブロックの設置破壊をキャンセルする',
     punishment: '検知された場合の対応',
+    maxReach: '最大リーチ',
     excludeCustomEntities: 'バニラ以外のmobの検知を除外',
     excludeEntities: '除外するエンティティ'
+  },
+  reachB: {
+    desc: 'ブロック設置の長すぎるリーチを検知 (ベータ)',
+    state: '有効/無効の設定',
+    punishment: '検知された場合の対応',
+    maxReach: '最大リーチ',
+    cancel: 'ブロックの設置をキャンセルする',
+  },
+  reachC: {
+    desc: 'ブロック破壊の長すぎるリーチを検知 (ベータ)',
+    state: '有効/無効の設定',
+    punishment: '検知された場合の対応',
+    maxReach: '最大リーチ',
+    cancel: 'ブロックの破壊をキャンセルする',
   },
   autoClicker: {
     desc: '速すぎるクリックを検知 (ベータ)',

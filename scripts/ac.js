@@ -57,8 +57,9 @@ export class TNAntiCheat {
     });
     
     world.events.blockBreak.subscribe(ev => {
-      const isNuker = modules.nukerBreak(ev);
-      !isNuker && modules.reach(ev);
+      !modules.nukerBreak(ev) &&
+      !modules.instaBreak(ev) &&
+      modules.reachC(ev);
     });
     
     world.events.beforeChat.subscribe(ev => this.#chatHandler(ev));
@@ -69,7 +70,7 @@ export class TNAntiCheat {
     
     world.events.beforeItemUseOn.subscribe(ev => {
       modules.placeCheckA(ev);
-      modules.reach(ev);
+      modules.reachB(ev);
     });
     
     world.events.blockPlace.subscribe(ev => {
@@ -78,7 +79,7 @@ export class TNAntiCheat {
     });
     
     world.events.entityHit.subscribe(ev => {
-      modules.reach(ev);
+      modules.reachA(ev);
       modules.autoClicker(ev);
       if (
         ev.entity instanceof Player &&
