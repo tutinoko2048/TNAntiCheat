@@ -9,6 +9,6 @@ export default {
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
     sender.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());
-    Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます');
+    Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます', sender);
   }
 }
