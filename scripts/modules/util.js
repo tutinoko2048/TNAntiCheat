@@ -1,4 +1,4 @@
-import { world } from '@minecraft/server';
+import { world, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
