@@ -37,3 +37,12 @@ export function queueNotify(type, obj) {
   }
   world[type][key] = obj;
 }
+
+export function killDroppedItem(loc, dimension) {
+  const items = dimension.getEntities({
+    location: new Location(loc.x, loc.y, loc.z),
+    maxDistance: 1.5,
+    type: 'minecraft:item'
+  });
+  for (const i of items) i.kill();
+}

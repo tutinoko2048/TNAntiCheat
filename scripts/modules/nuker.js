@@ -1,5 +1,6 @@
 import { system, Player, Location } from '@minecraft/server';
 import { Util } from '../util/util';
+import { killDroppedItem } from './util';
 import config from '../config.js';
 
 export function nukerFlag(player) {
@@ -41,13 +42,4 @@ export function instaBreak(ev) {
     Util.flag(player, 'InstaBreak', config.instaBreak.punishment, `InstaBreakの使用を検知しました (§c${block.typeId}§r) §7[${block.x}, ${block.y}, ${block.z}]`);
     return true;
   }
-}
-
-function killDroppedItem(loc, dimension) {
-  const items = dimension.getEntities({
-    location: new Location(loc.x, loc.y, loc.z),
-    maxDistance: 1.5,
-    type: 'minecraft:item'
-  });
-  for (const i of items) i.kill();
 }
