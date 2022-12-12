@@ -181,12 +181,10 @@ export default
       "minecraft:mule"
     ]
   },
-  reach: { // ブロックの設置/破壊 攻撃の長すぎるリーチを検知 (ベータ)
+  reachA: { // 攻撃の長すぎるリーチを検知 (ベータ)
     state: true,
-    blockReach: 8,
-    attackReach: 6,
-    cancel: true, // ブロックの設置破壊をキャンセル
     punishment: "notify",
+    maxReach: 8,
     excludeCustomEntities: true, // バニラ以外のmobの検知を除外する
     excludeEntities: [ // 除外するエンティティ
       "minecraft:ender_dragon",
@@ -194,6 +192,18 @@ export default
       "minecraft:ghast",
       "minecraft:fireball"
     ]
+  },
+  reachB: { // ブロック設置の長すぎるリーチを検知 (ベータ)
+    state: true,
+    punishment: "notify",
+    maxReach: 8,
+    cancel: true, // ブロックの設置をキャンセル
+  },
+  reachC: { // ブロック破壊の長すぎるリーチを検知 (ベータ)
+    state: true,
+    punishment: "notify",
+    maxReach: 8,
+    cancel: true, // ブロックの破壊をキャンセル
   },
   autoClicker: { // れんつを検知 (ベータ)
     state: true,
