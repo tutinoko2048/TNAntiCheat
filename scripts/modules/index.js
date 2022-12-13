@@ -12,7 +12,7 @@ export * from './combat';
 export * from './nuker';
 
 export function ban(player) {
-  if (unbanQueue.includes(player.name)) {
+  if (unbanQueue.includes(player.name) && Util.isBanned(player)) {
     Util.unban(player);
     Util.notify(`§aUnbanned: ${player.name}`);
     return;
@@ -31,13 +31,17 @@ export function ban(player) {
 }
 
 export function flag(player) { // don't run every tick not to spam
-  if (player.attackReachFlag) {
-    Util.flag(player, 'AttackReach', config.reach.punishment, player.attackReachFlag);
-    player.attackReachFlag = null;
+  if (player.reachAFlag) {
+    Util.flag(player, 'Reach/A', config.reachA.punishment, player.reachAFlag);
+    player.reachAFlag = null;
   }
-  if (player.blockReachFlag) {
-    Util.flag(player, 'BlockReach', config.reach.punishment, player.blockReachFlag);
-    player.blockReachFlag = null;
+  if (player.reachBFlag) {
+    Util.flag(player, 'Reach/B', config.reachB.punishment, player.reachBFlag);
+    player.reachBFlag = null;
+  }
+  if (player.reachCFlag) {
+    Util.flag(player, 'Reach/C', config.reachC.punishment, player.reachCFlag);
+    player.reachCFlag = null;
   }
   if (player.autoClickerFlag) {
     Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
