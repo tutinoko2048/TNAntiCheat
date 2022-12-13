@@ -1,4 +1,4 @@
-import { system, Player, Location } from '@minecraft/server';
+import { system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';

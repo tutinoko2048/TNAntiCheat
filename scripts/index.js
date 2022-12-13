@@ -27,6 +27,7 @@ world.events.dataDrivenEntityTriggerEvent.subscribe(ev => {
   Permissions.add(entity, 'admin');
   
   ac.enable();
+  entity.tell('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
 }, {
   entityTypes: [ 'minecraft:player' ],
   eventTypes: [ 'ac:start' ]

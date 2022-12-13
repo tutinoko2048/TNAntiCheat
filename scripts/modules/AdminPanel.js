@@ -6,6 +6,7 @@ import { properties, ICONS, panelItem } from '../util/constants';
 import chatFilter from '../chat_filter.js';
 import { description } from '../util/config_description';
 import { FORMS, DROPDOWNS } from './static_form';
+import { Permissions } from '../util/Permissions';
 
 const defaultConfig = Util.cloneObject(config);
 const defaultFilter = Util.cloneObject(chatFilter);
@@ -42,9 +43,10 @@ export class AdminPanel {
   }
   
   async playerList() {
+    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '[Builder]' : null;
     const players = world.getAllPlayers();
     const form = new UI.ActionFormData();
-    for (const p of players) form.button(Util.isOP(p) ? `§2[OP]§8 ${p.name}` : p.name);
+    for (const p of players) form.button(viewPermission(p) ? `${viewPermission(p)}§8 ${p.name}` : p.name);
     form.body(`§7Players: §f${players.length}`)
       .title('プレイヤーリスト / Player List')
       .button('戻る / Return', ICONS.returnBtn);
@@ -61,7 +63,7 @@ export class AdminPanel {
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
-      `§7Health: §f${current} / ${value}`,
+      `§7Health: §f${Math.floor(current)} / ${value}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`
     ].join('\n');
@@ -238,7 +240,8 @@ export class AdminPanel {
     const keys = Object.keys(config);
     for (const k of keys) {
       const color = config[k].state ? '§2' : (config[k].state === false ? '§c' : '');
-      form.button(`${color}${k}`);
+      const desc = description[k]?.desc ? `\n§7${description[k].desc}§r` : '';
+      form.button(`${color}§l${k}§r${desc}`);
     }
     form.title('Config Selector')
       .body('編集したいConfigを選択してください')
