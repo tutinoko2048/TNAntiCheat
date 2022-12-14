@@ -18,6 +18,7 @@ export const ICONS = {
   about: 'textures/items/map_locked',
   
   inventory: 'textures/ui/icon_recipe_equipment',
+  permission: 'textures/ui/icon_lock',
   enderchest: 'textures/blocks/ender_chest_front',
   mute: 'textures/ui/mute_on',
   kick: 'textures/ui/friend_glyph_desaturated',

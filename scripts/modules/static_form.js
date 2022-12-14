@@ -13,7 +13,7 @@ export const FORMS = {
   playerInfo: new UI.ActionFormData()
     .title('PlayerInfo')
     .button('§lインベントリを表示 / Show inventory', ICONS.inventory)
-    .button('§l権限を管理 / Manage permissions')
+    .button('§l権限を管理 / Manage permissions', ICONS.permission)
     .button('§lミュートする / Mute', ICONS.mute)
     .button('§lkickする / Kick', ICONS.kick)
     .button('§lbanする / Ban', ICONS.ban)
