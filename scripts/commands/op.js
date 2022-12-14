@@ -16,12 +16,12 @@ export default {
       if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
       if (Util.isOP(player)) throw new CommandError(`${player.name} は既に権限を持っています`);
       Permissions.add(player, 'admin');
-      Util.notify(`§e${player.name} に管理者権限を与えました`);
+      Util.notify(`§7${sender.name} >> §e${player.name} に管理者権限を与えました`);
       
     } else {
       if (Util.isOP(sender)) throw new CommandError(`${sender.name} は既に権限を持っています`);
       Permissions.add(sender, 'admin');
-      Util.notify(`§e${sender.name} に管理者権限を与えました`);
+      Util.notify(`§7${sender.name} >> §e${sender.name} に管理者権限を与えました`);
     }
   }
 }
