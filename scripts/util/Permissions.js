@@ -27,6 +27,11 @@ export class Permissions {
       || config.permission[permission].ids?.includes(player.id)
   }
   
+  static set(player, permission, value) {
+    if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
+    value ? this.add(player, permission) : this.remove(player, permission);
+  }
+  
   static getTagString(player, permission) {
     return config.permission[permission].encrypt
       ? `ac:§k${encode(permission+player.id)}`

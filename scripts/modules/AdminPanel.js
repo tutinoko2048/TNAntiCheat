@@ -71,20 +71,21 @@ export class AdminPanel {
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.showInventory(player);
-    if (selection === 1) return await this.toggleMute(player);
-    if (selection === 2) return await this.kickPlayer(player);
-    if (selection === 3) return await this.banPlayer(player);
-    if (selection === 4) {
+    if (selection === 1) return await this.managePermission(player);
+    if (selection === 2) return await this.toggleMute(player);
+    if (selection === 3) return await this.kickPlayer(player);
+    if (selection === 4) return await this.banPlayer(player);
+    if (selection === 5) {
       this.player.teleport(player.location, player.dimension, player.rotation.x, player.rotation.y);
       Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
     }
-    if (selection === 5) {
+    if (selection === 6) {
       player.teleport(this.player.location, this.player.dimension, this.player.rotation.x, this.player.rotation.y);
       Util.notify(`${player.name} §rをテレポートさせました`, this.player);
     }
-    if (selection === 6) return await this.showTags(player);
-    if (selection === 7) return await this.showScores(player);
-    if (selection === 8) return await this.playerList();
+    if (selection === 7) return await this.showTags(player);
+    if (selection === 8) return await this.showScores(player);
+    if (selection === 9) return await this.playerList();
   }
   
   async showInventory(player) {
@@ -150,6 +151,27 @@ export class AdminPanel {
       Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
+  }
+  
+  async managePermission(player) {
+    const _builder = Permissions.has(player, 'builder');
+    const _admin = Permissions.has(player, 'admin');
+    const form = new UI.ModalFormData();
+    form.title('Manage Permissions')
+      .toggle('§l§eBuilder§r - クリエイティブを許可します', _builder)
+      .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', _admin)
+    const { canceled, formValues } = await form.show(this.player);
+    if (canceled) return;
+    const [ builder, admin ] = formValues;
+    if (builder != _builder) {
+      Permissions.set(player, 'builder', builder);
+      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a' : '§c'}${builder}§e に設定しました`);
+    }
+    
+    if (admin != _admin) {
+      Permissions.set(player, 'admin', admin);
+      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a' : '§c'}${admin}§e に設定しました`);
+    }
   }
   
   async toggleMute(player) {
