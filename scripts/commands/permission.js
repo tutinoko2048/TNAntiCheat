@@ -19,21 +19,21 @@ export default {
       
     } else if (subcmd === 'add') {
       const player = playerName ? Util.getPlayerByName(playerName) : sender;
-      if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-      if (!Permissions.isValid(type)) throw new CommandError(`権限 ${type} は有効な値ではありません\n§f- !permission add <builder|admin> [name: playerName]`);
+      if (!player) throw new CommandError(`プレイヤー "${playerName}" は見つかりませんでした`);
+      if (!Permissions.isValid(type)) throw new CommandError(`権限 "${type}" は有効な値ではありません\n§f- !permission add <builder|admin> [name: playerName]`);
       if (Permissions.has(player, type)) throw new CommandError(`${player.name} は既に権限を持っています`);
       Permissions.add(player, type);
       Util.notify(`§7${sender.name} >> §e${player.name} に permission:${type} を付与しました`);
       
     } else if (subcmd === 'remove') {
       const player = playerName ? Util.getPlayerByName(playerName) : sender;
-      if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-      if (!Permissions.isValid(type)) throw new CommandError(`権限 ${type} は有効な値ではありません\n§f- !permission remove <builder|admin> [name: playerName]`);
+      if (!player) throw new CommandError(`プレイヤー "${playerName}" は見つかりませんでした`);
+      if (!Permissions.isValid(type)) throw new CommandError(`権限 "${type}" は有効な値ではありません\n§f- !permission remove <builder|admin> [name: playerName]`);
       if (!Permissions.has(player, type)) throw new CommandError(`${player.name} は権限を持っていません`);
       Permissions.remove(player, type);
       Util.notify(`§7${sender.name} >> §e${player.name} から permission:${type} を剥奪しました`);
     } else {
-      throw new CommandError('!permission <list|add|remove>')
+      throw new CommandError(`サブコマンド "${subcmd}" は有効な値ではありません\n§f- !permission <list|add|remove>`);
     }
   }
 }

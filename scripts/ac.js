@@ -106,7 +106,7 @@ export class TNAntiCheat {
   
   #chatHandler(ev) {
     const tooFast = modules.spammerC(ev);
-    if (!tooFast && this.commands.isCommand(ev.message)) this.commands.handle(ev);
+    if (!tooFast && this.commands.isCommand(ev.message)) return this.commands.handle(ev);
     
     !tooFast &&
     !modules.spammerA(ev) &&

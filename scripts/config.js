@@ -84,7 +84,7 @@ export default
   },
   spammerC: { // チャットの速さをチェック
     state: true,
-    minInterval: 2000 // ミリ秒で指定 1000ms = 1s
+    minInterval: 1500 // ミリ秒で指定 1000ms = 1s
   },
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,

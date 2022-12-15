@@ -10,8 +10,8 @@ export default {
 }
 
 function getColor(tps) {
-  if (tps > 18) return '§a';
-  if (tps > 14) return '§e';
-  if (tps > 8) return '§6';
+  if (tps >= 18) return '§a';
+  if (tps >= 14) return '§e';
+  if (tps >= 8) return '§6';
   return '§c';
 }
