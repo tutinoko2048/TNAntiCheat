@@ -13,7 +13,8 @@ export default {
   aliases: [ 'permissions', 'perm', 'perms' ],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
-    const [ subcmd, type, playerName ] = args;
+    const [ subcmd, type, _playerName ] = args;
+    const playerName = Util.parsePlayerName(_playerName);
     if (subcmd === 'list') {
       sender.tell(`§aPermissions:§r\n${Permissions.list().map(p => `- ${p}`).join('\n')}`);
       
@@ -32,6 +33,7 @@ export default {
       if (!Permissions.has(player, type)) throw new CommandError(`${player.name} は権限を持っていません`);
       Permissions.remove(player, type);
       Util.notify(`§7${sender.name} >> §e${player.name} から permission:${type} を剥奪しました`);
+      
     } else {
       throw new CommandError(`サブコマンド "${subcmd}" は有効な値ではありません\n§f- !permission <list|add|remove>`);
     }

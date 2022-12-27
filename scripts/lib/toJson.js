@@ -1,5 +1,9 @@
 // gametest-utility-library https://github.com/Lapis256/gametest-utility-library/blob/main/src/debug/toJson.js
 
+const blueRegex = /(true|false|undefined|null)/g;
+const numberRegex = /:\s*([\d|\.|-]+)/g;
+const orangeRegex = /(\{|\})/g;
+
 function isClass(obj) {
     return obj.toString().startsWith("class ");
 }
@@ -42,5 +46,8 @@ export default function toJson(data, indent = 2, ignoreFunction = false) {
             default:
                 return value;
         }
-    }, indent).replace(/(true|false|\d+|-\d+)/g, '§b$1§r').replace(/(\{|\})/g, '§6$1§r');
+    }, indent)
+      .replace(blueRegex, '§b$1§r')
+      .replace(orangeRegex, '§6$1§r')
+      .replace(numberRegex, ': §b$1§r');
 }

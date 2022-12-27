@@ -113,9 +113,15 @@ export class Util {
     return str.length > length ? `${str.slice(0,length)}...` : str;
   }
   
-  static splitNicely(str) {
+  static splitNicely(str, noquote = true) {
     const split = str.split(/(?<!['"]\w+) +(?!\w+['"])/);
-    return split.map(x => x.replace(/^"(.*)"$/g, '$1'));
+    return noquote ? split.map(x => x.replace(/^"(.*)"$/g, '$1')) : split;
+  }
+  
+  static parsePlayerName(str) {
+    if (!str) return;
+    if (str.startsWith('@')) str = str.slice(1);
+    return str.replace(/"(.*)"/, '$1');
   }
   
   static distance(vec1, vec2) {

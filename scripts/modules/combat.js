@@ -45,16 +45,17 @@ export function reachC(ev) { // destruction
 export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
   if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;
-   entity.cps ??= [];
+  entity.cps ??= [];
   
-  if (entity.lastHitAt && Date.now() - entity.lastHitAt < 1000) {
-    const cps = 1000 / (Date.now() - entity.lastHitAt);
+  const time = Date.now() - entity.lastHitAt;
+  if (entity.lastHitAt && 1 < time && time < 500) {
+    const cps = 1000 / time;
     if (cps === Infinity) return;
     if (entity.cps.length > 4) entity.cps.shift();
     entity.cps.push(cps);
     const avg = Util.average(entity.cps);
     if (entity.cps.length > 1 && avg > config.autoClicker.maxCPS)
-      entity.autoClickerFlag = `高いCPSを検知しました: §c${avg.toFixed(1)}clicks/s`;
+      entity.autoClickerFlag = `高いCPSを検知しました (${avg.toFixed(1)}clicks/s)`;
   }
   entity.lastHitAt = Date.now();
 }

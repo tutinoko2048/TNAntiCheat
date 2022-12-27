@@ -95,10 +95,17 @@ export const description = {
     detect: '検知するインベントリ付きブロックのID'
   },
   placeCheckC: {
-    desc: '設置時にブロックのデータをリセットします (ディスペンサーNBT対策)',
+    desc: '設置時にブロックのデータをリセットします',
     state: '有効/無効の設定',
     excludeCreative: 'クリエの人は除外する',
     detect: '検知するブロックのID'
+  },
+  placeCheckD: {
+    desc: '設置時にエンティティのデータをリセットします',
+    state: '有効/無効の設定',
+    excludeCreative: 'クリエの人は除外する',
+    minecarts: '検知するトロッコ',
+    boats: '検知するボート(チェスト付き)'
   },
   entityCheckA: {
     desc: '指定されたエンティティのスポーンを検知',
@@ -158,6 +165,14 @@ export const description = {
     state: '有効/無効の設定',
     punishment: '検知された場合の対応',
     defaultGamemode: '検知した時に設定するGamemode'
+  },
+  speedA: {
+    desc: '速すぎる移動を検知 (ベータ)',
+    state: '有効/無効の設定',
+    punishment: '検知された場合の対応',
+    flagCount: 'Flagするまでの検知回数 (-1で無制限)',
+    maxVelocity: '許容するスピードの最大値',
+    rollback: '検知した時に前いた位置までテレポートする'
   },
   others: {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',

@@ -317,7 +317,7 @@ export class AdminPanel {
     } else if (typeof data[key] == 'object') {
       data[key] = await this.selectKey(moduleName, data[key], false);
     } else {
-      data[key] = await this.editValue(data[key], key);
+      data[key] = await this.editValue(data[key], key, false);
     }
     return data;
   }
@@ -363,7 +363,7 @@ export class AdminPanel {
         form.textField(key, '<String>');
         break;
     }
-    if (deletable) form.toggle('§l§cこの値を削除する', false);
+    if (deletable && value !== undefined) form.toggle('§l§cこの値を削除する', false);
     const { formValues, canceled } = await form.show(this.player);
     if (canceled) return value;
     if (formValues[1]) return null;

@@ -56,8 +56,7 @@ export default
       "minecraft:respawn_anchor",
       "minecraft:tnt",
       "minecraft:bedrock",
-      "minecraft:barrier",
-      "minecraft:mob_spawner"
+      "minecraft:barrier"
     ]
   },
   crasher: {
@@ -145,7 +144,39 @@ export default
       "minecraft:hopper",
       "minecraft:dropper",
       "minecraft:dispenser",
-      "minecraft:barrel"
+      "minecraft:barrel",
+      "minecraft:frame",
+      "minecraft:glow_frame",
+      "minecraft:jukebox",
+      "minecraft:smoker",
+      "minecraft:lit_smoker",
+      "minecraft:furnace",
+      "minecraft:lit_furnace",
+      "minecraft:blast_furnace",
+      "minecraft:lit_blast_furnace",
+      "minecraft:brewing_stand",
+      "minecraft:campfire",
+      "minecraft:soul_campfire",
+      "minecraft:flower_pot",
+      "minecraft:mob_spawner"
+    ]
+  },
+  placeCheckD: { // 設置時に指定したエンティティのデータをクリア
+    state: true,
+    excludeCreative: false,
+    minecarts: [ // レールの上限定
+      "minecraft:hopper_minecart",
+      "minecraft:chest_minecart"
+    ],
+    boats: [
+      "minecraft:chest_boat",
+      "minecraft:acacia_chest_boat",
+      "minecraft:birch_chest_boat",
+      "minecraft:dark_oak_chest_boat",
+      "minecraft:jungle_chest_boat",
+      "minecraft:mangrove_chest_boat",
+      "minecraft:oak_chest_boat",
+      "minecraft:spruce_chest_boat"
     ]
   },
   entityCheckA: { // いたらkill
@@ -207,13 +238,20 @@ export default
   },
   autoClicker: { // れんつを検知 (ベータ)
     state: true,
-    maxCPS: 20,
+    maxCPS: 22,
     punishment: "notify"
   },
   creative: { // クリエイティブになったら検知
     state: true,
     punishment: "notify",
     defaultGamemode: "adventure" // クリエを検知した時に設定するGamemode
+  },
+  speedA: { // 速すぎる移動を検知 (ベータ)
+    state: true,
+    punishment: "tempkick",
+    flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
+    maxVelocity: 2.0,
+    rollback: true
   },
   others: {
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム

@@ -9,8 +9,9 @@ export default {
   aliases: [ 'muto', 'myuto' ],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
-    const [ playerName, value ] = args;
-    if (!playerName) throw new CommandError('プレイヤー名を入力してください');
+    const [ _playerName, value ] = args;
+    if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
+    const playerName = Util.parsePlayerName(_playerName);
     
     const player = Util.getPlayerByName(playerName);
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);

@@ -14,20 +14,26 @@ export class TNAntiCheat {
   #joinedPlayers;
   #deltaTimes;
   #lastTick;
+  #isEnabled;
   
   constructor() {
     console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
     this.startTime = Date.now();
     this.#deltaTimes = [];
     this.#lastTick;
+    this.#isEnabled;
     
     this.commands = new CommandManager(this);
   }
   
   enable() {
+    if (this.#isEnabled) throw new Error('TN-AntiCheat has already enabled');
+    this.#isEnabled = true;
+    
     world.say(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
     this.#loadConfig();
     this.#loadFilter();
+    this.#checkPlayerJson();
     
     system.runSchedule(() => { 
       if (config.entityCheckC.state) {
@@ -44,10 +50,13 @@ export class TNAntiCheat {
         modules.itemCheck(player);
         modules.nukerFlag(player);
         modules.creative(player); 
+        modules.speedA(player);
         
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         
         player.breakCount = 0;
+        player.lastLocation = player.location;
+        player.lastDimension = player.dimension;
       }
   
       const now = Date.now();
@@ -71,6 +80,7 @@ export class TNAntiCheat {
     world.events.beforeItemUseOn.subscribe(ev => {
       modules.placeCheckA(ev);
       modules.reachB(ev);
+      modules.placeCheckD(ev);
     });
     
     world.events.blockPlace.subscribe(ev => {
@@ -169,11 +179,24 @@ export class TNAntiCheat {
     if (config.others.debug) console.warn('[DEBUG] loaded ChatFilter data');
   }
   
+  #checkPlayerJson() { // checks player.json conflict
+    const variant = world.getAllPlayers()[0].getComponent('minecraft:variant').value;
+    if (variant !== 2048) {
+      config.speedA.state = false;
+      Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました');
+      console.warn('disabled: Speed/A, tempkick');
+    }
+  }
+  
   getTPS() {
     return Math.min(
       Util.average(this.#deltaTimes.map(n => 1000 / n)),
       20
     );
+  }
+  
+  get isEnabled() {
+    return this.#isEnabled;
   }
 }
 

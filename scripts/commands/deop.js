@@ -10,18 +10,11 @@ export default {
   aliases: [],
   permission: (player) => player.isOp(),
   func: (sender, args) => {
-    const [ playerName ] = args;
-    if (playerName) {
-      const player = Util.getPlayerByName(playerName);
-      if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-      if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
-      Permissions.remove(player, 'admin');
-      Util.notify(`§e${player.name} の管理者権限を削除しました`);
-      
-    } else {
-      if (!Util.isOP(sender)) throw new CommandError(`${sender.name} は権限を持っていません`);
-      Permissions.remove(sender, 'admin');
-      Util.notify(`§e${sender.name} の管理者権限を削除しました`);
-    }
+    const playerName = Util.parsePlayerName(args[0]);
+    const player = playerName ? Util.getPlayerByName(playerName) : sender;
+    if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
+    if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
+    Permissions.remove(player, 'admin');
+    Util.notify(`§e${player.name} の管理者権限を削除しました`);
   }
 }

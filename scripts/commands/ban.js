@@ -8,8 +8,10 @@ export default {
   aliases: [],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
-    const [ playerName, reason, expect ] = args;
-    if (!playerName) throw new CommandError('プレイヤー名を入力してください');
+    const [ _playerName, reason, expect ] = args;
+    if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
+    const playerName = Util.parsePlayerName(_playerName);
+    
     const player = Util.getPlayerByName(playerName, expect === 'true');
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
     if (sender.name === player.name) throw new CommandError('自分をbanすることはできません');

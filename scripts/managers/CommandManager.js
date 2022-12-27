@@ -23,7 +23,7 @@ export class CommandManager extends BaseManager {
     const { message, sender } = ev;
     if (!this.isCommand(message)) return;
     ev.cancel = true;
-    
+
     const [ commandName, ...args ] = Util.splitNicely(message.slice(this.prefix.length));
     const command = this.getCommand(commandName);
     if (!command) return sender.tell('[CommandManager] §cError: コマンドが見つかりませんでした');

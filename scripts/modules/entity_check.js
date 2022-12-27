@@ -1,13 +1,14 @@
-import { world } from '@minecraft/server';
+import { world, Location } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { isIllegalItem, isSpawnEgg, queueNotify } from './util';
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
+const hasInventory = ['minecraft:hopper_minecart', 'minecraft:chest_minecart'];
 
 export function entityCheck(entity) {
   const { typeId, location } = entity;
-  
+
   if (config.entityCheckC.state) {
   
     if (typeId == 'minecraft:arrow') {
@@ -45,11 +46,16 @@ export function entityCheck(entity) {
 }
 
 function entityCheckD(container) {
+  if (!container) return;
+
   for (let i = 0; i < container.size; i++) {
     const item = container.getItem(i);
     if (
       isIllegalItem(item?.typeId) ||
       (config.entityCheckD.spawnEgg && isSpawnEgg(item?.typeId))
-    ) container.clearItem(i);
+    ) {
+      container.clearItem(i);
+      if (config.others.debug) console.warn(`EntityCheck/D cleared: ${item.typeId}`);
+    }
   }
 }

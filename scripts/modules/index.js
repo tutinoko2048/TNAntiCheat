@@ -10,6 +10,7 @@ export * from './place_check';
 export * from './entity_check';
 export * from './combat';
 export * from './nuker';
+export * from './movement';
 
 export function ban(player) {
   if (unbanQueue.includes(player.name) && Util.isBanned(player)) {
@@ -46,6 +47,10 @@ export function flag(player) { // don't run every tick not to spam
   if (player.autoClickerFlag) {
     Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
     player.autoClickerFlag = null;
+  }
+  if (player.speedAFlag) {
+    Util.notify(player.speedAFlag);
+    player.speedAFlag = null;
   }
 }
 
