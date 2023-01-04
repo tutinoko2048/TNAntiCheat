@@ -3,6 +3,7 @@ import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
+import  { properties } from '../util/constants';
 
 export * from './item_check';
 export * from './spammer';
@@ -20,13 +21,14 @@ export function ban(player) {
   }
   
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
-    Util.notify(`Kicked §l§c${player.name}§r\n§7Reason:§r ban`);
-    return Util.ban(player);
+    Util.notify(`Kicked §l§c${player.name}§r\n§7Reason:§r You are banned by admin`);
+    const reason = player.getDynamicProperty(properties.banReason) ?? '-';
+    return Util.kick(player, reason, true);
   }
   
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
     player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
-      Util.notify(`BANリストに含まれるXUID: §c${xuid} のプレイヤーをキックしました`);
+      Util.notify(`BANリストに含まれる XUID: §c${xuid} のプレイヤーをキックしました`);
     });
   }
 }
