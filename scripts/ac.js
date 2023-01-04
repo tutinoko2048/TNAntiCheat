@@ -73,7 +73,7 @@ export class TNAntiCheat {
     
     world.events.beforeChat.subscribe(ev => this.#chatHandler(ev));
     
-    world.events.entityCreate.subscribe(ev => {
+    world.events.entitySpawn.subscribe(ev => {
       modules.entityCheck(ev.entity);
     });
     
@@ -111,7 +111,9 @@ export class TNAntiCheat {
       }
     });
     
-    events.playerSpawn.subscribe(ev => this.#joinHandler(ev.player));
+    world.events.playerSpawn.subscribe(ev => {
+      if (ev.initialSpawn) this.#joinHandler(ev.player);
+    });
   }
   
   #chatHandler(ev) {

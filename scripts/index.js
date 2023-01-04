@@ -3,10 +3,9 @@ import { TNAntiCheat } from './ac';
 import { events } from './lib/events/index';
 import { properties } from './util/constants';
 import { Permissions } from './util/Permissions';
-import './lib/timer.js';
 import './system/dog.js';
 import './system/register_properties.js';
-import './system/polyfill.js';
+//import './system/polyfill.js'; // not needed after 1.19.60
 
 const ac = new TNAntiCheat();
 events.worldLoad.subscribe(() => {
@@ -20,15 +19,19 @@ events.worldLoad.subscribe(() => {
 world.events.dataDrivenEntityTriggerEvent.subscribe(ev => {
   const { entity, id } = ev;
   if (!(entity instanceof Player) || id != 'ac:start') return;
+  start(entity);
   
-  if (world.getDynamicProperty(properties.ownerId)) return entity.tell('TNAC is already registered!');
-  
-  world.setDynamicProperty(properties.ownerId, entity.id);
-  Permissions.add(entity, 'admin');
-  
-  ac.enable();
-  entity.tell('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
 }, {
   entityTypes: [ 'minecraft:player' ],
   eventTypes: [ 'ac:start' ]
 });
+
+function start(player) {
+  if (world.getDynamicProperty(properties.ownerId)) return player.tell('TNAC is already registered!');
+  
+  world.setDynamicProperty(properties.ownerId, player.id);
+  Permissions.add(player, 'admin');
+  
+  ac.enable();
+  player.tell('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
+}

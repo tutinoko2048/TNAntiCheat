@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/tutinoko2048/TNAntiCheat/issues"
   },
-  "homepage": "https://github.com/tutinoko2048/TNAntiCheat/blob/main/README.md"
+  "homepage": "https://github.com/tutinoko2048/TNAntiCheat/blob/main/README.md",
+  "devDependencies": {
+    "eslint": "^8.31.0"
+  }
 }

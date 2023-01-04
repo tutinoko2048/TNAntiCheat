@@ -5,7 +5,7 @@
     "description": "AntiCheat with ScriptAPI\n軽量で使いやすいアンチチートアドオンです\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
     "version": "3.1.0-beta",
-    "min_engine_version": [ 1, 19, 50 ]
+    "min_engine_version": [ 1, 19, 60 ]
   },
   "modules": [
     {
