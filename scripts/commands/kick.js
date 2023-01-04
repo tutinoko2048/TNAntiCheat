@@ -8,7 +8,7 @@ export default {
   aliases: [],
   permission: (player) => Util.isOP(player),
   func: (sender, args) => {
-    const [ _playerName, reason, expect ] = args;
+    const [ _playerName, reason = '-', expect ] = args;
     if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
     const playerName = Util.parsePlayerName(_playerName);
     

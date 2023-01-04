@@ -48,14 +48,16 @@ export function autoClicker(ev) {
   entity.cps ??= [];
   
   const time = Date.now() - entity.lastHitAt;
-  if (entity.lastHitAt && 1 < time && time < 500) {
+  if (entity.lastHitAt && 1 < time) {
     const cps = 1000 / time;
     if (cps === Infinity) return;
-    if (entity.cps.length > 4) entity.cps.shift();
+    if (entity.cps.length > 5) entity.cps.shift();
     entity.cps.push(cps);
-    const avg = Util.average(entity.cps);
-    if (entity.cps.length > 1 && avg > config.autoClicker.maxCPS)
+    const avg = Util.median(entity.cps);
+    if (entity.cps.length > 3 && avg > config.autoClicker.maxCPS) {
       entity.autoClickerFlag = `高いCPSを検知しました (${avg.toFixed(1)}clicks/s)`;
+      entity.cps = [];
+    }
   }
   entity.lastHitAt = Date.now();
 }

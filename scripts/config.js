@@ -199,7 +199,7 @@ export default
   entityCheckC: { // 1tickにスポーンできるエンティティの数
     state: true,
     maxArrowSpawns: 10, // 矢の数
-    maxItemSpawns: 20, // アイテムの数
+    maxItemSpawns: 100, // アイテムの数
     maxCmdMinecartSpawns: 3
   },
   entityCheckD: { // エンティティのインベントリの中をチェック

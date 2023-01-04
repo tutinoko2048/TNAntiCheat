@@ -33,7 +33,7 @@ export class Util {
       this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'tempkick') {
-      player.triggerEvent('tn:kick');
+      Util.disconnect(player);
       this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
       
     } else if (punishment === 'notify') {
@@ -65,6 +65,11 @@ export class Util {
     }
   }
   
+  static disconnect(player) {
+    if (Util.isOwner(player)) return console.warn('cannot disconnect owner');
+    player.triggerEvent('tn:kick');
+  }
+  
   static notify(message, target) {
     const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
     if (target instanceof Player) {
@@ -91,7 +96,6 @@ export class Util {
   static isOP(player) {
     return player && player.typeId === 'minecraft:player' && player.isOp() && Permissions.has(player, 'admin');
   }
-  
   
   static isHost(player) {
     return player.id === '-4294967295';
