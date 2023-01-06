@@ -1,4 +1,4 @@
-import { world, Player } from '@minecraft/server';
+import { world, system, Player } from '@minecraft/server';
 import { TNAntiCheat } from './ac';
 import { events } from './lib/events/index';
 import { properties } from './util/constants';
@@ -24,6 +24,14 @@ world.events.dataDrivenEntityTriggerEvent.subscribe(ev => {
 }, {
   entityTypes: [ 'minecraft:player' ],
   eventTypes: [ 'ac:start' ]
+});
+
+system.events.scriptEventReceive.subscribe(ev => {
+  const { id, sourceEntity } = ev;
+  if (!(sourceEntity instanceof Player) || id != 'ac:start') return;
+  start(sourceEntity);
+}, {
+  namespaces: [ 'ac' ]
 });
 
 function start(player) {

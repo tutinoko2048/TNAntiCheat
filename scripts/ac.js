@@ -1,12 +1,12 @@
 import { world, system, Player } from '@minecraft/server';
 import { VERSION, properties } from './util/constants';
-import { events } from './lib/events/index';
 import config from './config.js';
 import chatFilter from './chat_filter.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
+import { Data } from 'util/Data';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -31,6 +31,7 @@ export class TNAntiCheat {
     this.#isEnabled = true;
     
     world.say(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
+    world.say('§7このワールドは TN-AntiCheat によって保護されています');
     this.#loadConfig();
     this.#loadFilter();
     this.#checkPlayerJson();
@@ -55,8 +56,6 @@ export class TNAntiCheat {
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         
         player.breakCount = 0;
-        player.lastLocation = player.location;
-        player.lastDimension = player.dimension;
       }
   
       const now = Date.now();
@@ -88,31 +87,29 @@ export class TNAntiCheat {
       modules.placeCheckC(ev);
     });
     
-    world.events.entityHit.subscribe(ev => {
-      modules.reachA(ev);
-      modules.autoClicker(ev);
-      if (
-        ev.entity instanceof Player &&
-        ev.hitEntity instanceof Player &&
-        Util.isOP(ev.entity) && 
-        AdminPanel.isPanelItem(Util.getHoldingItem(ev.entity))
-      ) new AdminPanel(this, ev.entity).playerInfo(ev.hitEntity); // show playerInfo
-      
-    }, entityOption);
-    
     world.events.beforeItemUse.subscribe(ev => {
       if (
         ev.source instanceof Player &&
         Util.isOP(ev.source) &&
         AdminPanel.isPanelItem(ev.item)
       ) {
-        new AdminPanel(this, ev.source).show(); // show AdminPanel
+        const target = ev.source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
+        if (target instanceof Player) new AdminPanel(this, ev.source).playerInfo(target); // show playerInfo
+        else new AdminPanel(this, ev.source).show(); // show AdminPanel
         ev.cancel = true;
       }
     });
     
     world.events.playerSpawn.subscribe(ev => {
       if (ev.initialSpawn) this.#joinHandler(ev.player);
+    });
+    
+    system.events.scriptEventReceive.subscribe(ev => {
+      const { id, sourceEntity, message, sourceType } = ev;
+      if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
+      this.commands.handle({ sender: sourceEntity, message }, true);
+    }, {
+      namespaces: [ 'ac' ]
     });
   }
   
@@ -138,17 +135,8 @@ export class TNAntiCheat {
   
   #loadConfig() {
     const data = this.#getConfig();
-    for (const [k, v] of Object.entries(data)) {
-      if (k === 'itemList') {
-        for (const [type, array] of Object.entries(v)) {
-          if (config.others.debug) console.warn(`[DEBUG] config.itemList.${type} = ${JSON.stringify(array, null, 2)}`);
-          config.itemList[type] = array;
-        }
-      } else {
-        if (config.others.debug) console.warn(`[DEBUG] config.${k} = ${JSON.stringify(v, null, 2)}`);
-        config[k] = v;
-      }
-    }
+    Data.patch(data, 'config');
+    if (config.others.debug) console.warn('[DEBUG] loaded Config data');
   }
   
   #getConfig() {
@@ -175,9 +163,7 @@ export class TNAntiCheat {
   
   #loadFilter() {
     const data = JSON.parse(world.getDynamicProperty(properties.chatFilter) ?? "{}");
-    for (const [k,v] of Object.entries(data)) {
-      chatFilter[k] = v;
-    }
+    Data.patch(data, 'filter');
     if (config.others.debug) console.warn('[DEBUG] loaded ChatFilter data');
   }
   
