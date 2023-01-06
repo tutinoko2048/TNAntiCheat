@@ -13,5 +13,5 @@ export const COMMANDS = [
   'tps',
   'permission',
   'unban',
-  'runjs', // for debug
+  //'runjs', // for debug
 ]
