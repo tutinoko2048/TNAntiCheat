@@ -49,11 +49,13 @@ function enchantCheck(item, container, slot, player) {
   }
   if (checked.length > 0) {
     enchantment.enchantments = enchantments;
-    container.setItem(slot, item);
+    if (config.itemCheckD.clearItem) container.clearItem(slot)
+    else container.setItem(slot, item);
+    
     const msg = checked.map(e => `- §7ID: §9${e.id}§7, Level: §9${e.level}§r`);
     const safeMessage = msg.length > 3
       ? msg.slice(0,3).join('\n') + `\n§7${msg.length - 3} more illegal enchants...`
       : msg.join('\n');
-    Util.flag(player, 'ItemCheck/D', config.itemCheckD.punishment, `不正なエンチャントを検知しました (§c${item.typeId}§f)\n${safeMessage}`);
+    Util.flag(player, 'ItemCheck/D', config.itemCheckD.punishment, `不正なエンチャントレベルを検知しました (§c${item.typeId}§f)\n${safeMessage}`);
   }
 }

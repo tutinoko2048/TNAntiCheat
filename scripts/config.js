@@ -121,12 +121,14 @@ export default
   itemCheckD: { // 不正なエンチャントを検知
     state: true,
     mode: "hand", // inventory: 全インベントリをチェックするから負荷大きめ, hand: 手持ちだけ検知だからまだまし
-    punishment: "notify"
+    punishment: "notify",
+    clearItem: false
   },
   placeCheckA: { // 置いたら検知 アイテムはitemList参照
     state: true,
     notifyCreative: true, // クリエの人は削除だけしてbanやkickはしない
     antiShulker: false, // シュルカーボックスの設置をキャンセル
+    shulkerExcludes: [] // シュルカー禁止を除外するタグ
   },
   placeCheckB: { // 置いたときに中身をチェック 一部ブロックは非対応 アイテムはitemList参照
     state: true,

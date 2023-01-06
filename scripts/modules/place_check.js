@@ -10,7 +10,12 @@ export function placeCheckA(ev) {
     ev.cancel = true;
     Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
   }
-  if (config.placeCheckA.antiShulker && isShulkerBox(item?.typeId)) {
+  
+  if (
+    config.placeCheckA.antiShulker &&
+    isShulkerBox(item?.typeId) && 
+    !config.placeCheckA.shulkerExcludes.some(t => source.hasTag(t))
+  ) {
     Util.notify(`§c${item.typeId}§f の使用は許可されていません`, source);
     ev.cancel = true;
   }
