@@ -5,13 +5,18 @@ import config from '../config.js';
 const excluded = [ GameMode.creative, GameMode.spectator ];
 
 export function speedA(player) {
+  if (!config.speedA.state) return;
+  
+  player.lastLocation = player.location;
+  player.lastDimension = player.dimension;
+  
   const { x, y, z } = player.velocity;
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
   // for debugging
   //if (player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nriding: ${color(player.hasTag('ac:is_riding'))}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
   
-  if (!config.speedA.state || Util.isOP(player)) return;
   if (
+    Util.isOP(player) ||
     excluded.includes(Util.getGamemode(player)) ||
     player.getEffect(MinecraftEffectTypes.speed) ||
     !player.hasTag('ac:on_ground') ||

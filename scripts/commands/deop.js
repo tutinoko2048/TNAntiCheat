@@ -15,6 +15,6 @@ export default {
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
     if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
     Permissions.remove(player, 'admin');
-    Util.notify(`§e${player.name} の管理者権限を削除しました`);
+    Util.notify(`§7${sender.name} >> §e${player.name} の管理者権限を削除しました`);
   }
 }
