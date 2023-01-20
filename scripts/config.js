@@ -118,11 +118,16 @@ export default
     punishment: "notify",
     maxAmount: 64
   },
-  itemCheckD: { // 不正なエンチャントを検知
+  itemCheckD: { // 不正なエンチャントレベルを検知
     state: true,
     mode: "hand", // inventory: 全インベントリをチェックするから負荷大きめ, hand: 手持ちだけ検知だからまだまし
     punishment: "notify",
     clearItem: false
+  },
+  itemCheckE: { // エンチャント不可能なアイテムにエンチャントがついていたら検知
+    state: true,
+    punishment: "notify",
+    clearItem: true
   },
   placeCheckA: { // 置いたら検知 アイテムはitemList参照
     state: true,
@@ -259,6 +264,7 @@ export default
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
-    debug: false
+    debug: false,
+    fixBDS: false // BDSで使う場合はオンにしてください
   }
 }
