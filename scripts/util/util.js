@@ -66,7 +66,7 @@ export class Util {
   }
   
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('discinnect fauled: cannot disconnect owner');
+    if (Util.isOwner(player)) return console.warn('discinnect failed: cannot disconnect owner');
     player.triggerEvent('tn:kick');
   }
   
