@@ -195,7 +195,7 @@ export class AdminPanel {
     const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にkickしますか？`, '§lはい / YES', '§lいいえ / NO');
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
-      Util.kick(player, 'Reason: -\n(from AdminPanel)');
+      Util.kick(player, '-');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
     } else return await this.playerInfo(player);
   }
@@ -204,7 +204,7 @@ export class AdminPanel {
     const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にbanしますか？`, '§lはい / YES', '§lいいえ / NO');
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
-      Util.ban(player, 'Reason: -\n(from AdminPanel)');
+      Util.ban(player, '-', '(from AdminPanel)');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
     } else return await this.playerInfo(player);
   }
@@ -221,11 +221,6 @@ export class AdminPanel {
   }
   
   async showScores(player) {
-    const getScore = (obj, p) => {
-      try { 
-        return obj.getScore(p.scoreboard);
-      } catch { return null }
-    }
     const messages = world.scoreboard
       .getObjectives()
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
@@ -487,7 +482,9 @@ function isChanged(data1, data2) { // compare objects
 }
 
 function getPreview(value) {
-  return ['string', 'number', 'boolean'].includes(typeof value) ? value : `[${typeof value}]`
+  return ['string', 'number', 'boolean'].includes(typeof value)
+    ? value
+    : (Array.isArray(value) ? `array(${value.length})` : `[${typeof value}]`)
 }
 
 function toNumber(value) {
@@ -496,7 +493,7 @@ function toNumber(value) {
 
 function descriptionBuilder(moduleName) {
   if (!description[moduleName]) return;
-  const _module = description[moduleName]
+  const _module = description[moduleName];
   return Object.keys(description[moduleName])
     .map(k => k == 'desc' ? _module[k] : `- ${k}: ${_module[k]}`)
     .join('\n');

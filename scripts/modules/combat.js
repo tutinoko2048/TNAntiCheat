@@ -14,7 +14,7 @@ export function reachA(ev) { // attacking
   
   const distance = Util.distance(entity.headLocation, hitEntity.location);
   if (distance > config.reachA.maxReach)
-    entity.reachAFlag = `長いリーチの攻撃を検知しました (${hitEntity.typeId}, length: ${distance.toFixed(2)})`;
+    entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, length: ${distance.toFixed(2)})§r`;
 }
 
 export function reachB(ev) { // placement
@@ -23,7 +23,7 @@ export function reachB(ev) { // placement
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
   const distance = Util.distance(source.headLocation, blockLocation);
   if (distance > config.reachB.maxReach) {
-    source.reachBFlag = `長いリーチの設置を検知しました (length: ${distance.toFixed(2)})`;
+    source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
     if (config.reachB.cancel) ev.cancel = true;
   }
 }
@@ -34,7 +34,7 @@ export function reachC(ev) { // destruction
   if (Util.isCreative(player) || Util.isOP(player)) return;
   const distance = Util.distance(player.headLocation, block.location);
   if (distance > config.reachC.maxReach) {
-    player.reachCFlag = `長いリーチの破壊を検知しました (length: ${distance.toFixed(2)})`;
+    player.reachCFlag = `長いリーチの破壊を検知しました §7(length: ${distance.toFixed(2)})§r`;
     system.run(() => {
       killDroppedItem(block.location, block.dimension);
       if (config.reachC.cancel) block.setPermutation(brokenBlockPermutation);
@@ -55,7 +55,7 @@ export function autoClicker(ev) {
     entity.cps.push(cps);
     const avg = Util.median(entity.cps);
     if (entity.cps.length > 3 && avg > config.autoClicker.maxCPS) {
-      entity.autoClickerFlag = `高いCPSを検知しました (${avg.toFixed(1)}clicks/s)`;
+      entity.autoClickerFlag = `高いCPSを検知しました §7(${avg.toFixed(1)}clicks/s)§r`;
       entity.cps = [];
     }
   }

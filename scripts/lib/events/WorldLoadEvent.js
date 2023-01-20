@@ -24,7 +24,6 @@ export class WorldLoadEventSignal extends BaseEventSignal {
         if (loaded) return;
         this.callbacks.forEach(fn => fn(new WorldLoadEvent(true)));
         loaded = true;
-        
         system.clearRunSchedule(run);
       });
     });

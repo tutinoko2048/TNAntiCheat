@@ -30,7 +30,8 @@ export class CommandManager extends BaseManager {
     const command = this.getCommand(commandName);
     if (!command) return sender.tell('[CommandManager] §cError: コマンドが見つかりませんでした');
     if (command.permission && !command.permission(sender)) return sender.tell('[CommandManager] §cError: 権限がありません');
-    
+    if (scriptEvent && command.disableScriptEvent) return sender.tell('このコマンドはScriptEventからの実行を許可されていません')
+
     try {
       command.func(sender, args, this);
     } catch(e) {

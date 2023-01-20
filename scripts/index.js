@@ -1,6 +1,6 @@
 import { world, system, Player } from '@minecraft/server';
 import { TNAntiCheat } from './ac';
-import { events } from './lib/events/index';
+import { events } from './lib/events/index.js';
 import { properties } from './util/constants';
 import { Permissions } from './util/Permissions';
 import './system/dog.js';
@@ -11,6 +11,7 @@ const ac = new TNAntiCheat();
 events.worldLoad.subscribe(() => {
   if (world.getDynamicProperty(properties.ownerId)) {
     ac.enable();
+    
   } else {
     world.say('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
   }
