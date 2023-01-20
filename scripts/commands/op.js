@@ -9,12 +9,12 @@ export default {
   description: 'TN-AntiCheatの管理者権限を取得します',
   args: [ '[name: playerName]' ],
   aliases: [ 'operator' ],
-  permission: (player) => player.isOp(),
+  permission: (player) => player.isOp() || (config.others.fixBDS && Permissions.has(player, 'admin')),
   func: (sender, args, manager) => {
     const playerName = Util.parsePlayerName(args[0]);
     const player = playerName ? Util.getPlayerByName(playerName) : sender;
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-    if (!player.isOp()) throw new CommandError(`プレイヤー ${player.name} の権限が不足しています`);
+    if (!player.isOp() && !config.others.fixBDS) throw new CommandError(`プレイヤー ${player.name} の権限が不足しています`);
     if (Util.isOP(player)) throw new CommandError(`${player.name} は既に権限を持っています`);
     Permissions.add(player, 'admin');
     Util.notify(`§7${sender.name} >> §e${player.name} に管理者権限を与えました`);
