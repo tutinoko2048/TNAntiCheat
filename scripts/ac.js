@@ -47,8 +47,11 @@ export class TNAntiCheat {
       if (!(system.currentTick % 20)) modules.notify();
       
       for (const player of world.getAllPlayers()) {
+        if (!player.isMoved) modules.checkMoving(player);
+        
         modules.crasher(player);
         modules.itemCheck(player);
+        
         modules.nukerFlag(player);
         modules.creative(player); 
         modules.speedA(player);
@@ -56,8 +59,15 @@ export class TNAntiCheat {
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         
         player.breakCount = 0;
+        if (player.lastDimensionId !== player.dimension.id) {
+          player.lastDimensionId = player.dimension.id;
+          player.dimensionSwitchedAt = Date.now();
+          player.isMoved = false;
+        }
+        
+        player.lastLocation = player.location;
       }
-  
+      
       const now = Date.now();
       if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
       if (this.#deltaTimes.length > 20) this.#deltaTimes.shift();
@@ -124,6 +134,7 @@ export class TNAntiCheat {
   }
   
   #joinHandler(player) {
+    player.joinedAt = Date.now();
     modules.namespoof(player);
     modules.ban(player);
     
