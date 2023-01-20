@@ -20,10 +20,10 @@ export default {
       sender.tell('-'.repeat(20));
       sender.tell('§a=== TN-AntiCheat ===§r');
       sender.tell([
-        '\n§lCommands:§r',
+        '§lCommands:§r',
         ...available.map(c => `  §6${manager.prefix}${c.name}§r - ${c.description || ''}`),
-        '§6!help <コマンド名> でコマンドの詳細な説明を表示します',
-        '\n§l§bDiscord Support:§r',
+        '§7!help <コマンド名> でコマンドの詳細な説明を表示します',
+        '§l§9Discord Support:§r',
         `  ${DISCORD_URL}`
       ].join('\n'));
       sender.tell('-'.repeat(20));

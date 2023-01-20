@@ -8,7 +8,7 @@ export default {
   description: '管理者権限を削除します',
   args: [ '[name: playerName]' ],
   aliases: [],
-  permission: (player) => player.isOp(),
+  permission: (player) => Util.isOP(player),
   func: (sender, args) => {
     const playerName = Util.parsePlayerName(args[0]);
     const player = playerName ? Util.getPlayerByName(playerName) : sender;

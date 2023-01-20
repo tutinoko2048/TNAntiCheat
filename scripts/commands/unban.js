@@ -4,7 +4,7 @@ import unbanQueue from '../unban_queue.js';
 
 export default {
   name: 'unban',
-  description: 'プレイヤーのBanを解除します',
+  description: 'プレイヤーのBanを解除します(ワールドを閉じると消えるので注意)',
   args: [ '', '<name: playerName>' ],
   aliases: [],
   permission: (player) => Util.isOP(player),
