@@ -89,7 +89,7 @@ export const description = {
     desc: '不正なエンチャントを検知',
     state,
     punishment,
-    clearItem
+    clearItem: '検知した時にアイテムを削除する'
   },
   placeCheckA: {
     desc: '禁止アイテムを置いたら検知',
