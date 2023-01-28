@@ -3,7 +3,7 @@ import { Util } from '../util/util';
 import config from '../config.js';
 
 export function itemMessageBuilder(item, needs = 'name') {
-  return `§c${item.typeId}:${item.data}§r${needs == 'amount' ? ` x${item.amount}`:''}${item.nameTag && needs == 'name' ? `, Name: ${safeItemName(item.nameTag)}`:''}§r`
+  return `§c${item.typeId}:${item.data}§r${needs == 'amount' ? ` x${item.amount}`:''}${item.nameTag && needs == 'name' ? `§7, Name: §r${safeItemName(item.nameTag)}`:''}§r`
 }
 
 export function safeItemName(name) {
