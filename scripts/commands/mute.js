@@ -19,7 +19,7 @@ export default {
     
     player.runCommandAsync(`ability @s mute ${mute}`).then(() => {
       player.setDynamicProperty(properties.mute, mute);
-      Util.notify(`§a${player.name} のミュートを ${mute} に設定しました`, sender);
+      Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${mute} に設定しました`);
     }).catch(() => {
       throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`);
     });

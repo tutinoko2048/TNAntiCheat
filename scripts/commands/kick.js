@@ -16,6 +16,6 @@ export default {
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
     if (sender.name === player.name) throw new CommandError('自分をkickすることはできません');
     Util.kick(player, reason);
-    Util.notify(`${sender.name} >> プレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`);
+    Util.notify(`§7${sender.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`);
   }
 }

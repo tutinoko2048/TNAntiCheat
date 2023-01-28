@@ -1,3 +1,6 @@
+const state = '有効/無効の設定';
+const punishment = '検知された場合の対応';
+
 export const description = {
   permission: {
     desc: '権限の設定',
@@ -22,154 +25,162 @@ export const description = {
   },
   crasher: {
     desc: 'Crasherを検知 (仕様上PC限定)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応'
+    state,
+    punishment
   },
   nuker: {
     desc: 'Nukerを検知',
-    state: '有効/無効の設定',
+    state,
+    punishment,
     limit: '1tickに何ブロックの破壊で検知するかの設定(ラグも考慮)',
-    place: '壊されたブロックを再設置する',
-    punishment: '検知された場合の対応'
+    place: '壊されたブロックを再設置する'
   },
   namespoof: {
     desc: '不正な名前を検知します',
-    state: '有効/無効の設定',
-    maxLength: '名前の長さの最大値',
-    punishment: '検知された場合の対応'
+    state,
+    punishment,
+    maxLength: '名前の長さの最大値'
   },
   spammerA: {
     desc: '長文すぎるチャットを制限',
-    state: '有効/無効の設定',
+    state,
     maxLength: '最大文字数'
   },
   spammerB: {
     desc: '重複するチャットを制限',
-    state: '有効/無効の設定'
+    state
   },
   spammerC: {
     desc: '速すぎるチャットを制限',
-    state: '有効/無効の設定',
+    state,
     minInterval: '最小の間隔 (ミリ秒で指定)'
   },
   instaBreak: {
     desc: '壊せないブロックの破壊を検知',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     place: '壊されたブロックを再設置する',
     detect: '検知するブロックのID'
   },
   itemCheckA: {
     desc: '禁止アイテムを持っていたら検知',
-    state: '有効/無効の設定',
+    state,
     notifyCreative: 'true -> クリエの人は削除だけしてbanやkickはしない'
   },
   itemCheckB: {
     desc: 'スポーンエッグを持っていたら検知',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応'
+    state,
+    punishment
   },
   itemCheckC: {
     desc: '1スタックに値より大きい数を持っていたら検知',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     maxAmount: '最大スタック数'
   },
   itemCheckD: {
-    desc: '不正なエンチャントを検知',
-    state: '有効/無効の設定',
+    desc: '不正なエンチャントレベルを検知',
+    state,
+    punishment,
     mode: '検知レベルの設定',
-    punishment: '検知された場合の対応'
+    clearItem: '検知した時にアイテムを削除する'
+  },
+  itemCheckE: {
+    desc: '不正なエンチャントを検知',
+    state,
+    punishment,
+    clearItem: '検知した時にアイテムを削除する'
   },
   placeCheckA: {
     desc: '禁止アイテムを置いたら検知',
-    state: '有効/無効の設定',
+    state,
     notifyCreative: 'true -> クリエの人はキャンセルだけしてbanやkickはしない',
-    antiShulker: 'シュルカーボックスの設置をキャンセルするかどうか'
+    antiShulker: 'シュルカーボックスの設置をキャンセルするかどうか',
+    shulkerExcludes: 'シュルカー禁止を除外するタグ'
   },
   placeCheckB: {
     desc: '設置した時にインベントリをチェック (一部ブロックは非対応)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     spawnEgg: 'スポーンエッグを含めるかどうか',
     detect: '検知するインベントリ付きブロックのID'
   },
   placeCheckC: {
     desc: '設置時にブロックのデータをリセットします',
-    state: '有効/無効の設定',
+    state,
     excludeCreative: 'クリエの人は除外する',
     detect: '検知するブロックのID'
   },
   placeCheckD: {
     desc: '設置時にエンティティのデータをリセットします',
-    state: '有効/無効の設定',
+    state,
     excludeCreative: 'クリエの人は除外する',
     minecarts: '検知するトロッコ',
     boats: '検知するボート(チェスト付き)'
   },
   entityCheckA: {
     desc: '指定されたエンティティのスポーンを検知',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     detect: '検知するエンティティ'
   },
   entityCheckB: {
     desc: 'ドロップ状態の禁止アイテムを検知',
-    state: '有効/無効の設定',
+    state,
     spawnEgg: 'スポーンエッグを含めるかどうか',
-    punishment: '検知された場合の対応'
+    punishment
   },
   entityCheckC: {
     desc: '大量のエンティティのスポーンを検知',
-    state: '有効/無効の設定',
+    state,
     maxArrowSpawns: '1tickにスポーンできる矢の数',
     maxItemSpawns: '1tickにスポーンできるアイテムの数',
     maxCmdMinecartSpawns: '1tickにスポーンできるコマブロ付きトロッコの数'
   },
   entityCheckD: {
     desc: 'エンティティのインベントリの中をチェック',
-    state: '有効/無効の設定',
+    state,
     spawnEgg: 'スポーンエッグを含めるかどうか',
     detect: '検知するエンティティ'
   },
   reachA: {
     desc: '攻撃の長すぎるリーチを検知 (ベータ)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     maxReach: '最大リーチ',
     excludeCustomEntities: 'バニラ以外のmobの検知を除外',
     excludeEntities: '除外するエンティティ'
   },
   reachB: {
     desc: 'ブロック設置の長すぎるリーチを検知 (ベータ)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     maxReach: '最大リーチ',
     cancel: 'ブロックの設置をキャンセルする',
   },
   reachC: {
     desc: 'ブロック破壊の長すぎるリーチを検知 (ベータ)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     maxReach: '最大リーチ',
     cancel: 'ブロックの破壊をキャンセルする',
   },
   autoClicker: {
     desc: '速すぎるクリックを検知 (ベータ)',
-    state: '有効/無効の設定',
-    maxCPS: '1秒あたりの最大クリック数',
-    punishment: '検知された場合の対応'
+    state,
+    punishment,
+    maxCPS: '1秒あたりの最大クリック数'
   },
   creative: {
     desc: 'クリエイティブになったら検知',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     defaultGamemode: '検知した時に設定するGamemode'
   },
   speedA: {
     desc: '速すぎる移動を検知 (ベータ)',
-    state: '有効/無効の設定',
-    punishment: '検知された場合の対応',
+    state,
+    punishment,
     flagCount: 'Flagするまでの検知回数 (-1で無制限)',
     maxVelocity: '許容するスピードの最大値',
     rollback: '検知した時に前いた位置までテレポートする'
@@ -178,6 +189,7 @@ export const description = {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',
     sendws: 'メッセージをsayで出力します (discord-mcbe用)',
     shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
-    debug: 'ログを表示 デバッグ用'
+    debug: 'ログを表示 デバッグ用',
+    fixBDS: 'BDSのOP検知のバグ回避用'
   }
 }

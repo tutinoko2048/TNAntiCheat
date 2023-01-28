@@ -1,4 +1,4 @@
-export const VERSION = '3.1.0-beta';
+export const VERSION = '3.2.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const properties = {

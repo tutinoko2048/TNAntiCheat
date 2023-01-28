@@ -66,7 +66,7 @@ export class Util {
   }
   
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('cannot disconnect owner');
+    if (Util.isOwner(player)) return console.warn('discinnect failed: cannot disconnect owner');
     player.triggerEvent('tn:kick');
   }
   
@@ -94,7 +94,11 @@ export class Util {
   }
   
   static isOP(player) {
-    return player && player.typeId === 'minecraft:player' && player.isOp() && Permissions.has(player, 'admin');
+    return (
+      player?.typeId === 'minecraft:player' &&
+      (player.isOp() || config.others.fixBDS) &&
+      Permissions.has(player, 'admin')
+    );
   }
   
   static isHost(player) {
@@ -243,16 +247,5 @@ export class Util {
     } catch {
       return null;
     }
-  }
-  
-  /**
-   *
-   * @param {Player|Entity|string} target
-   * @param {string} obj
-   * @param {number} score
-   */
-  static async setScore(target, obj, score) {
-    const name = (typeof target === 'string') ? target : (target.name ?? target.nameTag);
-    await overworld.runCommandAsync(`scoreboard players set "${name}" ${obj} ${score}`);
   }
 }

@@ -159,18 +159,17 @@ export class AdminPanel {
     const form = new UI.ModalFormData();
     form.title('Manage Permissions')
       .toggle('§l§eBuilder§r - クリエイティブを許可します', _builder)
-      .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', _admin)
+      .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', _admin);
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return;
     const [ builder, admin ] = formValues;
     if (builder != _builder) {
       Permissions.set(player, 'builder', builder);
-      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a' : '§c'}${builder}§e に設定しました`);
+      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
     }
-    
     if (admin != _admin) {
       Permissions.set(player, 'admin', admin);
-      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a' : '§c'}${admin}§e に設定しました`);
+      Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
     }
   }
   
@@ -185,7 +184,7 @@ export class AdminPanel {
     if (mute != _mute) {
       player.runCommandAsync(`ability @s mute ${mute}`).then(() => {
         player.setDynamicProperty(properties.mute, mute);
-        Util.notify(`§a${player.name} のミュートを ${mute} に設定しました`, this.player);
+        Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
       }).catch(() => {
         Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       });
@@ -196,8 +195,8 @@ export class AdminPanel {
     const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にkickしますか？`, '§lはい / YES', '§lいいえ / NO');
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
-      Util.kick(player);
-      Util.notify(`${this.player.name} >> プレイヤー §c${player.name}§r をkickしました`);
+      Util.kick(player, '-');
+      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
     } else return await this.playerInfo(player);
   }
   
@@ -205,13 +204,13 @@ export class AdminPanel {
     const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にbanしますか？`, '§lはい / YES', '§lいいえ / NO');
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
-      Util.ban(player);
-      Util.notify(`${this.player.name} >> プレイヤー §c${player.name}§r をbanしました`);
+      Util.ban(player, '-', '(from AdminPanel)');
+      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
     } else return await this.playerInfo(player);
   }
   
   async showTags(player) {
-    const tags = player.getTags().map(t => `- ${t}`);
+    const tags = player.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s tags`)
       .body(tags.length > 0 ? `タグ一覧:\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
@@ -222,14 +221,9 @@ export class AdminPanel {
   }
   
   async showScores(player) {
-    const getScore = (obj, p) => {
-      try { 
-        return obj.getScore(p.scoreboard);
-      } catch { return null }
-    }
     const messages = world.scoreboard
       .getObjectives()
-      .map(obj => `- ${obj.id} (${obj.displayName}) : ${Util.getScore(player, obj.id) ?? 'null'}`);
+      .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
@@ -488,7 +482,9 @@ function isChanged(data1, data2) { // compare objects
 }
 
 function getPreview(value) {
-  return ['string', 'number', 'boolean'].includes(typeof value) ? value : `[${typeof value}]`
+  return ['string', 'number', 'boolean'].includes(typeof value)
+    ? value
+    : (Array.isArray(value) ? `array(${value.length})` : `[${typeof value}]`)
 }
 
 function toNumber(value) {
@@ -497,7 +493,7 @@ function toNumber(value) {
 
 function descriptionBuilder(moduleName) {
   if (!description[moduleName]) return;
-  const _module = description[moduleName]
+  const _module = description[moduleName];
   return Object.keys(description[moduleName])
     .map(k => k == 'desc' ? _module[k] : `- ${k}: ${_module[k]}`)
     .join('\n');
