@@ -73,11 +73,11 @@ export class Util {
   static notify(message, target) {
     const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
     if (target instanceof Player) {
-      target.tell(`[§l§a${name}§r] ${message}`);
+      target.sendMessage(`[§l§a${name}§r] ${message}`);
     } else {
       config.others.sendws
         ? overworld.runCommandAsync(`say "[§l§aTN-AntiCheat§r] ${message}"`)
-        : world.say(`[§l§a${name}§r] ${message}`);
+        : world.sendMessage(`[§l§a${name}§r] ${message}`);
     }
   }
   
@@ -204,7 +204,7 @@ export class Util {
    * @author aikayu1op.js
    */
   static showFormToBusy(player, form) {
-    player.tell(`§7[AdminPanel] チャットを閉じると表示されます`);
+    player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
     return new Promise(res => {
       system.run(async function run() {
         const response = await form.show(player);

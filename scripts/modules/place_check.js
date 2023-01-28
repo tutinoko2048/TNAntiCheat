@@ -1,4 +1,4 @@
-import { Player, GameMode, BlockLocation } from '@minecraft/server';
+import { Player, GameMode } from '@minecraft/server';
 import config from '../config.js';
 import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';

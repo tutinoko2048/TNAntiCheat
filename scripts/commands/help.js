@@ -12,21 +12,21 @@ export default {
     if (commandName) {
       const command = available.find(c => c.name === commandName);
       if (!command) throw new CommandError(`コマンド ${commandName} が見つかりませんでした`);
-      sender.tell(`§e${command.name}: ${command.description}`);
-      if (command.aliases?.length > 0) sender.tell(`aliases: ${command.aliases.map(x => `${manager.prefix}${x}`).join(', ')}`);
-      sender.tell('使い方:');
-      sender.tell(command.args?.map(v => `- ${manager.prefix}${command.name} ${v}`).join('\n'));
+      sender.sendMessage(`§e${command.name}: ${command.description}`);
+      if (command.aliases?.length > 0) sender.sendMessage(`aliases: ${command.aliases.map(x => `${manager.prefix}${x}`).join(', ')}`);
+      sender.sendMessage('使い方:');
+      sender.sendMessage(command.args?.map(v => `- ${manager.prefix}${command.name} ${v}`).join('\n'));
     } else {
-      sender.tell('-'.repeat(20));
-      sender.tell('§a=== TN-AntiCheat ===§r');
-      sender.tell([
+      sender.sendMessage('-'.repeat(20));
+      sender.sendMessage('§a=== TN-AntiCheat ===§r');
+      sender.sendMessage([
         '§lCommands:§r',
         ...available.map(c => `  §6${manager.prefix}${c.name}§r - ${c.description || ''}`),
         '§7!help <コマンド名> でコマンドの詳細な説明を表示します',
         '§l§9Discord Support:§r',
         `  ${DISCORD_URL}`
       ].join('\n'));
-      sender.tell('-'.repeat(20));
+      sender.sendMessage('-'.repeat(20));
     }
     
   }

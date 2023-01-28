@@ -1,4 +1,4 @@
-import { world, Location } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -74,7 +74,7 @@ export function crasher(player) {
   if (!config.crasher.state) return;
   const { x, y, z } = player.location;
   if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
-    player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
+    player.teleport({ x: 0, y: 255, z: 0 }, player.dimension, 0, 0);
     if (Util.isOP(player)) return; // prevent crasher by all players but don't punish OP
     Util.flag(player, 'Crasher', config.crasher.punishment, 'Crasherの使用を検知しました');
   }

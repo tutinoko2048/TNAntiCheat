@@ -1,4 +1,4 @@
-import { world, Location } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -40,7 +40,7 @@ export function queueNotify(type, obj) {
 
 export function killDroppedItem(loc, dimension) {
   const items = dimension.getEntities({
-    location: new Location(loc.x, loc.y, loc.z),
+    location: loc,
     maxDistance: 1.5,
     type: 'minecraft:item'
   });

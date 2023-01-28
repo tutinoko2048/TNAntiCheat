@@ -24,5 +24,5 @@ function inspect(...args) {
       default: return String(v);
     }
   }).join(' ');
-  world.say(message);
+  world.sendMessage(message);
 }
