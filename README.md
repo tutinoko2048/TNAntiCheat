@@ -151,7 +151,7 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
 ![config](docs/config_editor.jpeg)  
 
 ## BDS
-現在BDSにはop関連の機能にバグがあるため個別に対策する必要があります  
+現在BDSにはop関連の機能に~~バグ~~(そういう仕様のようです)があるため個別に対策する必要があります  
 Configのothersから `fixBDS` をtrueにしてください
 
 ## Acknowledgements
