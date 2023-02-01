@@ -19,7 +19,7 @@ jobs:
           
       - name: Make Archive
         run: |
-          zip -r ${{ steps.get-name.outputs.fileName }} ./ -x "*.git*" "*node_modules*" "package-lock.json"
+          zip -r ${{ steps.get-name.outputs.fileName }} ./ -x "*.git*" "*node_modules*" "package-lock.json" ".eslintrc.json"
           
       - name: Upload Release Asset
         id: upload-release-asset 
