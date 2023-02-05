@@ -11,11 +11,11 @@ export const properties = {
 }
 
 export const ICONS = {
-  playerList: 'textures/ui/icon_multiplayer',
-  entities: 'textures/items/egg_creeper',
+  playerList: 'textures/ui/dressing_room_skins',
+  entities: 'textures/items/egg_npc',
   config: 'textures/ui/icon_setting',
   returnBtn: 'textures/ui/realms_red_x',
-  about: 'textures/items/map_locked',
+  about: 'textures/items/book_written',
   
   inventory: 'textures/ui/icon_recipe_equipment',
   permission: 'textures/ui/icon_lock',
@@ -26,14 +26,18 @@ export const ICONS = {
   teleport: 'textures/items/ender_pearl',
   teleportHere: 'textures/items/ender_eye',
   tags: 'textures/items/name_tag',
-  scores: 'textures/ui/icon_book_writable',
+  scores: 'textures/items/chalkboard_large',
   
   plus: 'textures/ui/color_plus',
   clear: 'textures/ui/icon_trash',
   duplicate: 'textures/ui/copy',
   move: 'textures/ui/icon_import',
   edit: 'textures/ui/editIcon',
-  reload: 'textures/ui/refresh_light'
+  reload: 'textures/ui/refresh_light',
+  
+  op: 'textures/ui/permissions_op_crown',
+  builder: 'textures/ui/icon_recipe_construction',
+  member: 'textures/ui/permissions_member_star'
 }
 
 export const panelItem = {

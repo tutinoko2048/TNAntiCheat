@@ -43,10 +43,14 @@ export class AdminPanel {
   }
   
   async playerList() {
-    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '[Builder]' : null;
+    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '§6[Builder]' : null;
+    const icon = (p) => Util.isOP(p) ? ICONS.op : Permissions.has(p, 'builder') ? ICONS.builder : ICONS.member;
     const players = world.getAllPlayers();
     const form = new UI.ActionFormData();
-    for (const p of players) form.button(viewPermission(p) ? `${viewPermission(p)}§8 ${p.name}` : p.name);
+    for (const p of players) form.button(
+      viewPermission(p) ? `${viewPermission(p)}§8 ${p.name}` : p.name,
+      icon(p)
+    );
     form.body(`§7Players: §f${players.length}`)
       .title('プレイヤーリスト / Player List')
       .button('戻る / Return', ICONS.returnBtn);
@@ -59,13 +63,15 @@ export class AdminPanel {
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
     const { current, value } = player.getComponent('minecraft:health');
+    const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'builder') ? '§ebuilder§f' : 'member';
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
       `§7Health: §f${Math.floor(current)} / ${value}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
-      `§7ID: §f${player.id}`
+      `§7ID: §f${player.id}`,
+      `§7Permission: §f${viewPermission(player)}`
     ].join('\n');
     const form = FORMS.playerInfo.body(`${info}\n `);
     const { selection, canceled } = await form.show(this.player);
