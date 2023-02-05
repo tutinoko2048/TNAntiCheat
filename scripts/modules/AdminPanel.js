@@ -428,7 +428,7 @@ export class AdminPanel {
         chatFilter[k] = v;
       }
       Util.notify(`§aChatFilterを${stateChanged ? `${data.state}に設定しました` : '変更しました'}`, this.player);
-    } catch(e) {
+    } catch (e) {
       Util.notify(`§cError: ChatFilterの保存に失敗しました\n${e}`, this.player);
     }
   }

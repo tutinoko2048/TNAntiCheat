@@ -9,7 +9,11 @@
     "globals": {},
     "rules": {
       "no-unused-vars": "off",
-      "no-empty": "off"
+      "no-empty": "off",
+      "block-spacing": "warn",
+      "arrow-spacing": "warn",
+      "space-before-blocks": "warn",
+      "keyword-spacing": "warn"
     },
     "parserOptions": {
       "ecmaVersion": 13,

@@ -34,7 +34,7 @@ export class CommandManager extends BaseManager {
 
     try {
       command.func(sender, args, this);
-    } catch(e) {
+    } catch (e) {
       sender.tell(`[CommandManager] §c${e}`);
       if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.tell(`§c${e.stack}`);
     }

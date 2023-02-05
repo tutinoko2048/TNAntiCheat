@@ -32,7 +32,7 @@ export default {
 
 function sendForm(player, path, ...args) {
   const message = args.map(v => {
-    switch(typeof v) {
+    switch (typeof v) {
       case 'object': return toJson(v);
       default: return String(v);
     }
