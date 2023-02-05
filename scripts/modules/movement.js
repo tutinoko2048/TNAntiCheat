@@ -21,7 +21,8 @@ export function speedA(player) {
     excluded.includes(Util.getGamemode(player)) ||
     player.lastDimensionId != player.dimension.id ||
     Date.now() - player.joinedAt < 5000 ||
-    !player.isMoved
+    !player.isMoved ||
+    Date.now() - player.threwTridentAt < 5000
   ) return;
   
   player.speedACount ??= 0;

@@ -121,6 +121,13 @@ export class TNAntiCheat {
     }, {
       namespaces: [ 'ac' ]
     });
+    
+    world.events.itemReleaseCharge.subscribe(ev => {
+      const { itemStack, source } = ev;
+      if (itemStack.typeId === 'minecraft:trident') {
+        source.threwTridentAt = Date.now();
+      }
+    });
   }
   
   #chatHandler(ev) {
