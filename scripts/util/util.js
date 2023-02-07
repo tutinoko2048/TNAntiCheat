@@ -24,30 +24,31 @@ export class Util {
       `§l§6>>§r ${message}`
     ];
     
-    if (punishment === 'ban') {
-      this.ban(player, message, type);
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
-      
-    } else if (punishment === 'kick') {
-      this.kick(player, reasons.join('\n'));
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
-      
-    } else if (punishment === 'tempkick') {
-      Util.disconnect(player);
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
-      
-    } else if (punishment === 'notify') {
-      reasons.splice(1, 1);
-      this.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r\n${reasons.join('\n')}`);
-      
-    } else if (punishment === 'none') {
-    } else {
-      throw new Error(`Received unexpected punishment type: ${punishment}`);
-      
+    let showNotify = true;
+    switch (punishment) {
+      case 'ban':
+        Util.ban(player, message, type);
+        break;
+      case 'kick':
+        Util.kick(player, reasons.join('\n'));
+        break;
+      case 'tempkick':
+        Util.disconnect(player);
+        break;
+      case 'notify':
+        reasons.splice(1, 1);
+        break;
+      case 'none':
+        showNotify = false;
+        break;
+      default:
+        throw new Error(`Received unexpected punishment type: ${punishment}`);
     }
+    if (showNotify) Util.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`);
   }
   
   static async ban(player, reason, type) {
+    if (Util.isOwner(player)) return console.warn('ban failed: cannot ban owner');
     player.setDynamicProperty(properties.ban, true);
     type && player.setDynamicProperty(properties.banReason, type);
     return await this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
@@ -66,7 +67,7 @@ export class Util {
   }
   
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('cannot disconnect owner');
+    if (Util.isOwner(player)) return console.warn('discinnect failed: cannot disconnect owner');
     player.triggerEvent('tn:kick');
   }
   
@@ -94,7 +95,11 @@ export class Util {
   }
   
   static isOP(player) {
-    return player && player.typeId === 'minecraft:player' && player.isOp() && Permissions.has(player, 'admin');
+    return (
+      player?.typeId === 'minecraft:player' &&
+      (player.isOp() || config.others.fixBDS) &&
+      Permissions.has(player, 'admin')
+    );
   }
   
   static isHost(player) {
@@ -243,16 +248,5 @@ export class Util {
     } catch {
       return null;
     }
-  }
-  
-  /**
-   *
-   * @param {Player|Entity|string} target
-   * @param {string} obj
-   * @param {number} score
-   */
-  static async setScore(target, obj, score) {
-    const name = (typeof target === 'string') ? target : (target.name ?? target.nameTag);
-    await overworld.runCommandAsync(`scoreboard players set "${name}" ${obj} ${score}`);
   }
 }

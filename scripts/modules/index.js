@@ -21,9 +21,9 @@ export function ban(player) {
   }
   
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
-    Util.notify(`Kicked §l§c${player.name}§r\n§7Reason:§r You are banned by admin`);
-    const reason = player.getDynamicProperty(properties.banReason) ?? '-';
-    return Util.kick(player, reason, true);
+    const reason = player.getDynamicProperty(properties.banReason);
+    Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
+    return Util.kick(player, reason ?? '-', true);
   }
   
   for (const xuid of config.permission.ban.xuids) { // ban by xuid

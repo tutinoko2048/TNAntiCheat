@@ -18,11 +18,12 @@ export default {
       sender.tell(command.args?.map(v => `- ${manager.prefix}${command.name} ${v}`).join('\n'));
     } else {
       sender.tell('-'.repeat(20));
-      sender.tell('§aTN-AntiCheat Help§r');
+      sender.tell('§a=== TN-AntiCheat ===§r');
       sender.tell([
-        '\n§lCommands:§r',
+        '§lCommands:§r',
         ...available.map(c => `  §6${manager.prefix}${c.name}§r - ${c.description || ''}`),
-        '\n§l§bDiscord Support:§r',
+        '§7!help <コマンド名> でコマンドの詳細な説明を表示します',
+        '§l§9Discord Support:§r',
         `  ${DISCORD_URL}`
       ].join('\n'));
       sender.tell('-'.repeat(20));

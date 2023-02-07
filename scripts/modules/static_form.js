@@ -31,13 +31,12 @@ export const FORMS = {
   about: new UI.ActionFormData()
     .title('About')
     .body([
-      ` §l§aTN-AntiCheat v${VERSION}§r \n`,
+      `§l§aTN-AntiCheat v${VERSION}§r\n`,
       'ScriptAPIを使った軽量で使いやすいアンチチートアドオンです\n',
-      '- §eダウンロード:§r https://github.com/tutinoko2048/TNAntiCheat',
+      '- ダウンロード: https://github.com/tutinoko2048/TNAntiCheat',
       `- §9Discordサポートサーバー:§r ${DISCORD_URL}`,
       '  §7(バグやbypassの報告・機能の提案などはこちらからどうぞ)§r',
-      '- 開発者: tutinoko2048 / RetoRuto9900K',
-      '- Twitter: @tutinoko_kusaa\n '
+      '- Developer: tutinoko2048 / RetoRuto9900K\n'
     ].join('\n'))
     .button('戻る / Return', ICONS.returnBtn),
   chatFilter: new UI.ActionFormData()
@@ -51,7 +50,7 @@ export const DROPDOWNS = {
   punishment: [
     { value: 'ban', desc: 'プレイヤーをBANします' },
     { value: 'kick', desc: 'プレイヤーをKickします' },
-    { value: 'tempkick', desc: 'プレイヤーをKickします(再参加可能)' },
+    { value: 'tempkick', desc: 'プレイヤーを切断します(再参加可能)' },
     { value: 'notify', desc: 'チャット欄に通知します' },
     { value: 'none', desc: '何もしません' }
   ],

@@ -15,3 +15,4 @@ export class BaseEventSignal {
     return callback;
   }
 }
+

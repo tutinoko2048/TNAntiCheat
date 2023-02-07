@@ -10,7 +10,12 @@ export function placeCheckA(ev) {
     ev.cancel = true;
     Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
   }
-  if (config.placeCheckA.antiShulker && isShulkerBox(item?.typeId)) {
+  
+  if (
+    config.placeCheckA.antiShulker &&
+    isShulkerBox(item?.typeId) && 
+    !config.placeCheckA.shulkerExcludes.some(t => source.hasTag(t))
+  ) {
     Util.notify(`§c${item.typeId}§f の使用は許可されていません`, source);
     ev.cancel = true;
   }
@@ -30,7 +35,7 @@ export function placeCheckB(ev) {
     }
   }
   if (checkedItems.length > 0) {
-    let flagMsg = checkedItems.slice(0, 3).map(item => itemMessageBuilder(item)).join('\n');
+    let flagMsg = checkedItems.slice(0, 3).map(item => `- ${itemMessageBuilder(item)}`).join('\n');
     if (checkedItems.length > 3) flagMsg += `\n§amore ${checkedItems.length - 3} items...`;
     Util.flag(player, 'PlaceCheck/B', config.placeCheckB.punishment, `設置した ${block.typeId} に禁止アイテムが含まれています\n${flagMsg}`);
   }
