@@ -16,7 +16,7 @@ export default {
     const [ subcmd, type, _playerName ] = args;
     const playerName = Util.parsePlayerName(_playerName);
     if (subcmd === 'list') {
-      sender.tell(`§aPermissions:§r\n${Permissions.list().map(p => `- ${p}`).join('\n')}`);
+      sender.sendMessage(`§aPermissions:§r\n${Permissions.list().map(p => `- ${p}`).join('\n')}`);
       
     } else if (subcmd === 'add') {
       const player = playerName ? Util.getPlayerByName(playerName) : sender;

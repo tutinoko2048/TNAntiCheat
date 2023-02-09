@@ -1,4 +1,4 @@
-import { world, system, Location, MinecraftEffectTypes, GameMode } from '@minecraft/server';
+import { world, system, MinecraftEffectTypes, GameMode } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -6,10 +6,10 @@ const excluded = [ GameMode.creative, GameMode.spectator ];
 
 export function speedA(player) {
   if (!config.speedA.state) return;
-  const { x, y, z } = player.velocity;
+  const { x, y, z } = player.getVelocity();
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
   // for debugging
-  //if (player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
+  if (player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
   
   player.lastDimensionId ??= player.dimension.id;
   if (
@@ -35,7 +35,7 @@ export function speedA(player) {
     player.speedAFlag = `Speed/A >> §c${player.name}§r §7(count: ${player.speedACount ?? 1}, v: ${avg.toFixed(3)})§r`;
     const loc = player.lastLocation ?? player.location;
     const dimension = world.getDimension(player.lastDimensionId);
-    if (config.speedA.rollback) player.teleport(new Location(loc.x, loc.y, loc.z), dimension, player.rotation.x, player.rotation.y);
+    if (config.speedA.rollback) player.teleport(loc, dimension, player.getRotation().x, player.getRotation().y);
     
     if (config.speedA.flagCount !== -1 && player.speedACount > config.speedA.flagCount) {
       Util.flag(player, 'Speed/A', config.speedA.punishment, `速すぎる移動を検知しました §7(count: ${player.speedACount}, v: ${avg.toFixed(3)})§r`);

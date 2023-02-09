@@ -6,14 +6,15 @@ import { Permissions } from './util/Permissions';
 import './system/dog.js';
 import './system/register_properties.js';
 //import './system/polyfill.js'; // not needed after 1.19.60
-
 const ac = new TNAntiCheat();
 events.worldLoad.subscribe(() => {
   if (world.getDynamicProperty(properties.ownerId)) {
+  try {
     ac.enable();
+    } catch(e) { console.error(e, e.stack) }
     
   } else {
-    world.say('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
+    world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
   }
 });
 
@@ -36,11 +37,11 @@ system.events.scriptEventReceive.subscribe(ev => {
 });
 
 function start(player) {
-  if (world.getDynamicProperty(properties.ownerId)) return player.tell('TNAC is already registered!');
+  if (world.getDynamicProperty(properties.ownerId)) return player.sendMessage('TNAC is already registered!');
   
   world.setDynamicProperty(properties.ownerId, player.id);
   Permissions.add(player, 'admin');
   
   ac.enable();
-  player.tell('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
+  player.sendMessage('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
 }

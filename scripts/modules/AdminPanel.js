@@ -82,11 +82,11 @@ export class AdminPanel {
     if (selection === 3) return await this.kickPlayer(player);
     if (selection === 4) return await this.banPlayer(player);
     if (selection === 5) {
-      this.player.teleport(player.location, player.dimension, player.rotation.x, player.rotation.y);
+      this.player.teleport(player.location, player.dimension, player.getRotation().x, player.getRotation().y);
       Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
     }
     if (selection === 6) {
-      player.teleport(this.player.location, this.player.dimension, this.player.rotation.x, this.player.rotation.y);
+      player.teleport(this.player.location, this.player.dimension, this.player.getRotation().x, this.player.getRotation().y);
       Util.notify(`${player.name} §rをテレポートさせました`, this.player);
     }
     if (selection === 7) return await this.showTags(player);

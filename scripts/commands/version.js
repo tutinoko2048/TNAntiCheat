@@ -6,6 +6,6 @@ export default {
   args: [ '' ],
   aliases: [ 'ver', 'bersion', 'ber', 'barsion', 'bar' ],
   func: (sender, args) => {
-    sender.tell(`Running TN-AntiCheat v${VERSION}`);
+    sender.sendMessage(`Running TN-AntiCheat v${VERSION}`);
   }
 }
