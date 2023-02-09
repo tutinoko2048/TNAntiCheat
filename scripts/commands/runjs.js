@@ -19,7 +19,7 @@ export default {
 
 function inspect(...args) {
   const message = args.map(v => {
-    switch(typeof v) {
+    switch (typeof v) {
       case 'object': return toJson(v);
       default: return String(v);
     }

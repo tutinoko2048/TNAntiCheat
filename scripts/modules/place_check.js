@@ -35,7 +35,7 @@ export function placeCheckB(ev) {
     }
   }
   if (checkedItems.length > 0) {
-    let flagMsg = checkedItems.slice(0, 3).map(item => itemMessageBuilder(item)).join('\n');
+    let flagMsg = checkedItems.slice(0, 3).map(item => `- ${itemMessageBuilder(item)}`).join('\n');
     if (checkedItems.length > 3) flagMsg += `\n§amore ${checkedItems.length - 3} items...`;
     Util.flag(player, 'PlaceCheck/B', config.placeCheckB.punishment, `設置した ${block.typeId} に禁止アイテムが含まれています\n${flagMsg}`);
   }
