@@ -30,13 +30,13 @@ export class TNAntiCheat {
     if (this.#isEnabled) throw new Error('TN-AntiCheat has already enabled');
     this.#isEnabled = true;
     
-    world.say(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
-    world.say('§7このワールドは TN-AntiCheat によって保護されています');
+    world.sendMessage(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
+    world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています');
     this.#loadConfig();
     this.#loadFilter();
     this.#checkPlayerJson();
     
-    system.runSchedule(() => { 
+    system.runInterval(() => { 
       if (config.entityCheckC.state) {
         world.arrowSpawnCount = 0;
         world.itemSpawnCount = 0;

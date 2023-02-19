@@ -28,15 +28,15 @@ export class CommandManager extends BaseManager {
       scriptEvent ? message : message.slice(this.prefix.length)
     );
     const command = this.getCommand(commandName);
-    if (!command) return sender.tell('[CommandManager] §cError: コマンドが見つかりませんでした');
-    if (command.permission && !command.permission(sender)) return sender.tell('[CommandManager] §cError: 権限がありません');
-    if (scriptEvent && command.disableScriptEvent) return sender.tell('このコマンドはScriptEventからの実行を許可されていません')
+    if (!command) return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
+    if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
+    if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません')
 
     try {
       command.func(sender, args, this);
-    } catch (e) {
-      sender.tell(`[CommandManager] §c${e}`);
-      if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.tell(`§c${e.stack}`);
+    } catch(e) {
+      sender.sendMessage(`[CommandManager] §c${e}`);
+      if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
     }
   }
   
@@ -55,7 +55,7 @@ export class CommandManager extends BaseManager {
   load() {
     const showError = (msg) => {
       console.error(msg);
-      world.say(msg);
+      world.sendMessage(msg);
     }
     
     const wait = COMMANDS.map(name => {
