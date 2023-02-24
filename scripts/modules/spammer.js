@@ -21,7 +21,7 @@ export function spammerB(ev) {
 }
 
 export function spammerC(ev) {
-  const { message, sender } = ev;
+  const { sender } = ev;
   if (!config.spammerC.state || Util.isOP(sender)) return;
   const interval = Date.now() - sender.lastMsgSentAt;
   if (sender.lastMsgSentAt && interval < config.spammerC.minInterval) {

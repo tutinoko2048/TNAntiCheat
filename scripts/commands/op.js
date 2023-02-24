@@ -10,7 +10,7 @@ export default {
   args: [ '[name: playerName]' ],
   aliases: [ 'operator' ],
   permission: (player) => player.isOp() || (config.others.fixBDS && Permissions.has(player, 'admin')),
-  func: (sender, args, manager) => {
+  func: (sender, args) => {
     const playerName = Util.parsePlayerName(args[0]);
     const player = playerName ? Util.getPlayerByName(playerName) : sender;
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);

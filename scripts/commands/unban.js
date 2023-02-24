@@ -1,5 +1,4 @@
 import { Util } from '../util/util';
-import { CommandError } from '../util/CommandError';
 import unbanQueue from '../unban_queue.js';
 
 export default {

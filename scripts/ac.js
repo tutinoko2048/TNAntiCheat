@@ -5,8 +5,7 @@ import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
-import { Data, setWorldProperty, deleteDupe } from 'util/Data';
-import toJson from './lib/toJson';
+import { Data, deleteDupe } from 'util/Data';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -115,11 +114,9 @@ export class TNAntiCheat {
     });
     
     system.events.scriptEventReceive.subscribe(ev => {
-      const { id, sourceEntity, message, sourceType } = ev;
+      const { id, sourceEntity, message } = ev;
       if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
       this.commands.handle({ sender: sourceEntity, message }, true);
-      
-      //if (config.others.debug) world.sendMessage(toJson(ev, 2, true))
     }, {
       namespaces: [ 'ac' ]
     });

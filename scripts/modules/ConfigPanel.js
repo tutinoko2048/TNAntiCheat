@@ -1,4 +1,3 @@
-import { world, system } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { ActionForm } from '../lib/form/index';
 import { Util } from '../util/util';
@@ -6,11 +5,8 @@ import config from '../config.js';
 import { ICONS } from '../util/constants';
 import { description } from '../util/config_description';
 import { Data } from '../util/Data';
-import toJson from '../lib/toJson';
 import { DROPDOWNS, confirmForm } from './static_form';
-//import { Permissions } from '../util/Permissions';
 import { canAdd } from '../util/config_setting';
-
 
 export class ConfigPanel {
   constructor(ac, player, busy) {

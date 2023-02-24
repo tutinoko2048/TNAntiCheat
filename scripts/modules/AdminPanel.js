@@ -1,14 +1,11 @@
-import { world, system, MinecraftItemTypes, MinecraftDimensionTypes, ItemStack, GameMode, ItemTypes, Vector } from '@minecraft/server';
+import { world, ItemStack, ItemTypes } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { properties, ICONS, panelItem } from '../util/constants';
-import { description } from '../util/config_description';
-import { FORMS, DROPDOWNS, confirmForm } from './static_form';
+import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
-
-const defaultConfig = Util.cloneObject(config);
 
 export class AdminPanel {
   constructor(ac, player) {

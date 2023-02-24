@@ -5,7 +5,7 @@ export default {
   description: 'このアドオンに関する情報を表示します',
   aliases: [ 'contact' ],
   args: [ '' ],
-  func: (sender, args) => {
+  func: (sender) => {
     sender.sendMessage('-'.repeat(20));
     sender.sendMessage(`§l§aTN-AntiCheat v${VERSION}§r`);
     sender.sendMessage([

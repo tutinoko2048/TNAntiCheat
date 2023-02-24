@@ -8,7 +8,7 @@
     "ignorePatterns": ["scripts/lib/timer.js", "scripts/lib/toJson.js", "scripts/util/secret.js"],
     "globals": {},
     "rules": {
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
       "no-empty": "off",
       "block-spacing": "warn",
       "arrow-spacing": "warn",

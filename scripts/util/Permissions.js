@@ -1,5 +1,4 @@
 import config from '../config.js';
-import { Util } from './util';
 import { encode } from './secret';
 
 const PERMISSIONS = [

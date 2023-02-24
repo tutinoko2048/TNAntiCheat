@@ -1,4 +1,4 @@
-import { world, system, Player, Entity, Vector, GameMode } from '@minecraft/server';
+import { world, system, Player, Vector, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { properties } from './constants';

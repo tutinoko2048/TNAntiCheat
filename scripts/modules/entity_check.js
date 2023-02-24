@@ -5,7 +5,6 @@ import { isIllegalItem, isSpawnEgg, queueNotify } from './util';
 const overworld = world.getDimension('overworld');
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
-const hasInventory = ['minecraft:hopper_minecart', 'minecraft:chest_minecart'];
 
 export function entityCheck(entity) {
   const { typeId, location } = entity;
