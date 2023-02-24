@@ -1,17 +1,16 @@
 import { world, system, Player } from '@minecraft/server';
 import { VERSION, properties } from './util/constants';
 import config from './config.js';
-import chatFilter from './chat_filter.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
-import { Data } from 'util/Data';
+import { Data, setWorldProperty, deleteDupe } from 'util/Data';
+import toJson from './lib/toJson';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
 export class TNAntiCheat {
-  #joinedPlayers;
   #deltaTimes;
   #lastTick;
   #isEnabled;
@@ -32,14 +31,13 @@ export class TNAntiCheat {
     
     world.sendMessage(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
     world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています');
-    this.#loadConfig();
-    this.#loadFilter();
-    this.#checkPlayerJson();
+    
+    this.loadConfig();
+    checkPlayerJson();
     
     system.runInterval(() => { 
       if (config.entityCheckC.state) {
         world.arrowSpawnCount = 0;
-        world.itemSpawnCount = 0;
         world.cmdSpawnCount = 0;
       }
       world.entityCheck ??= {};
@@ -67,6 +65,8 @@ export class TNAntiCheat {
         
         player.lastLocation = player.location;
       }
+      
+      if (!(system.currentTick % config.entityCounter.checkInterval)) modules.entityCounter();
       
       const now = Date.now();
       if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
@@ -118,16 +118,22 @@ export class TNAntiCheat {
       const { id, sourceEntity, message, sourceType } = ev;
       if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
       this.commands.handle({ sender: sourceEntity, message }, true);
+      
+      //if (config.others.debug) world.sendMessage(toJson(ev, 2, true))
     }, {
       namespaces: [ 'ac' ]
     });
     
     world.events.itemReleaseCharge.subscribe(ev => {
       const { itemStack, source } = ev;
-      if (itemStack.typeId === 'minecraft:trident') {
-        source.threwTridentAt = Date.now();
-      }
+      if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });
+    
+    world.events.entityHit.subscribe(ev => {
+      modules.reachA(ev);
+      modules.autoClicker(ev);
+
+    }, entityOption);
   }
   
   #chatHandler(ev) {
@@ -136,8 +142,7 @@ export class TNAntiCheat {
     
     !tooFast &&
     !modules.spammerA(ev) &&
-    !modules.spammerB(ev) &&
-    modules.chatFilter(ev);
+    !modules.spammerB(ev);
   }
   
   #joinHandler(player) {
@@ -151,49 +156,23 @@ export class TNAntiCheat {
     }
   }
   
-  #loadConfig() {
-    const data = this.#getConfig();
-    Data.patch(data, 'config');
-    if (config.others.debug) console.warn('[DEBUG] loaded Config data');
+  loadConfig() {
+    const data = this.getConfig();
+    Data.patch(config, data);
+    if (config.others.debug) console.warn('[debug] loaded Config data');
   }
   
-  #getConfig() {
-    const data = JSON.parse(world.getDynamicProperty(properties.configData) ?? "{}");
-    let isDuplicate = false;
-    for (const [moduleName, obj] of Object.entries(data)) {
-      if (moduleName === 'itemList') {
-        for (const [type, array] of Object.entries(obj)) {
-          if (isSameObject(config.itemList[type], array)) {
-            isDuplicate = true;
-            delete data.itemList[type];
-          }
-        }
-      } else {
-        if (isSameObject(config[moduleName], obj)) {
-          isDuplicate = true;
-          delete data[moduleName];
-        }
-      }
+  getConfig() {
+    const data = Data.fetch();
+    
+    const res = deleteDupe(data, config);
+    if (res.length > 0) {
+      Data.save(data);
+      if (config.others.debug)  console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
     }
-    if (isDuplicate) world.setDynamicProperty(properties.configData, JSON.stringify(data));
     return data;
   }
-  
-  #loadFilter() {
-    const data = JSON.parse(world.getDynamicProperty(properties.chatFilter) ?? "{}");
-    Data.patch(data, 'filter');
-    if (config.others.debug) console.warn('[DEBUG] loaded ChatFilter data');
-  }
-  
-  #checkPlayerJson() { // checks player.json conflict
-    const variant = world.getAllPlayers()[0].getComponent('minecraft:variant').value;
-    if (variant !== 2048) {
-      config.speedA.state = false;
-      Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました');
-      console.warn('disabled: Speed/A, tempkick');
-    }
-  }
-  
+    
   getTPS() {
     return Math.min(
       Util.average(this.#deltaTimes.map(n => 1000 / n)),
@@ -206,6 +185,11 @@ export class TNAntiCheat {
   }
 }
 
-function isSameObject(obj1, obj2) { // compare objects
-  return JSON.stringify(obj1) === JSON.stringify(obj2);
+function checkPlayerJson() { // checks player.json conflict
+  const variant = world.getAllPlayers()[0].getComponent('minecraft:variant').value;
+  if (variant !== 2048) {
+    config.speedA.state = false;
+    Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました');
+    if (config.others.debug) console.warn('[debug] disabled: Speed/A, tempkick');
+  }
 }

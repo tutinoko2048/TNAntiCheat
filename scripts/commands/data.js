@@ -2,7 +2,6 @@ import { world, system } from '@minecraft/server';
 import { ActionFormData } from '@minecraft/server-ui';
 import toJson from '../lib/toJson';
 import config from '../config.js';
-import chatFilter from '../chat_filter.js';
 import { Util } from '../util/util';
 import { Data } from '../util/Data';
 import { CommandError } from '../util/CommandError';

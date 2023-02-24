@@ -50,9 +50,9 @@ export function flag(player) { // don't run every tick not to spam
     Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
     player.autoClickerFlag = null;
   }
-  if (player.speedAFlag) {
-    Util.notify(player.speedAFlag);
-    player.speedAFlag = null;
+  if (player.flagQueue) {
+    Util.notify(player.flagQueue);
+    player.flagQueue = null;
   }
 }
 

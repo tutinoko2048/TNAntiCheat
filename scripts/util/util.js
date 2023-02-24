@@ -181,8 +181,8 @@ export class Util {
     return JSON.parse(JSON.stringify(obj));
   }
   
-  static getTime() {
-    const d = new Date();
+  static getTime(now) {
+    const d = now ? new Date(now) : new Date();
     const month = ('0' + (d.getMonth()+1)).slice(-2);
     const date = ('0' + d.getDate()).slice(-2);
     const hour = ('0' + d.getHours()).slice(-2);
@@ -248,5 +248,10 @@ export class Util {
     } catch {
       return null;
     }
+  }
+  
+  static showActionBar(player, ...text) {
+    const msg = text instanceof Array ? text.map(x => String(x)).join(', ') : String(text);
+    player.onScreenDisplay.setActionBar(msg);
   }
 }

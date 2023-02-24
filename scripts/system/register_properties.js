@@ -7,8 +7,7 @@ def.defineString(properties.banReason, 50);
 def.defineBoolean(properties.mute);
 
 const def2 = new DynamicPropertiesDefinition(); // world
-def2.defineString(properties.configData, 5900);
-def2.defineString(properties.chatFilter, 4000);
+def2.defineString(properties.configData, 7000);
 def2.defineString(properties.ownerId, 30);
 
 world.events.worldInitialize.subscribe(({ propertyRegistry }) => {

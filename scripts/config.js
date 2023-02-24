@@ -60,7 +60,7 @@ export default
     ]
   },
   crasher: {
-    state: true, // crasher検知(pcのみ)
+    state: false, // crasher検知(pcのみ)
     punishment: "ban"
   },
   nuker: {
@@ -70,7 +70,7 @@ export default
     punishment: "kick"
   },
   namespoof: {
-    state: true,
+    state: false,
     maxLength: 20, // 指定した値より長い名前を検知
     punishment: "kick"
   },
@@ -115,8 +115,7 @@ export default
   },
   itemCheckC: { // 1スタックに値より大きい数を持っていたら検知
     state: true,
-    punishment: "notify",
-    maxAmount: 64
+    punishment: "notify"
   },
   itemCheckD: { // 不正なエンチャントレベルを検知
     state: true,
@@ -135,25 +134,19 @@ export default
     antiShulker: false, // シュルカーボックスの設置をキャンセル
     shulkerExcludes: [] // シュルカー禁止を除外するタグ
   },
-  placeCheckB: { // 置いたときに中身をチェック 一部ブロックは非対応 アイテムはitemList参照
+  placeCheckB: { // 置いたときに中身をチェック アイテムはitemList参照
     state: true,
-    punishment: "notify",
+    punishment: "kick",
+    flagCount: 5,
     spawnEgg: true,
+    shulkerBox: true,
     detect: [
       "minecraft:chest",
-      "minecraft:trapped_chest"
-    ]
-  },
-  placeCheckC: { // 設置時に指定したブロックのデータをクリア
-    state: true,
-    excludeCreative: false,
-    detect: [
+      "minecraft:trapped_chest",
       "minecraft:hopper",
       "minecraft:dropper",
       "minecraft:dispenser",
       "minecraft:barrel",
-      "minecraft:frame",
-      "minecraft:glow_frame",
       "minecraft:jukebox",
       "minecraft:smoker",
       "minecraft:lit_smoker",
@@ -162,6 +155,14 @@ export default
       "minecraft:blast_furnace",
       "minecraft:lit_blast_furnace",
       "minecraft:brewing_stand",
+    ]
+  },
+  placeCheckC: { // 設置時に指定したブロックのデータをクリア
+    state: true,
+    excludeCreative: false,
+    detect: [
+      "minecraft:frame",
+      "minecraft:glow_frame",
       "minecraft:campfire",
       "minecraft:soul_campfire",
       "minecraft:flower_pot",
@@ -206,7 +207,6 @@ export default
   entityCheckC: { // 1tickにスポーンできるエンティティの数
     state: true,
     maxArrowSpawns: 10, // 矢の数
-    maxItemSpawns: 100, // アイテムの数
     maxCmdMinecartSpawns: 3
   },
   entityCheckD: { // エンティティのインベントリの中をチェック
@@ -219,10 +219,21 @@ export default
       "minecraft:mule"
     ]
   },
-  reachA: { // 攻撃の長すぎるリーチを検知 (ベータ)
+  entityCounter: { // 異常な数のエンティティを検知
+    state: true,
+    defaultCount: 300, // -1で無制限
+    kill: false,
+    checkInterval: 100, // 数をチェックする間隔(tick)
+    warnInterval: 1200,  // 警告を表示する間隔(tick)
+    detect: { // 個別設定
+      // ex: "entityId": [maxCount]
+      "minecraft:item": 800
+    }
+  },
+  reachA: { // 攻撃の長すぎるリーチを検知
     state: true,
     punishment: "notify",
-    maxReach: 8,
+    maxReach: 10,
     excludeCustomEntities: true, // バニラ以外のmobの検知を除外する
     excludeEntities: [ // 除外するエンティティ
       "minecraft:ender_dragon",
@@ -231,20 +242,20 @@ export default
       "minecraft:fireball"
     ]
   },
-  reachB: { // ブロック設置の長すぎるリーチを検知 (ベータ)
+  reachB: { // ブロック設置の長すぎるリーチを検知
     state: true,
     punishment: "notify",
-    maxReach: 8,
+    maxReach: 10,
     cancel: true, // ブロックの設置をキャンセル
   },
-  reachC: { // ブロック破壊の長すぎるリーチを検知 (ベータ)
+  reachC: { // ブロック破壊の長すぎるリーチを検知
     state: true,
     punishment: "notify",
-    maxReach: 8,
+    maxReach: 10,
     cancel: true, // ブロックの破壊をキャンセル
   },
   autoClicker: { // れんつを検知 (ベータ)
-    state: true,
+    state: false,
     maxCPS: 22,
     punishment: "notify"
   },

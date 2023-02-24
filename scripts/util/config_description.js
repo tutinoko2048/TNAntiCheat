@@ -1,5 +1,6 @@
 const state = '有効/無効の設定';
 const punishment = '検知された場合の対応';
+const flagCount = 'Flagするまでの検知回数 (-1で無制限)';
 
 export const description = {
   permission: {
@@ -99,10 +100,12 @@ export const description = {
     shulkerExcludes: 'シュルカー禁止を除外するタグ'
   },
   placeCheckB: {
-    desc: '設置した時にインベントリをチェック (一部ブロックは非対応)',
+    desc: '設置した時にインベントリをチェック',
     state,
     punishment,
-    spawnEgg: 'スポーンエッグを含めるかどうか',
+    flagCount,
+    spawnEgg: 'スポーンエッグを含める',
+    shulkerBox: 'シュルカーボックスの中身をチェックする',
     detect: '検知するインベントリ付きブロックのID'
   },
   placeCheckC: {
@@ -181,7 +184,7 @@ export const description = {
     desc: '速すぎる移動を検知 (ベータ)',
     state,
     punishment,
-    flagCount: 'Flagするまでの検知回数 (-1で無制限)',
+    flagCount,
     maxVelocity: '許容するスピードの最大値',
     rollback: '検知した時に前いた位置までテレポートする'
   },

@@ -1,17 +1,16 @@
-export const VERSION = '3.2.0';
+export const VERSION = '3.3.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const properties = {
   ban: 'tn:isBanned',
   banReason: 'tn:banReason',
   configData: 'tn:configData',
-  chatFilter: 'tn:chatFilter',
   mute: 'tn:isMuted',
   ownerId: 'tn:ownerId'
 }
 
 export const ICONS = {
-  playerList: 'textures/ui/dressing_room_skins',
+  playerList: 'textures/ui/dressing_room_skins', //'textures/ui/icon_multiplayer',
   entities: 'textures/items/egg_npc',
   config: 'textures/ui/icon_setting',
   returnBtn: 'textures/ui/realms_red_x',
@@ -34,6 +33,7 @@ export const ICONS = {
   move: 'textures/ui/icon_import',
   edit: 'textures/ui/editIcon',
   reload: 'textures/ui/refresh_light',
+  reset: 'textures/ui/refresh',
   
   op: 'textures/ui/permissions_op_crown',
   builder: 'textures/ui/icon_recipe_construction',

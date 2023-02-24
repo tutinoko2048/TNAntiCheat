@@ -7,7 +7,6 @@ export function itemCheck(player) {
   if (Util.isOP(player)) return;
   const { container } = player.getComponent('minecraft:inventory');
   
-  
   for (let i = 0; i < container.size; i++) {
     const item = container.getItem(i);
     if (!item) continue;
@@ -24,7 +23,7 @@ export function itemCheck(player) {
       continue;
     }
     // ItemCheck/C illegal amount
-    if (config.itemCheckC.state && (item.amount < 1 || config.itemCheckC.maxAmount < item.amount)) {
+    if (config.itemCheckC.state && (item.amount < 1 || item.maxAmount < item.amount)) {
       container.clearItem(i);
       Util.flag(player, 'ItemCheck/C', config.itemCheckC.punishment, `不正なアイテムの個数を検知しました (${itemMessageBuilder(item, 'amount')})`);
       continue;
@@ -94,5 +93,5 @@ function enchantCheck(item, container, slot, player) {
 function createItem(item) {
   const itemType = ItemTypes.get(item.typeId);
   if (!itemType) return;
-  return new ItemStack(itemType, item.amount, item.data);
+  return new ItemStack(itemType, item.amount);
 }

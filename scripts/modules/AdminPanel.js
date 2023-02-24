@@ -1,15 +1,14 @@
-import { world, system, MinecraftItemTypes, MinecraftDimensionTypes, ItemStack, GameMode, ItemTypes } from '@minecraft/server';
+import { world, system, MinecraftItemTypes, MinecraftDimensionTypes, ItemStack, GameMode, ItemTypes, Vector } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { properties, ICONS, panelItem } from '../util/constants';
-import chatFilter from '../chat_filter.js';
 import { description } from '../util/config_description';
-import { FORMS, DROPDOWNS } from './static_form';
+import { FORMS, DROPDOWNS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
+import { ConfigPanel } from './ConfigPanel';
 
 const defaultConfig = Util.cloneObject(config);
-const defaultFilter = Util.cloneObject(chatFilter);
 
 export class AdminPanel {
   constructor(ac, player) {
@@ -37,9 +36,8 @@ export class AdminPanel {
     if (canceled) return;
     if (selection === 0) return await this.playerList();
     if (selection === 1) return await this.showEntities();
-    if (selection === 2) return await this.selectModule();
-    if (selection === 3) return await this.chatFilter();
-    if (selection === 4) return await this.about();
+    if (selection === 2) return await this.configPanel();
+    if (selection === 3) return await this.about();
   }
   
   async playerList() {
@@ -71,8 +69,9 @@ export class AdminPanel {
       `§7Health: §f${Math.floor(current)} / ${value}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`,
-      `§7Permission: §f${viewPermission(player)}`
-    ].join('\n');
+      `§7Permission: §f${viewPermission(player)}`,
+      player.joinedAt ? `§7JoinedAt: §f${Util.getTime(player.joinedAt)}` : null
+    ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo.body(`${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -105,7 +104,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
     if (items.length === 0) form.body('何も持っていないようです\n ');
-    items.forEach(item => form.button(`§r${item.typeId}:${item.data}\n§7slot: ${item._slot}, amount: ${item.amount}`));
+    items.forEach(item => form.button(`§r${item.typeId}\n§7slot: ${item._slot}, amount: ${item.amount}`));
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', ICONS.clear)
       .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
@@ -118,14 +117,22 @@ export class AdminPanel {
       return this.showInventory(player);
     
     } else if (selection === items.length + 1) {
-      const res = await this.confirmForm('確認', `§l§c${player.name}§r の全てのアイテムを削除しますか？`, '§lはい / YES', '§lいいえ / NO');
+      const res = await confirmForm(this.player, {
+        body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
+        yes: '§c削除する',
+        no: '§lキャンセル'
+      });
       if (res) {
         await player.runCommandAsync('clear @s');
         Util.notify(`${player.name} の全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
     } else if (selection === items.length + 2) {
-      const res = await this.confirmForm('確認', `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`, '§lはい / YES', '§lいいえ / NO');
+      const res = await confirmForm(this.player, {
+        body: `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
+        yes: '§c削除する',
+        no: '§lキャンセル'
+      });
       if (res) {
         await player.runCommandAsync('function util/clear_ec');
         Util.notify(`${player.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
@@ -140,21 +147,21 @@ export class AdminPanel {
   }
   
   async itemInfo(player, item) {
-    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}:${item.data}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
+    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) {
       player.getComponent('minecraft:inventory').container.clearItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を削除しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を削除しました`, this.player);
     }
     if (selection === 1) {
       this.player.getComponent('minecraft:inventory').container.addItem(item);
-      Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を複製しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を複製しました`, this.player);
     }
     if (selection === 2) {
       this.player.getComponent('minecraft:inventory').container.addItem(item);
       player.getComponent('minecraft:inventory').container.clearItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId}:${item.data} §7(slot:${item._slot})§r を移動しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
   }
@@ -198,7 +205,11 @@ export class AdminPanel {
   }
   
   async kickPlayer(player) {
-    const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にkickしますか？`, '§lはい / YES', '§lいいえ / NO');
+    const res = await confirmForm(this.player, {
+      body: `§l§c${player.name} §rを本当にkickしますか？`,
+      yes: '§ckickする',
+      no: '§lキャンセル'
+    });
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
       Util.kick(player, '-');
@@ -207,7 +218,11 @@ export class AdminPanel {
   }
   
   async banPlayer(player) {
-    const res = await this.confirmForm('確認', `§l§c${player.name} §rを本当にbanしますか？`, '§lはい / YES', '§lいいえ / NO');
+    const res = await confirmForm(this.player, {
+      body: `§l§c${player.name} §rを本当にbanしますか？`,
+      yes: '§cbanする',
+      no: '§lキャンセル'
+    });
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
       Util.ban(player, '-', '(from AdminPanel)');
@@ -247,7 +262,7 @@ export class AdminPanel {
     }
     const messages = Object.entries(count)
       .sort((a,b) => b[1] - a[1])
-      .map(([ type, n ]) => `- ${type} : ${n}`);
+      .map(([ type, n ]) => `- ${type} : ${coloredEntityCount(type, n)}`);
     const form = new UI.ActionFormData();
     form.title(`Entities`)
       .body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません')
@@ -256,183 +271,11 @@ export class AdminPanel {
     if (canceled) return;
     if (selection === 0) return await this.main();
   }
+  
+  async configPanel() {
+    new ConfigPanel(this.ac, this.player, false);
+  }
 
-  async selectModule() {
-    const form = new UI.ActionFormData();
-    const keys = Object.keys(config);
-    for (const k of keys) {
-      const color = config[k].state ? '§2' : (config[k].state === false ? '§c' : '');
-      const desc = description[k]?.desc ? `\n§7${description[k].desc}§r` : '';
-      form.button(`${color}§l${k}§r${desc}`);
-    }
-    form.title('Config Selector')
-      .body('編集したいConfigを選択してください')
-      .button('§l§c初期設定に戻す')
-      .button('直接編集する / Raw Editor')
-      .button('戻る / Return', ICONS.returnBtn);
-    const { selection, canceled } = await form.show(this.player);
-    if (canceled) return;
-    if (selection === keys.length) {
-      const res = await this.confirmForm('確認', `全てのConfigを初期設定に戻しますか？`, '§lはい / YES', '§lいいえ / NO');
-      if (res) {
-        for (const k of keys) config[k] = resetModule(k);
-        world.setDynamicProperty(properties.configData, '{}');
-        Util.notify(`§aConfigをリセットしました`);
-      } else return await this.selectModule();
-      return;
-    }
-    if (selection === keys.length + 1) return await this.rawEditor();
-    if (selection === keys.length + 2) return await this.main(); // return button
-    const moduleName = keys[selection];
-    const data = await this.selectKey(moduleName);
-    if (isChanged(data, config[moduleName])) {
-      changeConfig(data, moduleName);
-      Util.notify('§aConfigを保存しました', this.player);
-    }
-  }
-  
-  async selectKey(moduleName, data, showReset = true) { // module object
-    data ??= Util.cloneObject(config[moduleName]);
-    const form = new UI.ActionFormData();
-    form.title('Key Selector')
-      .body(`§l§6Module: ${moduleName}§r\n${descriptionBuilder(moduleName) ?? ' '}\n `);
-    const keys = Object.keys(data);
-    for (const k of keys) form.button(`${k}\n§7${getPreview(data[k])}`);
-    if (showReset) form.button('§l§c初期設定に戻す / Reset settings', ICONS.reset)
-    form.button('戻る / Return', ICONS.returnBtn);
-    const { selection, canceled } = await form.show(this.player);
-    if (canceled) return data;
-    if (showReset && selection === keys.length) {
-      Util.notify(`${moduleName} を初期設定に戻しました`, this.player);
-      return resetModule(moduleName);
-    }
-    const backIndex = showReset ? keys.length + 1 : keys.length; // true: reset button exists
-    if (selection === backIndex) {
-      (moduleName === 'ChatFilter') ? this.chatFilter() : this.selectModule();
-      return data;
-    }
-    const key = keys[selection];
-    if (Array.isArray(data[key])) {
-      data[key] = await this.selectArray(data[key], key, moduleName);
-    } else if (typeof data[key] == 'object') {
-      data[key] = await this.selectKey(moduleName, data[key], false);
-    } else {
-      data[key] = await this.editValue(data[key], key, false);
-    }
-    return data;
-  }
-  
-  async selectArray(array, key) {
-    const form = new UI.ActionFormData();
-    form.title('Array Selector');
-    for (const value of array) form.button(String(value));
-    form.button('§l§2値を追加する / Add value', ICONS.plus)
-      .button('戻る / Return', ICONS.returnBtn);
-    const { selection, canceled } = await form.show(this.player);
-    if (canceled) return array;
-    if (selection === array.length + 1) {
-      (key === 'filter') ? this.chatFilter() : this.selectModule();
-      return array;
-    }
-    const edited = await this.editValue(array[selection], key, true);
-    if (array[selection]) array[selection] = edited;
-      else array.push(edited);
-    return array.filter(Boolean); // returns array without null
-  }
-  
-  async editValue(value, key, deletable = false) { // string | number | boolean
-    const form = new UI.ModalFormData();
-    form.title('Config Editor');
-    const useDropdown = Object.keys(DROPDOWNS).includes(key);
-    switch (typeof value) {
-      case 'string':
-        if (useDropdown) form.dropdown(
-          key,
-          DROPDOWNS[key].map(x => `${x.value} §l§7${x.desc ?? ''}`),
-          DROPDOWNS[key].findIndex(x => x.value === value)
-        )
-        else form.textField(key, '<String>', value);
-        break;
-      case 'number':
-        form.textField(key, '<Number>', String(value));
-        break;
-      case 'boolean':
-        form.toggle(key, value);
-        break;
-      case 'undefined':
-        form.textField(key, '<String>');
-        break;
-    }
-    if (deletable && value !== undefined) form.toggle('§l§cこの値を削除する', false);
-    const { formValues, canceled } = await form.show(this.player);
-    if (canceled) return value;
-    if (formValues[1]) return null;
-    const edited = (typeof value == 'number') ? toNumber(formValues[0]) : formValues[0];
-    if (edited === null) {
-      Util.notify(`§cError: ${formValues[0]} は無効な値です。数字を入力してください`, this.player);
-      return value; // not change value if not a number
-    }
-    return useDropdown ? DROPDOWNS[key][edited].value : edited;
-  }
-  
-  async rawEditor() {
-    const form = new UI.ModalFormData();
-    form.title('Raw Editor')
-      .textField('config (コピーして別のところで編集してください)', 'Put json here', JSON.stringify(config));
-    const { canceled, formValues } = await form.show(this.player);
-    if (canceled) return;
-    let data;
-    try {
-      data = JSON.parse(formValues[0]);
-    } catch {
-      return Util.notify('§c[Error] JSONのパースに失敗しました');
-    }
-    const changed = [];
-    for (const moduleName of Object.keys(data)) {
-      if (!config[moduleName] || !isChanged(config[moduleName], data[moduleName])) continue;
-      changeConfig(data[moduleName], moduleName);
-      changed.push(moduleName);
-    }
-    if (changed.length > 0) Util.notify(`§aConfigを保存しました§r\n${changed.map(x => `- ${x}`).join('\n')}`, this.player);
-  }
-  
-  async chatFilter() {
-    const form = FORMS.chatFilter;
-    const { selection, canceled } = await form.show(this.player);
-    if (canceled) return;
-    if (selection === 0) {
-      const res = await this.selectKey('ChatFilter', Util.cloneObject(chatFilter), true);
-      if (isChanged(res, chatFilter)) this.changeFilter(res);
-    }
-    if (selection === 1) return await this.main();
-  }
-  
-  // returns yes -> true, no -> false
-  async confirmForm(title, body, yes, no, cancelValue = false) {
-    const form = new UI.MessageFormData();
-    form.title(title)
-      .body(body)
-      .button1(yes)
-      .button2(no);
-    const { selection, canceled } = await form.show(this.player);
-    if (canceled) return cancelValue;
-    return selection === 1;
-  }
-  
-  changeFilter(data) {
-    try {
-      world.setDynamicProperty(properties.chatFilter, JSON.stringify(data));
-      let stateChanged = false;
-      for (const [k,v] of Object.entries(data)) {
-        if (k == 'state' && chatFilter.state != v) stateChanged = true;
-        chatFilter[k] = v;
-      }
-      Util.notify(`§aChatFilterを${stateChanged ? `${data.state}に設定しました` : '変更しました'}`, this.player);
-    } catch (e) {
-      Util.notify(`§cError: ChatFilterの保存に失敗しました\n${e}`, this.player);
-    }
-  }
-  
   async about() {
     const form = FORMS.about;
     const { selection, canceled } = await form.show(this.player);
@@ -453,54 +296,8 @@ export class AdminPanel {
   }
 }
 
-function resetModule(moduleName) {
-  if (moduleName === 'ChatFilter') return Util.cloneObject(defaultFilter);
-  return Util.cloneObject(defaultConfig[moduleName]);
-}
-
-function changeConfig(data, moduleName) {
-  if (moduleName === 'itemList') {
-    for (const type in data) {
-      if (!isChanged(config.itemList[type], data[type])) continue;
-      config.itemList[type] = data[type]; // change config
-      saveConfig(data, moduleName, type);
-    }
-  } else {
-    config[moduleName] = data;
-    saveConfig(data, moduleName);
-  }
-}
-
-function saveConfig(data, moduleName, type) {
-  const _config = JSON.parse(world.getDynamicProperty(properties.configData) ?? '{}');
-  if (type) {
-    if (!_config[moduleName]) _config[moduleName] = {}
-    _config[moduleName][type] = data[type];
-    
-  } else {
-    _config[moduleName] = data;
-  }
-  world.setDynamicProperty(properties.configData, JSON.stringify(_config));
-}
-
-function isChanged(data1, data2) { // compare objects
-  return JSON.stringify(data1) !== JSON.stringify(data2);
-}
-
-function getPreview(value) {
-  return ['string', 'number', 'boolean'].includes(typeof value)
-    ? value
-    : (Array.isArray(value) ? `array(${value.length})` : `[${typeof value}]`)
-}
-
-function toNumber(value) {
-  return isNaN(Number(value)) ? null : Number(value);
-}
-
-function descriptionBuilder(moduleName) {
-  if (!description[moduleName]) return;
-  const _module = description[moduleName];
-  return Object.keys(description[moduleName])
-    .map(k => k == 'desc' ? _module[k] : `- ${k}: ${_module[k]}`)
-    .join('\n');
+function coloredEntityCount(typeId, count) {
+  const maxCount = config.entityCounter.detect[typeId] ?? config.entityCounter.defaultCount;
+  const color = count > maxCount ? '§c' : (count > maxCount / 2 ? '§e' : '');
+  return `${color}${count}§r`;
 }

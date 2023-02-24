@@ -9,9 +9,7 @@ import './system/register_properties.js';
 const ac = new TNAntiCheat();
 events.worldLoad.subscribe(() => {
   if (world.getDynamicProperty(properties.ownerId)) {
-  try {
     ac.enable();
-    } catch(e) { console.error(e, e.stack) }
     
   } else {
     world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
