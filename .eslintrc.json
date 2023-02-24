@@ -13,7 +13,8 @@
       "block-spacing": "warn",
       "arrow-spacing": "warn",
       "space-before-blocks": "warn",
-      "keyword-spacing": "warn"
+      "keyword-spacing": "warn",
+      "no-irregular-whitespace": "off"
     },
     "parserOptions": {
       "ecmaVersion": 13,
