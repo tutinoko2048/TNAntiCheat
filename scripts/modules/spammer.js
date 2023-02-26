@@ -31,13 +31,3 @@ export function spammerC(ev) {
   }
   sender.lastMsgSentAt = Date.now();
 }
-
-/*
-export function chatFilter(ev) {
-  let { sender } = ev;
-  if (!chatFilterData.state || Util.isOP(sender)) return;
-  for (const word of chatFilterData.filter) {
-    ev.message = ev.message.replace(new RegExp(word, 'g'), '*'.repeat(word.length)); // replace bad characters into *
-  }
-}
-*/
