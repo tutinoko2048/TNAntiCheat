@@ -1,0 +1,15 @@
+{
+    "include": ["scripts/*"],
+    "exclude": [ "node_modules" ],
+    "compilerOptions": {
+      "allowJs": true,
+      "declaration": true,
+      "outDir": "dist",
+      "module": "ES2020",
+      "moduleResolution": "Node",
+      "target": "es2021",
+      "removeComments": true,
+      "noEmit": true,
+      "baseUrl": "./scripts"
+    }
+  }
