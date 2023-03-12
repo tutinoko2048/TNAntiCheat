@@ -222,11 +222,11 @@ export default
   entityCounter: { // 異常な数のエンティティを検知
     state: true,
     defaultCount: 300, // -1で無制限
-    kill: false,
-    checkInterval: 100, // 数をチェックする間隔(tick)
-    warnInterval: 1200,  // 警告を表示する間隔(tick)
+    kill: false, // 設定値に達したときにkillする
+    checkInterval: 200, // 数をチェックする間隔(tick)
+    warnInterval: 1200, // 警告を表示する間隔(tick)
     detect: { // 個別設定
-      // ex: "entityId": [maxCount]
+      // "entityId": [maxCount]
       "minecraft:item": 800
     }
   },

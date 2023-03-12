@@ -55,13 +55,13 @@ function entityCheckD(container) {
   }
 }
 
-/** @type {Object.<string, number>} */
+/** @type {Object<string, number>} */
 const countCooltime = {};
 
 export function entityCounter() {
   if (!config.entityCounter.state) return;
   
-  /** @type {Object.<string, number>} */
+  /** @type {Object<string, number>} */
   const entities = {};
   
   const excludes = Object.entries(config.entityCounter.detect).filter(c => c === -1);

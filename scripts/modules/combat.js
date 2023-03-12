@@ -22,9 +22,10 @@ export function reachA(ev) { // attacking
 export function reachB(ev) { // placement
   if (!config.reachB.state) return;
   const { source } = ev;
+  const blockLocation = ev.getBlockLocation();
   
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
-  const distance = Vector.distance(source.getHeadLocation(), ev.getBlockLocation());
+  const distance = Vector.distance(source.getHeadLocation(), blockLocation);
   if (distance > config.reachB.maxReach) {
     source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
     if (config.reachB.cancel) ev.cancel = true;

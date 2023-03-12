@@ -65,7 +65,7 @@ export class TNAntiCheat {
         player.lastLocation = player.location;
       }
       
-      if (!(system.currentTick % config.entityCounter.checkInterval)) modules.entityCounter();
+      if (!(system.currentTick % calcInterval(this.getTPS()))) modules.entityCounter();
       
       const now = Date.now();
       if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
@@ -85,11 +85,13 @@ export class TNAntiCheat {
       modules.entityCheck(ev.entity);
     });
     
+    /* 1.19.70のgetBlockLocationバグにより一時的に無効化しています
     world.events.beforeItemUseOn.subscribe(ev => {
       modules.placeCheckA(ev);
       modules.reachB(ev);
       modules.placeCheckD(ev);
     });
+    */
     
     world.events.blockPlace.subscribe(ev => {
       modules.placeCheckB(ev);
@@ -189,4 +191,11 @@ function checkPlayerJson() { // checks player.json conflict
     Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました');
     if (config.others.debug) console.warn('[debug] disabled: Speed/A, tempkick');
   }
+}
+
+function calcInterval(tps) {
+  if (tps >= 15) return config.entityCounter.checkInterval;
+  if (tps >= 10) return config.entityCounter.checkInterval * 0.8;
+  if (tps >= 5) return config.entityCounter.checkInterval * 0.4;
+  return config.entityCounter.checkInterval * 0.2
 }
