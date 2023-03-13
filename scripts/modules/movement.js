@@ -6,6 +6,7 @@ const excluded = [ GameMode.creative, GameMode.spectator ];
 
 export function speedA(player) {
   if (!config.speedA.state) return;
+  // eslint-disable-next-line no-unused-vars
   const { x, y, z } = player.getVelocity();
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
   // for debug

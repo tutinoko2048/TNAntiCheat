@@ -14,20 +14,22 @@ export * from './nuker';
 export * from './movement';
 
 export function ban(player) {
-  if (unbanQueue.includes(player.name) && Util.isBanned(player)) {
-    Util.unban(player);
-    Util.notify(`§aUnbanned: ${player.name}`);
-    return;
-  }
-  
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
+    if (unbanQueue.includes(player.name)) {
+      Util.unban(player);
+      Util.notify(`§aUnbanned: ${player.name}`);
+      return;
+    }
+    
     const reason = player.getDynamicProperty(properties.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     return Util.kick(player, reason ?? '-', true);
   }
-  
+}
+
+export function banByXuid() {
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
-    player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
+    world.getDimension('overworld').runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
       Util.notify(`BANリストに含まれる XUID: §c${xuid} のプレイヤーをキックしました`);
     });
   }

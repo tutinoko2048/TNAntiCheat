@@ -43,7 +43,7 @@ export class TNAntiCheat {
       
       if (!(system.currentTick % 20)) modules.notify();
       
-      for (const player of world.getAllPlayers()) {
+      for (const player of world.getPlayers()) {
         if (!player.isMoved) modules.checkMoving(player);
         
         modules.crasher(player);
@@ -54,6 +54,7 @@ export class TNAntiCheat {
         modules.speedA(player);
         
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
+        if (!(system.currentTick % 100)) modules.ban(player); // tag check
         
         player.breakCount = 0;
         if (player.lastDimensionId !== player.dimension.id) {
@@ -61,7 +62,6 @@ export class TNAntiCheat {
           player.dimensionSwitchedAt = Date.now();
           player.isMoved = false;
         }
-        
         player.lastLocation = player.location;
       }
       
@@ -148,6 +148,7 @@ export class TNAntiCheat {
     player.joinedAt = Date.now();
     modules.namespoof(player);
     modules.ban(player);
+    modules.banByXuid();
     
     if (player.getDynamicProperty(properties.mute)) {
       Util.notify(`§7あなたはミュートされています`, player);
