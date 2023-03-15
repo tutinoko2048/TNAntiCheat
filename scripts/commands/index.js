@@ -14,5 +14,6 @@ export const COMMANDS = [
   'permission',
   'unban',
   'data',
+  'config',
   //'runjs', // for debug
 ]

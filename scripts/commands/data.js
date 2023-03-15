@@ -1,8 +1,5 @@
-import { world, system } from '@minecraft/server';
 import { ActionFormData } from '@minecraft/server-ui';
 import toJson from '../lib/toJson';
-import config from '../config.js';
-import chatFilter from '../chat_filter.js';
 import { Util } from '../util/util';
 import { Data } from '../util/Data';
 import { CommandError } from '../util/CommandError';
@@ -12,13 +9,12 @@ export default {
   description: '内部の保存データにアクセスできます (ex: config.nukerでnukerのconfigを表示)',
   aliases: [],
   args: [
-    'get <path: string>',
-    //'<"config"|"filter"> set <path: string> <value: string>'
+    'get <path: string>'
   ],
   permission: (player) => Util.isOP(player),
   disableScriptEvent: true,
   func: (sender, args) => {
-    const [ mode, path, value ] = args;
+    const [ mode, path ] = args;
     if (!mode || !path) throw new CommandError('args: get <path: string>');
     if (mode === 'get') {
       const res = Data.getByPath(path);

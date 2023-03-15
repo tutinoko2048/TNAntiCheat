@@ -1,4 +1,4 @@
-import { system, Player } from '@minecraft/server';
+import { system } from '@minecraft/server';
 import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';
@@ -7,7 +7,7 @@ export function nukerFlag(player) {
   if (!config.nuker.state || Util.isOP(player)) return;
   const { location, breakCount = 0 } = player;
   if (breakCount > config.nuker.limit) {
-    const { x, y, z } = Util.vectorNicely(player.location);
+    const { x, y, z } = Util.vectorNicely(location);
     Util.flag(player, 'Nuker', config.nuker.punishment, `Nukerの使用を検知しました (§c${breakCount}blocks/tick§r) §7[${x}, ${y}, ${z}]`);
   }
 }

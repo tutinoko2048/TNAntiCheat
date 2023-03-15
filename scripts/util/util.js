@@ -1,4 +1,4 @@
-import { world, system, Player, Entity, Vector, GameMode } from '@minecraft/server';
+import { world, system, Player, Vector, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { properties } from './constants';
@@ -74,11 +74,11 @@ export class Util {
   static notify(message, target) {
     const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
     if (target instanceof Player) {
-      target.tell(`[§l§a${name}§r] ${message}`);
+      target.sendMessage(`[§l§a${name}§r] ${message}`);
     } else {
       config.others.sendws
         ? overworld.runCommandAsync(`say "[§l§aTN-AntiCheat§r] ${message}"`)
-        : world.say(`[§l§a${name}§r] ${message}`);
+        : world.sendMessage(`[§l§a${name}§r] ${message}`);
     }
   }
   
@@ -181,8 +181,8 @@ export class Util {
     return JSON.parse(JSON.stringify(obj));
   }
   
-  static getTime() {
-    const d = new Date();
+  static getTime(now) {
+    const d = now ? new Date(now) : new Date();
     const month = ('0' + (d.getMonth()+1)).slice(-2);
     const date = ('0' + d.getDate()).slice(-2);
     const hour = ('0' + d.getHours()).slice(-2);
@@ -205,7 +205,7 @@ export class Util {
    * @author aikayu1op.js
    */
   static showFormToBusy(player, form) {
-    player.tell(`§7[AdminPanel] チャットを閉じると表示されます`);
+    player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
     return new Promise(res => {
       system.run(async function run() {
         const response = await form.show(player);
@@ -248,5 +248,10 @@ export class Util {
     } catch {
       return null;
     }
+  }
+  
+  static showActionBar(player, ...text) {
+    const msg = text instanceof Array ? text.map(x => String(x)).join(', ') : String(text);
+    player.onScreenDisplay.setActionBar(msg);
   }
 }

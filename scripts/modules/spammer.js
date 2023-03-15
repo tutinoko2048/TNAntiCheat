@@ -1,6 +1,5 @@
 import config from '../config.js';
 import { Util } from '../util/util';
-import chatFilterData from '../chat_filter.js';
 
 export function spammerA(ev) {
   const { message, sender } = ev;
@@ -22,7 +21,7 @@ export function spammerB(ev) {
 }
 
 export function spammerC(ev) {
-  const { message, sender } = ev;
+  const { sender } = ev;
   if (!config.spammerC.state || Util.isOP(sender)) return;
   const interval = Date.now() - sender.lastMsgSentAt;
   if (sender.lastMsgSentAt && interval < config.spammerC.minInterval) {
@@ -31,12 +30,4 @@ export function spammerC(ev) {
     return ev.cancel = true; // flag -> return true
   }
   sender.lastMsgSentAt = Date.now();
-}
-
-export function chatFilter(ev) {
-  let { sender } = ev;
-  if (!chatFilterData.state || Util.isOP(sender)) return;
-  for (const word of chatFilterData.filter) {
-    ev.message = ev.message.replace(new RegExp(word, 'g'), '*'.repeat(word.length)); // replace bad characters into *
-  }
 }

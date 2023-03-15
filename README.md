@@ -62,6 +62,9 @@ Builder権限がないプレイヤーのクリエイティブを検知
 - EntityCheck/D  
 チェスト付きトロッコやボートの中身をチェック
 
+- EntityCounter  
+エンティティの数が異常に多い時に警告を表示
+
 - ItemCheck/A  
 禁止アイテムの所持を検知
 
@@ -141,9 +144,6 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
 ![item-info](docs/item_info.jpeg)
 </details>  
 <br>
-
-- Chat Filter  
-設定した単語を非表示にできます。単語はアドオンフォルダ内の`chat_filter.js`で追加できます。
 
 - Config  
 ワールド内でConfig(このアドオンの設定)を編集できます  

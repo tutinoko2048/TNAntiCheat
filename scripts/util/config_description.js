@@ -1,5 +1,6 @@
 const state = '有効/無効の設定';
 const punishment = '検知された場合の対応';
+const flagCount = 'Flagするまでの検知回数 (-1で無制限)';
 
 export const description = {
   permission: {
@@ -73,10 +74,9 @@ export const description = {
     punishment
   },
   itemCheckC: {
-    desc: '1スタックに値より大きい数を持っていたら検知',
+    desc: 'アイテムの不正な個数を検知',
     state,
-    punishment,
-    maxAmount: '最大スタック数'
+    punishment
   },
   itemCheckD: {
     desc: '不正なエンチャントレベルを検知',
@@ -99,10 +99,12 @@ export const description = {
     shulkerExcludes: 'シュルカー禁止を除外するタグ'
   },
   placeCheckB: {
-    desc: '設置した時にインベントリをチェック (一部ブロックは非対応)',
+    desc: '設置した時にインベントリをチェック',
     state,
     punishment,
-    spawnEgg: 'スポーンエッグを含めるかどうか',
+    flagCount,
+    spawnEgg: 'スポーンエッグを含める',
+    shulkerBox: 'シュルカーボックスの中身をチェックする',
     detect: '検知するインベントリ付きブロックのID'
   },
   placeCheckC: {
@@ -134,7 +136,6 @@ export const description = {
     desc: '大量のエンティティのスポーンを検知',
     state,
     maxArrowSpawns: '1tickにスポーンできる矢の数',
-    maxItemSpawns: '1tickにスポーンできるアイテムの数',
     maxCmdMinecartSpawns: '1tickにスポーンできるコマブロ付きトロッコの数'
   },
   entityCheckD: {
@@ -143,8 +144,17 @@ export const description = {
     spawnEgg: 'スポーンエッグを含めるかどうか',
     detect: '検知するエンティティ'
   },
+  entityCounter: {
+    desc: '異常な数のエンティティを検知',
+    state,
+    defaultCount: "エンティティの最大数 (-1で無制限)",
+    kill: "設定値に達したときにkillする",
+    checkInterval: "数をチェックする間隔(tick)",
+    warnInterval: "警告を表示する間隔(tick)",
+    detect: "最大数の個別の設定 ex: \"entityId\": [maxCount]"
+  },
   reachA: {
-    desc: '攻撃の長すぎるリーチを検知 (ベータ)',
+    desc: '攻撃の長すぎるリーチを検知',
     state,
     punishment,
     maxReach: '最大リーチ',
@@ -152,14 +162,14 @@ export const description = {
     excludeEntities: '除外するエンティティ'
   },
   reachB: {
-    desc: 'ブロック設置の長すぎるリーチを検知 (ベータ)',
+    desc: 'ブロック設置の長すぎるリーチを検知',
     state,
     punishment,
     maxReach: '最大リーチ',
     cancel: 'ブロックの設置をキャンセルする',
   },
   reachC: {
-    desc: 'ブロック破壊の長すぎるリーチを検知 (ベータ)',
+    desc: 'ブロック破壊の長すぎるリーチを検知',
     state,
     punishment,
     maxReach: '最大リーチ',
@@ -181,7 +191,7 @@ export const description = {
     desc: '速すぎる移動を検知 (ベータ)',
     state,
     punishment,
-    flagCount: 'Flagするまでの検知回数 (-1で無制限)',
+    flagCount,
     maxVelocity: '許容するスピードの最大値',
     rollback: '検知した時に前いた位置までテレポートする'
   },

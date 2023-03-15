@@ -1,4 +1,4 @@
-import { world, Location } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -14,20 +14,22 @@ export * from './nuker';
 export * from './movement';
 
 export function ban(player) {
-  if (unbanQueue.includes(player.name) && Util.isBanned(player)) {
-    Util.unban(player);
-    Util.notify(`§aUnbanned: ${player.name}`);
-    return;
-  }
-  
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
+    if (unbanQueue.includes(player.name)) {
+      Util.unban(player);
+      Util.notify(`§aUnbanned: ${player.name}`);
+      return;
+    }
+    
     const reason = player.getDynamicProperty(properties.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     return Util.kick(player, reason ?? '-', true);
   }
-  
+}
+
+export function banByXuid() {
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
-    player.runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
+    world.getDimension('overworld').runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
       Util.notify(`BANリストに含まれる XUID: §c${xuid} のプレイヤーをキックしました`);
     });
   }
@@ -50,9 +52,9 @@ export function flag(player) { // don't run every tick not to spam
     Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
     player.autoClickerFlag = null;
   }
-  if (player.speedAFlag) {
-    Util.notify(player.speedAFlag);
-    player.speedAFlag = null;
+  if (player.flagQueue) {
+    Util.notify(player.flagQueue);
+    player.flagQueue = null;
   }
 }
 
@@ -74,7 +76,7 @@ export function crasher(player) {
   if (!config.crasher.state) return;
   const { x, y, z } = player.location;
   if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
-    player.teleport(new Location(0, 255, 0), player.dimension, 0, 0);
+    player.teleport({ x: 0, y: 255, z: 0 }, player.dimension, 0, 0);
     if (Util.isOP(player)) return; // prevent crasher by all players but don't punish OP
     Util.flag(player, 'Crasher', config.crasher.punishment, 'Crasherの使用を検知しました');
   }

@@ -1,8 +1,9 @@
-import { system, Player } from '@minecraft/server';
+import { system, Player, Vector } from '@minecraft/server';
 import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';
 
+// entityHit
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
   const { entity, hitEntity } = ev;
@@ -12,27 +13,32 @@ export function reachA(ev) { // attacking
     config.reachA.excludeEntities.includes(hitEntity.typeId)
   ) return;
   
-  const distance = Util.distance(entity.headLocation, hitEntity.location);
+  const distance = Vector.distance(entity.getHeadLocation(), hitEntity.location);
   if (distance > config.reachA.maxReach)
     entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, length: ${distance.toFixed(2)})§r`;
 }
 
+// beforeItemUseOn
 export function reachB(ev) { // placement
   if (!config.reachB.state) return;
-  const { source, blockLocation } = ev;
+  const { source } = ev;
+  const blockLocation = ev.getBlockLocation();
+  
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
-  const distance = Util.distance(source.headLocation, blockLocation);
+  const distance = Vector.distance(source.getHeadLocation(), blockLocation);
   if (distance > config.reachB.maxReach) {
     source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
     if (config.reachB.cancel) ev.cancel = true;
   }
 }
 
+// blockBreak
 export function reachC(ev) { // destruction
   if (!config.reachC.state) return;
   const { player, block, brokenBlockPermutation } = ev;
   if (Util.isCreative(player) || Util.isOP(player)) return;
-  const distance = Util.distance(player.headLocation, block.location);
+  
+  const distance = Vector.distance(player.getHeadLocation(), block.location);
   if (distance > config.reachC.maxReach) {
     player.reachCFlag = `長いリーチの破壊を検知しました §7(length: ${distance.toFixed(2)})§r`;
     system.run(() => {
@@ -42,6 +48,7 @@ export function reachC(ev) { // destruction
   }
 }
 
+// entityHit
 export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
   if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;

@@ -8,7 +8,6 @@ export const FORMS = {
     .button('§lプレイヤーリスト / Player List', ICONS.playerList)
     .button('§lエンティティ数を表示 / Show entities', ICONS.entities)
     .button('§l設定 / Config', ICONS.config)
-    .button('§lチャットフィルター / Chat filter', ICONS.mute)
     .button('§lこのアドオンについて / About', ICONS.about),
   playerInfo: new UI.ActionFormData()
     .title('PlayerInfo')
@@ -38,11 +37,6 @@ export const FORMS = {
       '  §7(バグやbypassの報告・機能の提案などはこちらからどうぞ)§r',
       '- Developer: tutinoko2048 / RetoRuto9900K\n'
     ].join('\n'))
-    .button('戻る / Return', ICONS.returnBtn),
-  chatFilter: new UI.ActionFormData()
-    .title('Chat Filter')
-    .body('チャットフィルターの設定をします')
-    .button('編集 / Edit', ICONS.edit)
     .button('戻る / Return', ICONS.returnBtn)
 }
 
@@ -61,4 +55,16 @@ export const DROPDOWNS = {
   defaultGamemode: Object.values(GameMode).map(value => {
     return { value }
   })
+}
+
+// returns yes -> true, no -> false
+export async function confirmForm(player, { title = '確認', body, yes = 'OK', no = '§lキャンセル', defaultValue = false }) {
+  const form = new UI.MessageFormData();
+  form.title(title)
+    .body(body)
+    .button1(yes)
+    .button2(no);
+  const { selection, canceled } = await form.show(player);
+  if (canceled) return defaultValue;
+  return selection === 1;
 }

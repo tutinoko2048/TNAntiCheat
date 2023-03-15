@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: 0 */
+
 import { Util } from '../util/util';
 import * as mc from '@minecraft/server';
 const { world, system } = mc;
@@ -24,5 +26,5 @@ function inspect(...args) {
       default: return String(v);
     }
   }).join(' ');
-  world.say(message);
+  world.sendMessage(message);
 }

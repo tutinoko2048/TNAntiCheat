@@ -1,4 +1,3 @@
-import config from '../config.js';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import { CommandError } from '../util/CommandError';

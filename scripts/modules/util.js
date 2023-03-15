@@ -1,9 +1,9 @@
-import { world, Location } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
 export function itemMessageBuilder(item, needs = 'name') {
-  return `§c${item.typeId}:${item.data}§r${needs == 'amount' ? ` x${item.amount}`:''}${item.nameTag && needs == 'name' ? `§7, Name: §r${safeItemName(item.nameTag)}`:''}§r`
+  return `§c${item.typeId}§r${needs == 'amount' ? ` x${item.amount}`:''}${item.nameTag && needs == 'name' ? `§7, Name: §r${safeItemName(item.nameTag)}`:''}§r`
 }
 
 export function safeItemName(name) {
@@ -40,7 +40,7 @@ export function queueNotify(type, obj) {
 
 export function killDroppedItem(loc, dimension) {
   const items = dimension.getEntities({
-    location: new Location(loc.x, loc.y, loc.z),
+    location: loc,
     maxDistance: 1.5,
     type: 'minecraft:item'
   });
