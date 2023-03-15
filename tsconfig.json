@@ -1,15 +1,15 @@
 {
-    "include": ["scripts/*"],
-    "exclude": [ "node_modules" ],
+    "include": ["scripts/"],
+    "exclude": [
+      "node_modules",
+      "scripts/util/secret.js"
+    ],
     "compilerOptions": {
       "allowJs": true,
-      "declaration": true,
-      "outDir": "dist",
+      "checkJs": true,
       "module": "ES2020",
-      "moduleResolution": "Node",
       "target": "es2021",
-      "removeComments": true,
       "noEmit": true,
-      "baseUrl": "./scripts"
+      "moduleResolution": "node"
     }
   }

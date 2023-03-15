@@ -60,7 +60,7 @@ export class ConfigPanel {
     if (res.reopen) await this.selectModule(false, res.message);
   }
   
-  async selectValue(value, key, ref, { deletable, title, isModule }) {
+  async selectValue(value, key, ref, { deletable = false, title, isModule }) {
     switch (typeof value) {
       case 'object': {
         const form = new ActionForm().title(title);
@@ -131,7 +131,7 @@ export class ConfigPanel {
     }
   }
   
-  async editText(value, key, ref, { add, isNumber, title, deletable }) {
+  async editText(value, key, ref, { add = false, isNumber = false, title, deletable = false }) {
     const showDelete = deletable && !add;
     const useDropdown = Object.keys(DROPDOWNS).includes(key);
     const form = new UI.ModalFormData().title(title);

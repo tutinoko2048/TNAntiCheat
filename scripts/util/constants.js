@@ -1,4 +1,4 @@
-export const VERSION = '3.3.0';
+export const VERSION = '3.3.1';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const properties = {

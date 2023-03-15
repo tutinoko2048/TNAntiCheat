@@ -5,7 +5,7 @@ import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
-import { Data, deleteDupe } from 'util/Data';
+import { Data, deleteDupe } from './util/Data';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 

@@ -14,7 +14,7 @@ export class Util {
    * @param {string} type
    * @param {string} punishment
    * @param {string} message
-   * @param {boolean} notifyCreative
+   * @param {boolean} [notifyCreative]
    */
   static flag(player, type, punishment, message, notifyCreative) {
     if (notifyCreative && Util.isCreative(player)) punishment = 'notify';
@@ -151,7 +151,7 @@ export class Util {
    * プレイヤーのゲームモードを取得します。ゲームモードが取得できない場合はundefinedが返ります。
    * Thanks: https://discord.com/channels/950040604186931351/969011166443626506/1030299392697184346
    * @param {Player} player
-   * @returns {string | undefined}
+   * @returns {GameMode|undefined}
    */
   static getGamemode(player) {
     for (const gamemodeName in GameMode) {
@@ -236,7 +236,7 @@ export class Util {
 
   /**
    *
-   * @param {Player|Entity|string} target
+   * @param {Player|import('@minecraft/server').Entity|string} target
    * @param {string} obj
    * @returns {number|null}
    */
