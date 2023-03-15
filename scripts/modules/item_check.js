@@ -91,7 +91,7 @@ function enchantCheck(item, container, slot, player) {
 }
 
 function createItem(item) {
-  const itemType = ItemTypes.get(item.typeId);
+  const itemType = item.type ?? ItemTypes.get(item.typeId);
   if (!itemType) return;
   return new ItemStack(itemType, item.amount);
 }
