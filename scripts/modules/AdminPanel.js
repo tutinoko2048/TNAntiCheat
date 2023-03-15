@@ -281,7 +281,7 @@ export class AdminPanel {
   }
   
   static getPanelItem() {
-    const item =  new ItemStack(ItemTypes.get(config.others.adminPanel), 1, 0);
+    const item =  new ItemStack(ItemTypes.get(config.others.adminPanel), 1);
     item.nameTag = panelItem.nameTag;
     item.setLore([ Util.hideString(panelItem.lore) ]);
     return item;
