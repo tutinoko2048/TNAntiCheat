@@ -57,6 +57,7 @@ export class Data {
   }
   
   static fetch() {
+    // @ts-ignore
     return JSON.parse(world.getDynamicProperty(properties.configData) ?? '{}');
   }
   
