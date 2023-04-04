@@ -100,6 +100,7 @@ export function placeCheckD(ev) {
     
     if (gameMode === GameMode.creative) return;
     item.amount--;
+    // @ts-ignore
     source.getComponent('minecraft:inventory').container.setItem(source.selectedSlot, item);
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
@@ -109,6 +110,7 @@ export function placeCheckD(ev) {
     
     if (gameMode === GameMode.creative) return;
     item.amount--;
+    // @ts-ignore
     source.getComponent('minecraft:inventory').container.setItem(source.selectedSlot, item);
   }
 }

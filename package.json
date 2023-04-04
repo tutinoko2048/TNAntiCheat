@@ -5,7 +5,7 @@
   "main": "scripts/index.js",
   "typings": "scripts/type/index",
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js"
   },
   "repository": {
     "type": "git",
