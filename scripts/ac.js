@@ -29,7 +29,7 @@ export class TNAntiCheat {
     this.#isEnabled = true;
     
     world.sendMessage(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
-    world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています');
+    world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています§r');
     
     this.loadConfig();
     checkPlayerJson();
@@ -185,11 +185,13 @@ export class TNAntiCheat {
   }
 }
 
+/** @typedef {import('@minecraft/server').EntityVariantComponent} EntityVariantComponent*/
+
 function checkPlayerJson() { // checks player.json conflict
-  const variant = world.getAllPlayers()[0].getComponent('minecraft:variant').value;
-  if (variant !== 2048) {
+  const variant = /** @type {EntityVariantComponent} */ (world.getAllPlayers()[0].getComponent('minecraft:variant'));
+  if (variant.value !== 2048) {
     config.speedA.state = false;
-    Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました');
+    Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました§r');
     if (config.others.debug) console.warn('[debug] disabled: Speed/A, tempkick');
   }
 }

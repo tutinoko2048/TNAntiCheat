@@ -10,7 +10,7 @@ export class ActionForm {
     this._data = new ActionFormData();
 
     /**
-     * @type {import('../types/ActionForm').ActionFormButton[]} 
+     * @type {import('./ActionFormResponse').ActionFormButton[]} 
      * @readonly
      */
     this.buttons = [];
@@ -19,10 +19,10 @@ export class ActionForm {
   /**
    * 
    * @param {import('@minecraft/server').Player} player 
-   * @returns {Promise<import('../types/ActionForm').ActionFormResponse>}
+   * @returns {Promise<import('./ActionFormResponse').ActionFormResponse>}
    */
   async show(player) {
-    /** @type {import('../types/ActionForm').ActionFormResponse} */
+    /** @type {import('./ActionFormResponse').ActionFormResponse} */
     const res = await this._data.show(player);
     if (!res.canceled) res.button = this.buttons[res.selection];
     return res;

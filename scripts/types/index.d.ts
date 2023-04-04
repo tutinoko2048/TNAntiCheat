@@ -10,6 +10,7 @@ declare module '@minecraft/server' {
   interface Entity {
     lastHitAt?: number;
     threwTridentAt?: number;
+    dimensionSwitchedAt?: number;
     lastLocation?: import('@minecraft/server').Vector3;
     lastDimensionId?: string;
     isMoved?: boolean;

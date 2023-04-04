@@ -1,7 +1,9 @@
+// @ts-check
+
 import { Util } from '../util/util';
 import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
-import { ItemTypes, ItemStack } from '@minecraft/server';
+import { EnchantmentList } from '@minecraft/server';
 
 export function itemCheck(player) {
   if (Util.isOP(player)) return;
@@ -41,14 +43,17 @@ export function itemCheck(player) {
   }
 }
 
+/** @typedef {import('@minecraft/server').ItemEnchantsComponent} ItemEnchantsComponent */
+
 function enchantCheck(item, container, slot, player) {
+  if (!item) return;
   const levelChecked = [];
   const itemChecked = [];
-  const _item = createItem(item);
-  const _enchantments = _item && _item.getComponent("enchantments").enchantments;
-  
-  const enchantment = item.getComponent('enchantments');
+
+  const enchantment = /** @type {ItemEnchantsComponent} */ (item.getComponent('minecraft:enchantments'));
   const { enchantments } = enchantment;
+  const _enchantments = new EnchantmentList(enchantments.slot);
+  
   for (const enchant of enchantments) {
     const { level, type } = enchant;
     const { id, maxLevel } = type;
@@ -88,10 +93,4 @@ function enchantCheck(item, container, slot, player) {
     Util.flag(player, 'ItemCheck/E', config.itemCheckE.punishment, `不正なエンチャントを検知しました (${itemMessageBuilder(item)})\n${safeMessage}`);
   }
   
-}
-
-function createItem(item) {
-  const itemType = item.type ?? ItemTypes.get(item.typeId);
-  if (!itemType) return;
-  return new ItemStack(itemType, item.amount);
 }
