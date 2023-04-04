@@ -2,7 +2,7 @@
     "include": ["scripts/"],
     "exclude": [
       "node_modules",
-      "scripts/util/secret.js"
+      "./scripts/util/secret.js"
     ],
     "compilerOptions": {
       "allowJs": true,
