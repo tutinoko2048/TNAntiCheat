@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -92,11 +92,12 @@ export class AdminPanel {
   
   async showInventory(player) {
     const container = player.getComponent('minecraft:inventory').container;
-    const items = Array(container.size).fill(null).map((_,i) => {
+    const allItems = Array(container.size).fill(null).map((_,i) => {
       const item = container.getItem(i);
       if (item) item._slot = i;
       return item;
-    }).filter(Boolean);
+    });
+    const items = [...allItems, ...getEquipments(player)].filter(Boolean);
     
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
@@ -147,17 +148,25 @@ export class AdminPanel {
     const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
+    
+    const targetContainer = player.getComponent('minecraft:inventory').container;
+    const targetEquipments = player.getComponent('minecraft:equipment_inventory');
+    const myContainer = this.player.getComponent('minecraft:inventory').container;
     if (selection === 0) {
-      player.getComponent('minecraft:inventory').container.clearItem(item._slot);
+      item._isEquipment
+        ? targetEquipments.setEquipment(item._slot)
+        : targetContainer.setItem(item._slot);
       Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を削除しました`, this.player);
     }
     if (selection === 1) {
-      this.player.getComponent('minecraft:inventory').container.addItem(item);
+      myContainer.addItem(item);
       Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を複製しました`, this.player);
     }
     if (selection === 2) {
-      this.player.getComponent('minecraft:inventory').container.addItem(item);
-      player.getComponent('minecraft:inventory').container.clearItem(item._slot);
+      myContainer.addItem(item);
+      item._isEquipment
+        ? targetEquipments.setEquipment(item._slot)
+        : targetContainer.setItem(item._slot);
       Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
@@ -297,4 +306,17 @@ function coloredEntityCount(typeId, count) {
   const maxCount = config.entityCounter.detect[typeId] ?? config.entityCounter.defaultCount;
   const color = count > maxCount ? '§c' : (count > maxCount / 2 ? '§e' : '');
   return `${color}${count}§r`;
+}
+
+function getEquipments(player) {
+  const equipments = player.getComponent('minecraft:equipment_inventory');
+  return Object.values(EquipmentSlot).map(slotId => {
+    if (slotId === EquipmentSlot.mainhand) return;
+    const item = equipments.getEquipment(slotId);
+    if (item) {
+      item._slot = slotId;
+      item._isEquipment = true;
+    }
+    return item;
+  });
 }

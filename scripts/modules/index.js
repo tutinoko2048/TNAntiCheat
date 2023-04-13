@@ -1,9 +1,12 @@
-import { world } from '@minecraft/server';
+import { world, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
 import  { properties } from '../util/constants';
+import { AdminPanel } from './AdminPanel';
+
+/** @typedef {import('@minecraft/server').EntityInventoryComponent} InventoryComponent */
 
 export * from './item_check';
 export * from './spammer';
@@ -94,4 +97,20 @@ export async function creative(player) {
     await player.runCommandAsync(`gamemode ${config.creative.defaultGamemode} @s`);
     Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');
   }
+}
+
+export function getBlock(ev) {
+  const { source, item } = ev;
+  
+  if (
+    !config.others.blockCopy ||
+    !(source instanceof Player) ||
+    !source.isSneaking ||
+    !Util.isCreative(source) ||
+    !AdminPanel.isPanelItem(item)
+  ) return;
+  
+  const block = source.dimension.getBlock(ev.getBlockLocation());
+  const blockItem = block.getItemStack(1, true);
+  /** @type {InventoryComponent} */(source.getComponent('minecraft:inventory')).container.addItem(blockItem);
 }

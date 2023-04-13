@@ -85,11 +85,12 @@ export class TNAntiCheat {
       modules.entityCheck(ev.entity);
     });
     
-    /** 1.19.70のgetBlockLocationバグにより一部を一時的に無効化しています */
     world.events.beforeItemUseOn.subscribe(ev => {
       modules.placeCheckA(ev);
-      //modules.reachB(ev);
-      //modules.placeCheckD(ev);
+      modules.reachB(ev);
+      modules.placeCheckD(ev);
+      
+      modules.getBlock(ev);
     });
     
     

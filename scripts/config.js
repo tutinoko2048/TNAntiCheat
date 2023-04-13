@@ -276,6 +276,7 @@ export default
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
-    fixBDS: false // BDSで使う場合はオンにしてください
+    fixBDS: false, // BDSで使う場合はオンにしてください,
+    blockCopy: true // 管理者アイテムでブロックをスニーク+タップするとコピーできます
   }
 }
