@@ -1,6 +1,7 @@
 import config from '../config.js';
 import { Util } from '../util/util';
 
+/** @param {import('@minecraft/server').BeforeChatEvent} ev */
 export function spammerA(ev) {
   const { message, sender } = ev;
   if (!config.spammerA.state || Util.isOP(sender)) return;
@@ -10,6 +11,7 @@ export function spammerA(ev) {
   }
 }
 
+/** @param {import('@minecraft/server').BeforeChatEvent} ev */
 export function spammerB(ev) {
   const { message, sender } = ev;
   if (!config.spammerB.state || Util.isOP(sender)) return;
@@ -20,6 +22,7 @@ export function spammerB(ev) {
   sender.lastMsg = message;
 }
 
+/** @param {import('@minecraft/server').BeforeChatEvent} ev */
 export function spammerC(ev) {
   const { sender } = ev;
   if (!config.spammerC.state || Util.isOP(sender)) return;

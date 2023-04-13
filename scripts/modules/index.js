@@ -38,6 +38,7 @@ export function banByXuid() {
   }
 }
 
+/** @param {import('@minecraft/server').Player} player */
 export function flag(player) { // don't run every tick not to spam
   if (player.reachAFlag) {
     Util.flag(player, 'Reach/A', config.reachA.punishment, player.reachAFlag);
@@ -91,6 +92,7 @@ export function namespoof(player) {
     Util.flag(player, 'Namespoof', config.namespoof.punishment, `長すぎる名前を検知しました`);
 }
 
+/** @param {import('@minecraft/server').Player} player */
 export async function creative(player) {
   if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
   if (Util.isCreative(player)) {
@@ -99,6 +101,7 @@ export async function creative(player) {
   }
 }
 
+/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
 export function getBlock(ev) {
   const { source, item } = ev;
   
@@ -112,5 +115,5 @@ export function getBlock(ev) {
   
   const block = source.dimension.getBlock(ev.getBlockLocation());
   const blockItem = block.getItemStack(1, true);
-  /** @type {InventoryComponent} */(source.getComponent('minecraft:inventory')).container.addItem(blockItem);
+  source.getComponent('minecraft:inventory').container.addItem(blockItem);
 }

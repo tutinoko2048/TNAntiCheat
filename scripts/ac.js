@@ -136,6 +136,7 @@ export class TNAntiCheat {
     }, entityOption);
   }
   
+  /** @param {import('@minecraft/server').BeforeChatEvent} ev */
   #chatHandler(ev) {
     const tooFast = modules.spammerC(ev);
     if (!tooFast && this.commands.isCommand(ev.message)) return this.commands.handle(ev);
@@ -145,6 +146,7 @@ export class TNAntiCheat {
     !modules.spammerB(ev);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   #joinHandler(player) {
     player.joinedAt = Date.now();
     modules.namespoof(player);

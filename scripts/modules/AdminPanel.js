@@ -8,6 +8,11 @@ import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 
 export class AdminPanel {
+  /**
+   * 
+   * @param {import('../ac').TNAntiCheat} ac 
+   * @param {import('@minecraft/server').Player} player 
+   */
   constructor(ac, player) {
     this.ac = ac;
     this.player = player;
@@ -55,6 +60,7 @@ export class AdminPanel {
     return await this.playerInfo(players[selection]);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
     const { current, value } = player.getComponent('minecraft:health');
@@ -90,6 +96,7 @@ export class AdminPanel {
     if (selection === 9) return await this.playerList();
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async showInventory(player) {
     const container = player.getComponent('minecraft:inventory').container;
     const allItems = Array(container.size).fill(null).map((_,i) => {
@@ -144,6 +151,10 @@ export class AdminPanel {
     }
   }
   
+  /**
+   * @param {import('@minecraft/server').Player} player 
+   * @param {import('@minecraft/server').ItemStack} item 
+   */
   async itemInfo(player, item) {
     const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
     const { selection, canceled } = await form.show(this.player);
@@ -172,6 +183,7 @@ export class AdminPanel {
     if (selection === 3) return await this.showInventory(player);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async managePermission(player) {
     const _builder = Permissions.has(player, 'builder');
     const _admin = Permissions.has(player, 'admin');
@@ -192,8 +204,9 @@ export class AdminPanel {
     }
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async toggleMute(player) {
-    const _mute = player.getDynamicProperty(properties.mute) ?? false;
+    const _mute = /** @type {boolean} */(player.getDynamicProperty(properties.mute) ?? false);
     const form = new UI.ModalFormData();
     form.title('Mute')
       .toggle('ミュート / Mute', _mute);
@@ -210,6 +223,7 @@ export class AdminPanel {
     } else return await this.playerInfo(player);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async kickPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にkickしますか？`,
@@ -223,6 +237,7 @@ export class AdminPanel {
     } else return await this.playerInfo(player);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async banPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にbanしますか？`,
@@ -236,6 +251,7 @@ export class AdminPanel {
     } else return await this.playerInfo(player);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async showTags(player) {
     const tags = player.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
@@ -247,6 +263,7 @@ export class AdminPanel {
     if (selection === 0) return await this.playerInfo(player);
   }
   
+  /** @param {import('@minecraft/server').Player} player */
   async showScores(player) {
     const messages = world.scoreboard
       .getObjectives()
@@ -296,6 +313,7 @@ export class AdminPanel {
     return item;
   }
   
+  /** @param {import('@minecraft/server').ItemStack} item */
   static isPanelItem(item) {
     if (!item) return false;
     return item.typeId === config.others.adminPanel && item.nameTag === panelItem.nameTag && item.getLore()[0] === Util.hideString(panelItem.lore);
@@ -308,6 +326,7 @@ function coloredEntityCount(typeId, count) {
   return `${color}${count}§r`;
 }
 
+/** @param {import('@minecraft/server').Player} player */
 function getEquipments(player) {
   const equipments = player.getComponent('minecraft:equipment_inventory');
   return Object.values(EquipmentSlot).map(slotId => {

@@ -9,6 +9,11 @@ import { DROPDOWNS, confirmForm } from './static_form';
 import { canAdd } from '../util/config_setting';
 
 export class ConfigPanel {
+  /**
+   * @param {import('../ac').TNAntiCheat} ac 
+   * @param {import('@minecraft/server').Player} player 
+   * @param {boolean} [busy] 
+   */
   constructor(ac, player, busy) {
     this.ac = ac;
     this.player = player;
