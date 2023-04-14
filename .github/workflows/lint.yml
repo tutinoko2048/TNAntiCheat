@@ -9,13 +9,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
+      - run: npm i --save-dev
       - name: eslint
         run: |
-          npm install --save-dev eslint
           npm run lint
       - name: tsc
         run: |
-          npm install  --save-dev typescript
           npx tsc
 
     
