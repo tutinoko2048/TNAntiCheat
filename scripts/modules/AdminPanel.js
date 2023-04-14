@@ -9,7 +9,6 @@ import { ConfigPanel } from './ConfigPanel';
 
 export class AdminPanel {
   /**
-   * 
    * @param {import('../ac').TNAntiCheat} ac 
    * @param {import('@minecraft/server').Player} player 
    */
@@ -45,7 +44,8 @@ export class AdminPanel {
   async playerList() {
     const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '§6[Builder]' : null;
     const icon = (p) => Util.isOP(p) ? ICONS.op : Permissions.has(p, 'builder') ? ICONS.builder : ICONS.member;
-    const players = world.getAllPlayers();
+    // @ts-ignore
+    const players = world.getAllPlayers().sort((a,b) => a.name - b.name);
     const form = new UI.ActionFormData();
     for (const p of players) form.button(
       viewPermission(p) ? `${viewPermission(p)}§8 ${p.name}` : p.name,
@@ -109,7 +109,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
     if (items.length === 0) form.body('何も持っていないようです\n ');
-    items.forEach(item => form.button(`§r${item.typeId}\n§7slot: ${item._slot}, amount: ${item.amount}`));
+    items.forEach(item => form.button(`§r${item.typeId}${item._isEquipment ? ' ':''}\n§7slot: ${item._slot}, amount: ${item.amount}`));
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', ICONS.clear)
       .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
@@ -167,18 +167,18 @@ export class AdminPanel {
       item._isEquipment
         ? targetEquipments.setEquipment(item._slot)
         : targetContainer.setItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を削除しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を削除しました`, this.player);
     }
     if (selection === 1) {
       myContainer.addItem(item);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を複製しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を複製しました`, this.player);
     }
     if (selection === 2) {
       myContainer.addItem(item);
       item._isEquipment
         ? targetEquipments.setEquipment(item._slot)
         : targetContainer.setItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot:${item._slot})§r を移動しました`, this.player);
+      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
   }
@@ -326,7 +326,10 @@ function coloredEntityCount(typeId, count) {
   return `${color}${count}§r`;
 }
 
-/** @param {import('@minecraft/server').Player} player */
+/**
+ * @param {import('@minecraft/server').Player} player
+ * @returns {import('@minecraft/server').ItemStack[]}
+ */
 function getEquipments(player) {
   const equipments = player.getComponent('minecraft:equipment_inventory');
   return Object.values(EquipmentSlot).map(slotId => {
