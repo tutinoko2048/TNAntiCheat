@@ -101,7 +101,7 @@ export async function creative(player) {
   }
 }
 
-/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
+/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function getBlock(ev) {
   const { source, item } = ev;
   

@@ -73,19 +73,19 @@ export class TNAntiCheat {
       this.#lastTick = now;
     });
     
-    world.events.blockBreak.subscribe(ev => {
+    world.afterEvents.blockBreak.subscribe(ev => {
       !modules.nukerBreak(ev) &&
       !modules.instaBreak(ev) &&
       modules.reachC(ev);
     });
     
-    world.events.beforeChat.subscribe(ev => this.#chatHandler(ev));
+    world.beforeEvents.chatSend.subscribe(ev => this.#chatHandler(ev));
     
-    world.events.entitySpawn.subscribe(ev => {
+    world.afterEvents.entitySpawn.subscribe(ev => {
       modules.entityCheck(ev.entity);
     });
     
-    world.events.beforeItemUseOn.subscribe(ev => {
+    world.beforeEvents.itemUseOn.subscribe(ev => {
       modules.placeCheckA(ev);
       modules.reachB(ev);
       modules.placeCheckD(ev);
@@ -94,16 +94,16 @@ export class TNAntiCheat {
     });
     
     
-    world.events.blockPlace.subscribe(ev => {
+    world.afterEvents.blockPlace.subscribe(ev => {
       modules.placeCheckB(ev);
       modules.placeCheckC(ev);
     });
     
-    world.events.beforeItemUse.subscribe(ev => {
+    world.beforeEvents.itemUse.subscribe(ev => {
       if (
         ev.source instanceof Player &&
         Util.isOP(ev.source) &&
-        AdminPanel.isPanelItem(ev.item)
+        AdminPanel.isPanelItem(ev.itemStack)
       ) {
         const target = ev.source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
         if (target instanceof Player) new AdminPanel(this, ev.source).playerInfo(target); // show playerInfo
@@ -112,7 +112,7 @@ export class TNAntiCheat {
       }
     });
     
-    world.events.playerSpawn.subscribe(ev => {
+    world.afterEvents.playerSpawn.subscribe(ev => {
       if (ev.initialSpawn) this.#joinHandler(ev.player);
     });
     
@@ -124,19 +124,19 @@ export class TNAntiCheat {
       namespaces: [ 'ac' ]
     });
     
-    world.events.itemReleaseCharge.subscribe(ev => {
+    world.afterEvents.itemReleaseCharge.subscribe(ev => {
       const { itemStack, source } = ev;
       if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });
     
-    world.events.entityHit.subscribe(ev => {
+    world.afterEvents.entityHit.subscribe(ev => {
       modules.reachA(ev);
       modules.autoClicker(ev);
 
     }, entityOption);
   }
   
-  /** @param {import('@minecraft/server').BeforeChatEvent} ev */
+  /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #chatHandler(ev) {
     const tooFast = modules.spammerC(ev);
     if (!tooFast && this.commands.isCommand(ev.message)) return this.commands.handle(ev);

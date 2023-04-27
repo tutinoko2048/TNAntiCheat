@@ -13,7 +13,7 @@ export function nukerFlag(player) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakEvent} ev */
+/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
 export function nukerBreak(ev) {
   const { brokenBlockPermutation, block, player } = ev;
   if (!config.nuker.state || Util.isOP(player)) return;
@@ -30,7 +30,7 @@ export function nukerBreak(ev) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakEvent} ev */
+/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
 export function instaBreak(ev) {
   const { block, player, brokenBlockPermutation } = ev;
   if (!config.instaBreak.state || Util.isCreative(player) || Util.isOP(player)) return;

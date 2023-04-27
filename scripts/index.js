@@ -18,7 +18,7 @@ events.worldLoad.subscribe(() => {
   }
 });
 
-world.events.dataDrivenEntityTriggerEvent.subscribe(ev => {
+world.afterEvents.dataDrivenEntityTriggerEvent.subscribe(ev => {
   const { entity, id } = ev;
   if (!(entity instanceof Player) || id != 'ac:start') return;
   start(entity);

@@ -19,6 +19,10 @@ export class CommandManager extends BaseManager {
     return config.command.prefix;
   }
   
+  /**
+   * @param {import('@minecraft/server').ChatSendBeforeEvent} ev 
+   * @param {boolean} scriptEvent 
+   */
   handle(ev, scriptEvent) {
     const { message, sender } = ev;
     if (!this.isCommand(message) && !scriptEvent) return;

@@ -3,7 +3,7 @@ import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';
 
-/** @param {import('@minecraft/server').EntityHitEvent} ev */
+/** @param {import('@minecraft/server').EntityHitAfterEvent} ev */
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
   const { entity, hitEntity } = ev;
@@ -18,7 +18,7 @@ export function reachA(ev) { // attacking
     entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, length: ${distance.toFixed(2)})§r`;
 }
 
-/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
+/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function reachB(ev) { // placement
   if (!config.reachB.state) return;
   const { source } = ev;
@@ -32,7 +32,7 @@ export function reachB(ev) { // placement
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakEvent} ev */
+/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
 export function reachC(ev) { // destruction
   if (!config.reachC.state) return;
   const { player, block, brokenBlockPermutation } = ev;
@@ -48,7 +48,7 @@ export function reachC(ev) { // destruction
   }
 }
 
-/** @param {import('@minecraft/server').EntityHitEvent} ev */
+/** @param {import('@minecraft/server').EntityHitAfterEvent} ev */
 export function autoClicker(ev) {
   const { entity, hitEntity } = ev;
   if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;

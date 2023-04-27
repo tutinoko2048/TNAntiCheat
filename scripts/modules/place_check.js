@@ -3,7 +3,7 @@ import config from '../config.js';
 import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';
 
-/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
+/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function placeCheckA(ev) {
   const { source, item } = ev;
   if (!config.placeCheckA.state || !(source instanceof Player) || Util.isOP(source)) return;
@@ -22,7 +22,7 @@ export function placeCheckA(ev) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockPlaceEvent} ev */
+/** @param {import('@minecraft/server').BlockPlaceAfterEvent} ev */
 export function placeCheckB(ev) {
   const { block, player } = ev;
   if (!config.placeCheckB.state || Util.isOP(player)) return;
@@ -66,7 +66,7 @@ export function placeCheckB(ev) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockPlaceEvent} ev */
+/** @param {import('@minecraft/server').BlockPlaceAfterEvent} ev */
 export async function placeCheckC(ev) {
   const { block, player } = ev;
   if (!config.placeCheckC.state || !config.placeCheckC.detect.includes(block.typeId) || Util.isOP(player)) return;
@@ -85,7 +85,7 @@ const RAILS = [
   'minecraft:golden_rail'
 ];
 
-/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
+/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function placeCheckD(ev) {
   const { source, item } = ev;
   const loc = ev.getBlockLocation();

@@ -10,7 +10,7 @@ const def2 = new DynamicPropertiesDefinition(); // world
 def2.defineString(properties.configData, 7000);
 def2.defineString(properties.ownerId, 30);
 
-world.events.worldInitialize.subscribe(({ propertyRegistry }) => {
+world.afterEvents.worldInitialize.subscribe(({ propertyRegistry }) => {
   propertyRegistry.registerEntityTypeDynamicProperties(def, MinecraftEntityTypes.player);
   propertyRegistry.registerWorldDynamicProperties(def2);
 });
