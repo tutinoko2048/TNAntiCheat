@@ -157,10 +157,12 @@ export class ConfigPanel {
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return { reopen: true };
     
-    let newValue = isNumber ? Number(formValues[0]) : formValues[0];
+    const res = /** @type {string} */ (formValues[0]);
+    let newValue = isNumber ? Number(res) : res;
     if (showDelete && formValues[1]) {
       newValue = undefined;
-      
+    
+    // @ts-ignore
     } else if (isNumber && isNaN(newValue)) {
       return { reopen: true, message: `§cTypeError: 数字を入力してください` };
     }
