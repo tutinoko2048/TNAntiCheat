@@ -44,9 +44,6 @@ A. ワールド内で`!help`してみてください。各コマンドの詳細�
 - AutoClicker  
 高すぎるCPSを検知
 
-- Crasher  
-クラッシャー(座標をいじるタイプ)を検知
-
 - Creative  
 Builder権限がないプレイヤーのクリエイティブを検知
 
@@ -79,9 +76,6 @@ Builder権限がないプレイヤーのクリエイティブを検知
 
 - ItemCheck/E  
 アイテムに付与できないエンチャントを検知
-
-- NameSpoof  
-変な名前を検知
 
 - Nuker  
 Nukerの使用を検知
