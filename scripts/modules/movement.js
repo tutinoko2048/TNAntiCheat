@@ -41,7 +41,7 @@ export function speedA(player) {
     // rollback
     const loc = player.lastLocation ?? player.location;
     const dimension = world.getDimension(player.lastDimensionId);
-    if (config.speedA.rollback) player.teleport(loc, dimension, player.getRotation().x, player.getRotation().y);
+    if (config.speedA.rollback) player.teleport(loc, { dimension, rotation: player.getRotation() });
     // flag
     if (config.speedA.flagCount !== -1 && player.speedACount > config.speedA.flagCount) {
       Util.flag(player, 'Speed/A', config.speedA.punishment, `速すぎる移動を検知しました §7(count: ${player.speedACount}, v: ${avg.toFixed(3)})§r`);

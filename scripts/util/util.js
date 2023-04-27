@@ -259,7 +259,7 @@ export class Util {
     try {
       return (typeof target === 'string')
         ? world.scoreboard.getObjective(obj).getScores().find(({ participant }) => participant.displayName === target).score
-        : world.scoreboard.getObjective(obj).getScore(target.scoreboard);
+        : world.scoreboard.getObjective(obj).getScore(target.scoreboardIdentity);
     } catch {
       return null;
     }

@@ -84,11 +84,11 @@ export class AdminPanel {
     if (selection === 3) return await this.kickPlayer(player);
     if (selection === 4) return await this.banPlayer(player);
     if (selection === 5) {
-      this.player.teleport(player.location, player.dimension, player.getRotation().x, player.getRotation().y);
+      this.player.teleport(player.location, { dimension: player.dimension, rotation: player.getRotation() });
       Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
     }
     if (selection === 6) {
-      player.teleport(this.player.location, this.player.dimension, this.player.getRotation().x, this.player.getRotation().y);
+      player.teleport(this.player.location, { dimension: this.player.dimension, rotation: this.player.getRotation() });
       Util.notify(`${player.name} §rをテレポートさせました`, this.player);
     }
     if (selection === 7) return await this.showTags(player);
@@ -193,7 +193,7 @@ export class AdminPanel {
       .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', _admin);
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return;
-    const [ builder, admin ] = formValues;
+    const [ builder, admin ] = /** @type {boolean[]} */ (formValues);
     if (builder != _builder) {
       Permissions.set(player, 'builder', builder);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
