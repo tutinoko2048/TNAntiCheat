@@ -32,8 +32,8 @@ export function ban(player) {
 
 export function banByXuid() {
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
-    world.getDimension('overworld').runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(() => {
-      Util.notify(`BANリストに含まれる XUID: §c${xuid} のプレイヤーをキックしました`);
+    world.getDimension('overworld').runCommandAsync(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`).then(res => {
+      if (res.successCount > 0) Util.notify(`BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました`);
     });
   }
 }
