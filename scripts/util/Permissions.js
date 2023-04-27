@@ -1,18 +1,18 @@
 import config from '../config.js';
 import { encode } from './secret';
 
-const PERMISSIONS = [
-  'admin',
-  'builder',
-  'ban'
-];
+export const PERMISSIONS = /** @type {const} */ ({
+  admin: 'admin',
+  builder: 'builder',
+  ban: 'ban'
+});
 
-/** @typedef {'admin'|'builder'|'ban'} PermissionTypes */
+/** @typedef {PERMISSIONS[keyof PERMISSIONS]} PermissionType */
 
 export class Permissions {
   /**
    * @param {import('@minecraft/server').Player} player
-   * @param {PermissionTypes} permission
+   * @param {PermissionType} permission
    */
   static add(player, permission) {
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
@@ -21,7 +21,7 @@ export class Permissions {
   
   /**
    * @param {import('@minecraft/server').Player} player
-   * @param {PermissionTypes} permission
+   * @param {PermissionType} permission
    */
   static remove(player, permission) {
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
@@ -30,7 +30,7 @@ export class Permissions {
   
   /**
    * @param {import('@minecraft/server').Player} player 
-   * @param {PermissionTypes} permission 
+   * @param {PermissionType} permission 
    * @returns {boolean}
    */
   static has(player, permission) {
@@ -42,7 +42,7 @@ export class Permissions {
   
   /**
    * @param {import('@minecraft/server').Player} player 
-   * @param {PermissionTypes} permission 
+   * @param {PermissionType} permission 
    * @param {boolean} value 
    */
   static set(player, permission, value) {
@@ -52,7 +52,7 @@ export class Permissions {
   
   /**
    * @param {import('@minecraft/server').Player} player 
-   * @param {PermissionTypes} permission 
+   * @param {PermissionType} permission 
    * @returns {string}
    */
   static getTagString(player, permission) {
@@ -62,14 +62,14 @@ export class Permissions {
   }
   
   /**
-   * @param {PermissionTypes} permission 
+   * @param {PermissionType} permission 
    * @returns {boolean}
    */
   static isValid(permission) {
-    return PERMISSIONS.includes(permission);
+    return this.list().includes(permission);
   }
   
   static list() {
-    return PERMISSIONS;
+    return Object.values(PERMISSIONS);
   }
 }
