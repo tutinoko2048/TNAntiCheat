@@ -20,8 +20,8 @@ export class CommandManager extends BaseManager {
   }
   
   /**
-   * @param {import('@minecraft/server').ChatSendBeforeEvent} ev 
-   * @param {boolean} scriptEvent 
+   * @param {import('../types/index').CommandInput} ev 
+   * @param {boolean} [scriptEvent]
    */
   handle(ev, scriptEvent) {
     const { message, sender } = ev;

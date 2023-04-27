@@ -5,7 +5,7 @@ import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isS
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function placeCheckA(ev) {
-  const { source, item } = ev;
+  const { source, itemStack: item } = ev;
   if (!config.placeCheckA.state || !(source instanceof Player) || Util.isOP(source)) return;
   if (isIllegalItem(item?.typeId)) {
     ev.cancel = true;
@@ -87,15 +87,16 @@ const RAILS = [
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function placeCheckD(ev) {
-  const { source, item } = ev;
-  const loc = ev.getBlockLocation();
+  const { source, itemStack: item, block } = ev;
+  const loc = block.location;
+
   if (!config.placeCheckD.state || !(source instanceof Player) || Util.isOP(source)) return;
   const gameMode = Util.getGamemode(source);
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
   
   if (
     config.placeCheckD.minecarts.includes(item?.typeId) &&
-    RAILS.includes(source.dimension.getBlock(loc)?.typeId)
+    RAILS.includes(block.typeId)
   ) {
     ev.cancel = true;
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, source);

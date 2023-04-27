@@ -36,6 +36,7 @@ system.events.scriptEventReceive.subscribe(ev => {
   namespaces: [ 'ac' ]
 });
 
+/** @param {Player} player */
 function start(player) {
   if (world.getDynamicProperty(properties.ownerId)) return player.sendMessage('TNAC is already registered!');
   

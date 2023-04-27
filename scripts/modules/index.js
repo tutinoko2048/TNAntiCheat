@@ -103,7 +103,7 @@ export async function creative(player) {
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
 export function getBlock(ev) {
-  const { source, item } = ev;
+  const { source, itemStack: item, block } = ev;
   
   if (
     !config.others.blockCopy ||
@@ -113,7 +113,6 @@ export function getBlock(ev) {
     !AdminPanel.isPanelItem(item)
   ) return;
   
-  const block = source.dimension.getBlock(ev.getBlockLocation());
   const blockItem = block.getItemStack(1, true);
   source.getComponent('minecraft:inventory').container.addItem(blockItem);
 }

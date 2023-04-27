@@ -38,6 +38,10 @@ export function queueNotify(type, obj) {
   world[type][key] = obj;
 }
 
+/**
+ * @param {import('@minecraft/server').Vector3} loc
+ * @param {import('@minecraft/server').Dimension} dimension
+ */
 export function killDroppedItem(loc, dimension) {
   const items = dimension.getEntities({
     location: loc,

@@ -45,3 +45,9 @@ declare module '@minecraft/server' {
     getComponent(componentId: 'minecraft:inventory'): mc.BlockInventoryComponent;
   }
 }
+
+export interface CommandInput {
+  sender: mc.Player;
+  message: string;
+  cancel?: boolean;
+}
