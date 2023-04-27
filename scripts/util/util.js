@@ -47,6 +47,7 @@ export class Util {
     if (showNotify) Util.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`);
   }
   
+  /** @param {Player} player */
   static async ban(player, reason, type) {
     if (Util.isOwner(player)) return console.warn('ban failed: cannot ban owner');
     player.setDynamicProperty(properties.ban, true);
@@ -54,6 +55,7 @@ export class Util {
     return await this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
   }
 
+  /** @param {Player} player */
   static async kick(player, reason, ban = false) {
     if (Util.isOwner(player)) return console.warn('kick failed: cannot kick owner');
     try {
@@ -66,11 +68,13 @@ export class Util {
     }
   }
   
+  /** @param {Player} player */
   static disconnect(player) {
     if (Util.isOwner(player)) return console.warn('discinnect failed: cannot disconnect owner');
     player.triggerEvent('tn:kick');
   }
   
+  /** @param {Player} [target] */
   static notify(message, target) {
     const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
     if (target instanceof Player) {
@@ -82,6 +86,7 @@ export class Util {
     }
   }
   
+  /** @param {Player} player */
   static unban(player) {
     try {
       if (player.hasTag(config.permission.ban.tag)) player.removeTag(config.permission.ban.tag);
@@ -90,10 +95,12 @@ export class Util {
     } catch {}
   }
   
+  /** @param {Player} player */
   static isBanned(player) {
     return Permissions.has(player, 'ban') || player.getDynamicProperty(properties.ban);
   }
   
+  /** @param {Player} player */
   static isOP(player) {
     return (
       player?.typeId === 'minecraft:player' &&
@@ -102,10 +109,12 @@ export class Util {
     );
   }
   
+  /** @param {Player} player */
   static isHost(player) {
     return player.id === '-4294967295';
   }
   
+  /** @param {Player} player */
   static isOwner(player) {
     return world.getDynamicProperty(properties.ownerId) === player.id;
   }
@@ -160,19 +169,23 @@ export class Util {
       }
     }
   }
-    
+  
+  /** @param {Player} player */
   static isSurvival(player) {
     return this.getGamemode(player) === GameMode.survival;
   }
   
+  /** @param {Player} player */
   static isCreative(player) {
     return this.getGamemode(player) === GameMode.creative;
   }
   
+  /** @param {Player} player */
   static isAdventure(player) {
     return this.getGamemode(player) === GameMode.adventure;
   }
   
+  /** @param {Player} player */
   static isSpectator(player) {
     return this.getGamemode(player) === GameMode.spectator;
   }
@@ -203,6 +216,7 @@ export class Util {
   /**
    * Thanks: https://discord.com/channels/950040604186931351/954636266614439986/1035305927655559300
    * @author aikayu1op.js
+   * @param {Player} player
    */
   static showFormToBusy(player, form) {
     player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
@@ -220,6 +234,7 @@ export class Util {
     return str.replace(/(.)/g, '§$1');
   }
   
+  /** @param {Player} player */
   static getHoldingItem(player) {
     return player.getComponent('minecraft:inventory').container.getItem(player.selectedSlot);
   }
@@ -250,6 +265,7 @@ export class Util {
     }
   }
   
+  /** @param {Player} player */
   static showActionBar(player, ...text) {
     const msg = text instanceof Array ? text.map(x => String(x)).join(', ') : String(text);
     player.onScreenDisplay.setActionBar(msg);

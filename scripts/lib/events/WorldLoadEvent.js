@@ -20,12 +20,12 @@ export class WorldLoadEventSignal extends BaseEventSignal {
     super();
     
     const run = system.runInterval(() => {
-      world.getDimension('overworld').runCommandAsync('testfor @a').then(() => {
+      if (world.getAllPlayers().length > 0) {
         if (loaded) return;
         this.callbacks.forEach(fn => fn(new WorldLoadEvent(true)));
         loaded = true;
         system.clearRun(run);
-      });
+      }
     });
   }
 }

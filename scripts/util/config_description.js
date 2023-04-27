@@ -200,6 +200,7 @@ export const description = {
     sendws: 'メッセージをsayで出力します (discord-mcbe用)',
     shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
     debug: 'ログを表示 デバッグ用',
-    fixBDS: 'BDSのOP検知のバグ回避用'
+    fixBDS: 'BDSのOP検知のバグ回避用',
+    blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます'
   }
 }

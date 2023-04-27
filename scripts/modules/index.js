@@ -1,9 +1,12 @@
-import { world } from '@minecraft/server';
+import { world, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
 import  { properties } from '../util/constants';
+import { AdminPanel } from './AdminPanel';
+
+/** @typedef {import('@minecraft/server').EntityInventoryComponent} InventoryComponent */
 
 export * from './item_check';
 export * from './spammer';
@@ -35,6 +38,7 @@ export function banByXuid() {
   }
 }
 
+/** @param {import('@minecraft/server').Player} player */
 export function flag(player) { // don't run every tick not to spam
   if (player.reachAFlag) {
     Util.flag(player, 'Reach/A', config.reachA.punishment, player.reachAFlag);
@@ -88,10 +92,28 @@ export function namespoof(player) {
     Util.flag(player, 'Namespoof', config.namespoof.punishment, `長すぎる名前を検知しました`);
 }
 
+/** @param {import('@minecraft/server').Player} player */
 export async function creative(player) {
   if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
   if (Util.isCreative(player)) {
     await player.runCommandAsync(`gamemode ${config.creative.defaultGamemode} @s`);
     Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');
   }
+}
+
+/** @param {import('@minecraft/server').BeforeItemUseOnEvent} ev */
+export function getBlock(ev) {
+  const { source, item } = ev;
+  
+  if (
+    !config.others.blockCopy ||
+    !(source instanceof Player) ||
+    !source.isSneaking ||
+    !Util.isCreative(source) ||
+    !AdminPanel.isPanelItem(item)
+  ) return;
+  
+  const block = source.dimension.getBlock(ev.getBlockLocation());
+  const blockItem = block.getItemStack(1, true);
+  source.getComponent('minecraft:inventory').container.addItem(blockItem);
 }

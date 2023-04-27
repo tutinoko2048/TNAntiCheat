@@ -4,6 +4,7 @@ import config from '../config.js';
 
 const excluded = [ GameMode.creative, GameMode.spectator ];
 
+/** @param {import('@minecraft/server').Player} player */
 export function speedA(player) {
   if (!config.speedA.state) return;
   // eslint-disable-next-line no-unused-vars
@@ -50,10 +51,12 @@ export function speedA(player) {
   player.lastVelocity = isFlagged ? null : velocity; // 平均のせいで2回連続で検知されるのを防ぐ
 }
 
+// eslint-disable-next-line no-unused-vars
 function color(bool) {
   return bool ? `§a${bool}§r` : `§c${bool}§r`;
 }
 
+/** @param {import('@minecraft/server').Player} player */
 export function checkMoving(player) {
   if (!player.lastLocation) {
     player.isMoved = true;

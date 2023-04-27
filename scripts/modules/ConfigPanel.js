@@ -1,5 +1,5 @@
 import * as UI from '@minecraft/server-ui';
-import { ActionForm } from '../lib/form/index';
+import { ActionForm } from '../lib/form/ActionForm';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { ICONS } from '../util/constants';
@@ -9,6 +9,11 @@ import { DROPDOWNS, confirmForm } from './static_form';
 import { canAdd } from '../util/config_setting';
 
 export class ConfigPanel {
+  /**
+   * @param {import('../ac').TNAntiCheat} ac 
+   * @param {import('@minecraft/server').Player} player 
+   * @param {boolean} [busy] 
+   */
   constructor(ac, player, busy) {
     this.ac = ac;
     this.player = player;
@@ -60,7 +65,7 @@ export class ConfigPanel {
     if (res.reopen) await this.selectModule(false, res.message);
   }
   
-  async selectValue(value, key, ref, { deletable = false, title, isModule }) {
+  async selectValue(value, key, ref, { deletable = false, title, isModule = false }) {
     switch (typeof value) {
       case 'object': {
         const form = new ActionForm().title(title);

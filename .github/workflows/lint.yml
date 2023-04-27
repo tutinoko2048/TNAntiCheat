@@ -1,13 +1,20 @@
-name: Run ESLint
+name: Lint
 on: push
 
 jobs:
-  eslint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - run: npm install --save-dev eslint
-      - run: npm run lint
+      - run: npm i --save-dev
+      - name: eslint
+        run: |
+          npm run lint
+      - name: tsc
+        run: |
+          npx tsc
+
+    

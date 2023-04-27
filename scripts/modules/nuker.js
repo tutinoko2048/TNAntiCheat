@@ -3,6 +3,7 @@ import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';
 
+/** @param {import('@minecraft/server').Player} player */
 export function nukerFlag(player) {
   if (!config.nuker.state || Util.isOP(player)) return;
   const { location, breakCount = 0 } = player;
@@ -12,7 +13,7 @@ export function nukerFlag(player) {
   }
 }
 
-// BlockBreakEvent
+/** @param {import('@minecraft/server').BlockBreakEvent} ev */
 export function nukerBreak(ev) {
   const { brokenBlockPermutation, block, player } = ev;
   if (!config.nuker.state || Util.isOP(player)) return;
@@ -29,7 +30,7 @@ export function nukerBreak(ev) {
   }
 }
 
-// BlockBreakEvent
+/** @param {import('@minecraft/server').BlockBreakEvent} ev */
 export function instaBreak(ev) {
   const { block, player, brokenBlockPermutation } = ev;
   if (!config.instaBreak.state || Util.isCreative(player) || Util.isOP(player)) return;

@@ -6,6 +6,7 @@ const overworld = world.getDimension('overworld');
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
 
+/** @param {import('@minecraft/server').Entity} entity */
 export function entityCheck(entity) {
   const { typeId, location } = entity;
 
@@ -40,6 +41,7 @@ export function entityCheck(entity) {
   }
 }
 
+/** @param {import('@minecraft/server').Container} container */
 function entityCheckD(container) {
   if (!container) return;
 
@@ -49,7 +51,7 @@ function entityCheckD(container) {
       isIllegalItem(item?.typeId) ||
       (config.entityCheckD.spawnEgg && isSpawnEgg(item?.typeId))
     ) {
-      container.clearItem(i);
+      container.setItem(i);
       if (config.others.debug) console.warn(`EntityCheck/D cleared: ${item.typeId}`);
     }
   }

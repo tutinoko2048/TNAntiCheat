@@ -58,6 +58,7 @@ export const DROPDOWNS = {
 }
 
 // returns yes -> true, no -> false
+/** @param {import('@minecraft/server').Player} player */
 export async function confirmForm(player, { title = '確認', body, yes = 'OK', no = '§lキャンセル', defaultValue = false }) {
   const form = new UI.MessageFormData();
   form.title(title)
