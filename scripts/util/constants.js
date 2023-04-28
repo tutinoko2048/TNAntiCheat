@@ -1,16 +1,16 @@
-export const VERSION = '3.4.1';
+export const VERSION = '3.5.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
-export const properties = {
+export const properties = /** @type {const} */ ({
   ban: 'tn:isBanned',
   banReason: 'tn:banReason',
   configData: 'tn:configData',
   mute: 'tn:isMuted',
   ownerId: 'tn:ownerId'
-}
+});
 
-export const ICONS = {
-  playerList: 'textures/ui/dressing_room_skins', //'textures/ui/icon_multiplayer',
+export const ICONS = /** @type {const} */ ({
+  playerList: 'textures/ui/dressing_room_skins',
   entities: 'textures/items/egg_npc',
   config: 'textures/ui/icon_setting',
   returnBtn: 'textures/ui/realms_red_x',
@@ -38,7 +38,7 @@ export const ICONS = {
   op: 'textures/ui/permissions_op_crown',
   builder: 'textures/ui/icon_recipe_construction',
   member: 'textures/ui/permissions_member_star'
-}
+});
 
 export const panelItem = {
   nameTag: '§r§f[§aTN-AntiCheat§f] 管理者用パネルを開く',
