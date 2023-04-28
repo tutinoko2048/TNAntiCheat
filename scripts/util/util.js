@@ -146,12 +146,14 @@ export class Util {
     return Vector.distance(vec1, vec2);
   }
   
+  /** @param {number[]} numbers */
   static median(numbers) {
     const half = (numbers.length / 2) | 0;
     const arr = numbers.slice().sort((a,b) =>  a - b);
     return (arr.length % 2 ? arr[half] : (arr[half-1] + arr[half]) / 2) || 0;
   }
   
+  /** @param {number[]} numbers */
   static average(numbers) {
     return (numbers.reduce((a,b) => a + b, 0) / numbers.length) || 0;
   }
@@ -164,7 +166,7 @@ export class Util {
    */
   static getGamemode(player) {
     for (const gamemodeName in GameMode) {
-      if ([...world.getPlayers({ name: player.name, gameMode: GameMode[gamemodeName] })].length > 0) {
+      if (world.getPlayers({ name: player.name, gameMode: GameMode[gamemodeName] }).length > 0) {
         return GameMode[gamemodeName];
       }
     }
@@ -216,14 +218,17 @@ export class Util {
   /**
    * Thanks: https://discord.com/channels/950040604186931351/954636266614439986/1035305927655559300
    * @author aikayu1op.js
+   * @template {UI.ActionFormData | UI.MessageFormData | UI.ModalFormData} Form
    * @param {Player} player
+   * @param {Form} form
+   * @returns {Promise<Awaited<ReturnType<Form["show"]>>>}
    */
   static showFormToBusy(player, form) {
     player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
     return new Promise(res => {
       system.run(async function run() {
-        const response = await form.show(player);
-        const {canceled, cancelationReason: reason} = response;
+        const response = await /** @type {ReturnType<Form["show"]>} */ (form.show(player));
+        const { canceled, cancelationReason: reason } = response;
         if (canceled && reason === UI.FormCancelationReason.userBusy) return system.run(run);
         res(response);
       });
@@ -245,6 +250,10 @@ export class Util {
     return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
   }
   
+  /**
+   * @param {import('@minecraft/server').Vector3} vec
+   * @returns {import('@minecraft/server').Vector3}
+   */
   static vectorNicely(vec) {
     return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
   }
