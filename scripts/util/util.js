@@ -48,18 +48,18 @@ export class Util {
   }
   
   /** @param {Player} player */
-  static async ban(player, reason, type) {
+  static ban(player, reason, type) {
     if (Util.isOwner(player)) return console.warn('ban failed: cannot ban owner');
     player.setDynamicProperty(properties.ban, true);
     type && player.setDynamicProperty(properties.banReason, type);
-    return await this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
+    return this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
   }
 
   /** @param {Player} player */
-  static async kick(player, reason, ban = false) {
+  static kick(player, reason, ban = false) {
     if (Util.isOwner(player)) return console.warn('kick failed: cannot kick owner');
     try {
-      await overworld.runCommandAsync(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`);
+      overworld.runCommand(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`);
       return true;
     } catch {
       player.triggerEvent('tn:kick');
@@ -81,7 +81,7 @@ export class Util {
       target.sendMessage(`[§l§a${name}§r] ${message}`);
     } else {
       config.others.sendws
-        ? overworld.runCommandAsync(`say "[§l§aTN-AntiCheat§r] ${message}"`)
+        ? overworld.runCommand(`say "[§l§aTN-AntiCheat§r] ${message}"`)
         : world.sendMessage(`[§l§a${name}§r] ${message}`);
     }
   }
@@ -124,7 +124,7 @@ export class Util {
     let rawtext = JSON.stringify({
       rawtext: [{ text: String(msg) }]
     });
-    return overworld.runCommandAsync(`tellraw ${target} ${rawtext}`);
+    return overworld.runCommand(`tellraw ${target} ${rawtext}`);
   }
   
   static safeString(str, length) {

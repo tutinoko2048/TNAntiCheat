@@ -96,7 +96,7 @@ export function namespoof(player) {
 export async function creative(player) {
   if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
   if (Util.isCreative(player)) {
-    await player.runCommandAsync(`gamemode ${config.creative.defaultGamemode} @s`);
+    player.runCommand(`gamemode ${config.creative.defaultGamemode} @s`);
     Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');
   }
 }

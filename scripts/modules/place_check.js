@@ -73,7 +73,7 @@ export async function placeCheckC(ev) {
   if (config.placeCheckC.excludeCreative && Util.isCreative(player)) return;
   
   const permutation = block.permutation.clone();
-  await player.runCommandAsync(`setblock ${block.x} ${block.y} ${block.z} ${block.typeId}`);
+  player.runCommand(`setblock ${block.x} ${block.y} ${block.z} ${block.typeId}`);
   block.setPermutation(permutation);
   if (config.others.debug) console.warn(`[DEBUG] PlaceCheckC: Reset: ${block.typeId}`);
 }

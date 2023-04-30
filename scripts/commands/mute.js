@@ -17,13 +17,16 @@ export default {
     if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
     const mute = toBoolean(value);
     
-    player.runCommandAsync(`ability @s mute ${mute}`).then(() => {
+    const err = () => { throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
+    try {
+      const res = player.runCommand(`ability @s mute ${mute}`);
+      if (res.successCount === 0) err();
+    
       player.setDynamicProperty(properties.mute, mute);
       Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${mute} に設定しました`);
-    }).catch(() => {
-      throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`);
-    });
-    
+    } catch {
+      err();
+    }
   }
 }
 
