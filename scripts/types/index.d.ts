@@ -8,9 +8,6 @@ declare module '@minecraft/server' {
   }
 
   interface ItemStack {
-    _slot: any;
-    _isEquipment: boolean;
-
     getComponent(componentId: 'minecraft:enchantments'): mc.ItemEnchantsComponent;
   }
 

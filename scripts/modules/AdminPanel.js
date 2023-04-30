@@ -7,6 +7,8 @@ import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 
+/** @typedef {{ item: ItemStack, slot: EquipmentSlot | number }} ItemInformation */
+
 export class AdminPanel {
   /**
    * @param {import('../ac').TNAntiCheat} ac 
@@ -98,18 +100,12 @@ export class AdminPanel {
   
   /** @param {import('@minecraft/server').Player} player */
   async showInventory(player) {
-    const container = player.getComponent('minecraft:inventory').container;
-    const allItems = Array(container.size).fill(null).map((_,i) => {
-      const item = container.getItem(i);
-      if (item) item._slot = i;
-      return item;
-    });
-    const items = [...allItems, ...getEquipments(player)].filter(Boolean);
-    
+    const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
+   
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
-    if (items.length === 0) form.body('何も持っていないようです\n ');
-    items.forEach(item => form.button(`§r${item.typeId}${item._isEquipment ? ' ':''}\n§7slot: ${item._slot}, amount: ${item.amount}`));
+    if (itemList.length === 0) form.body('何も持っていないようです\n ');
+    itemList.forEach(info => form.button(`§r${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§7slot: ${info.slot}, amount: ${info.item.amount}`));
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', ICONS.clear)
       .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
@@ -121,42 +117,42 @@ export class AdminPanel {
     if (selection === 0) {
       return this.showInventory(player);
     
-    } else if (selection === items.length + 1) {
+    } else if (selection === itemList.length + 1) {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
         yes: '§c削除する',
         no: '§lキャンセル'
       });
       if (res) {
-        await player.runCommandAsync('clear @s');
+        player.runCommand('clear @s');
         Util.notify(`${player.name} の全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === items.length + 2) {
+    } else if (selection === itemList.length + 2) {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
         yes: '§c削除する',
         no: '§lキャンセル'
       });
       if (res) {
-        await player.runCommandAsync('function util/clear_ec');
+        player.runCommand('function util/clear_ec');
         Util.notify(`${player.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === items.length + 3) {
+    } else if (selection === itemList.length + 3) {
       return await this.playerInfo(player);
       
     } else {
-      return await this.itemInfo(player, items[selection - 1]);
+      return await this.itemInfo(player, itemList[selection - 1]);
     }
   }
   
   /**
    * @param {import('@minecraft/server').Player} player 
-   * @param {import('@minecraft/server').ItemStack} item 
+   * @param {ItemInformation} info 
    */
-  async itemInfo(player, item) {
-    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${item.typeId}\n§7slot: §r${item._slot}\n§7amount: §r${item.amount}\n§7nameTag: §r${item.nameTag ?? '-'}\n `);
+  async itemInfo(player, info) {
+    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${info.item.typeId}\n§7slot: §r${info.slot}\n§7amount: §r${info.item.amount}\n§7nameTag: §r${info.item.nameTag ?? '-'}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     
@@ -164,21 +160,21 @@ export class AdminPanel {
     const targetEquipments = player.getComponent('minecraft:equipment_inventory');
     const myContainer = this.player.getComponent('minecraft:inventory').container;
     if (selection === 0) {
-      item._isEquipment
-        ? targetEquipments.setEquipment(item._slot)
-        : targetContainer.setItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を削除しました`, this.player);
+      typeof info.slot === 'string'
+        ? targetEquipments.setEquipment(info.slot)
+        : targetContainer.setItem(info.slot);
+      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を削除しました`, this.player);
     }
     if (selection === 1) {
-      myContainer.addItem(item);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を複製しました`, this.player);
+      myContainer.addItem(info.item);
+      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を複製しました`, this.player);
     }
     if (selection === 2) {
-      myContainer.addItem(item);
-      item._isEquipment
-        ? targetEquipments.setEquipment(item._slot)
-        : targetContainer.setItem(item._slot);
-      Util.notify(`${player.name} の ${item.typeId} §7(slot: ${item._slot})§r を移動しました`, this.player);
+      myContainer.addItem(info.item);
+      typeof info.slot === 'string'
+        ? targetEquipments.setEquipment(info.slot)
+        : targetContainer.setItem(info.slot);
+      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を移動しました`, this.player);
     }
     if (selection === 3) return await this.showInventory(player);
   }
@@ -214,11 +210,10 @@ export class AdminPanel {
     if (canceled) return;
     const [ mute ] = formValues;
     if (mute != _mute) {
-      player.runCommandAsync(`ability @s mute ${mute}`).then(() => {
+      player.runCommandAsync(`ability @s mute ${mute}`).then((res) => {
+        if (res.successCount === 0) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
         player.setDynamicProperty(properties.mute, mute);
         Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
-      }).catch(() => {
-        Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       });
     } else return await this.playerInfo(player);
   }
@@ -328,10 +323,11 @@ function coloredEntityCount(typeId, count) {
 
 /**
  * @param {import('@minecraft/server').Player} player
- * @returns {import('@minecraft/server').ItemStack[]}
+ * @returns {ItemInformation[]}
  */
-function getEquipments(player) {
+function getAllEquipments(player) {
   const equipments = player.getComponent('minecraft:equipment_inventory');
+  /*
   return Object.values(EquipmentSlot).map(slotId => {
     if (slotId === EquipmentSlot.mainhand) return;
     const item = equipments.getEquipment(slotId);
@@ -341,4 +337,22 @@ function getEquipments(player) {
     }
     return item;
   });
+  */
+  return Object.values(EquipmentSlot).map(slotId => ({
+    item: equipments.getEquipment(slotId),
+    slot: slotId
+  }))
+  
+}
+
+/**
+ * @param {import('@minecraft/server').Player} player
+ * @returns {ItemInformation[]}
+ */
+function getAllItems(player) {
+  const { container } = player.getComponent('minecraft:inventory');
+  return Array(container.size).fill(null).map((_,i) => ({
+    item: container.getItem(i),
+    slot: i
+  }));
 }
