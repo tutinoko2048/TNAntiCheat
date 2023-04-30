@@ -39,6 +39,7 @@ declare module '@minecraft/server' {
     getComponent(componentId: 'minecraft:equipment_inventory'): mc.EntityEquipmentInventoryComponent;
     getComponent(componentId: 'minecraft:health'): mc.EntityHealthComponent;
     getComponent(componentId: 'minecraft:item'): mc.EntityItemComponent;
+    getComponent(componentId: 'minecraft:variant'): mc.EntityVariantComponent;
   }
 
   interface Block {

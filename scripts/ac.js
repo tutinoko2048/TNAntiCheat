@@ -191,7 +191,7 @@ export class TNAntiCheat {
 /** @typedef {import('@minecraft/server').EntityVariantComponent} EntityVariantComponent*/
 
 function checkPlayerJson() { // checks player.json conflict
-  const variant = /** @type {EntityVariantComponent} */ (world.getAllPlayers()[0].getComponent('minecraft:variant'));
+  const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant.value !== 2048) {
     config.speedA.state = false;
     Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました§r');
