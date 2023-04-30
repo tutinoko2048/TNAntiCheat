@@ -200,8 +200,9 @@ function checkPlayerJson() { // checks player.json conflict
 }
 
 function calcInterval(tps) {
-  if (tps >= 15) return config.entityCounter.checkInterval;
-  if (tps >= 10) return config.entityCounter.checkInterval * 0.8;
-  if (tps >= 5) return config.entityCounter.checkInterval * 0.4;
-  return config.entityCounter.checkInterval * 0.2
+  const interval = config.entityCounter.checkInterval;
+  if (tps >= 15) return interval;
+  if (tps >= 10) return interval * 0.8;
+  if (tps >= 5) return interval * 0.4;
+  return interval * 0.2;
 }
