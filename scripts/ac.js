@@ -155,7 +155,7 @@ export class TNAntiCheat {
     
     if (player.getDynamicProperty(properties.mute)) {
       Util.notify(`§7あなたはミュートされています`, player);
-      player.runCommandAsync('ability @s mute true');
+      player.runCommand('ability @s mute true');
     }
   }
   
