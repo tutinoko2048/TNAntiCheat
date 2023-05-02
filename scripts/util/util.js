@@ -245,7 +245,7 @@ export class Util {
   }
   
   static getPlayerByName(playerName, expect = false) {
-    const [ player ] = [...world.getPlayers({ name: playerName })];
+    const [ player ] = world.getPlayers({ name: playerName });
     if (player || !expect) return player;
     return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
   }
@@ -260,7 +260,7 @@ export class Util {
 
   /**
    *
-   * @param {Player|import('@minecraft/server').Entity|string} target
+   * @param {import('@minecraft/server').Entity|string} target
    * @param {string} obj
    * @returns {number|null}
    */
@@ -278,5 +278,19 @@ export class Util {
   static showActionBar(player, ...text) {
     const msg = text instanceof Array ? text.map(x => String(x)).join(', ') : String(text);
     player.onScreenDisplay.setActionBar(msg);
+  }
+  
+  /**
+   * @param {string} command A command to execute
+   * @param {import('@minecraft/server').Entity|import('@minecraft/server').Dimension} source
+   * @returns {boolean} Whether command has successfully executed
+   */
+  static runCommandSafe(command, source) {
+    try {
+      const res = source.runCommand(command);
+      return res.successCount > 0;
+    } catch {
+      return false;
+    }
   }
 }
