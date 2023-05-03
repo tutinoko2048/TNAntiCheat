@@ -2,6 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
+// configVersion: 1
 export default
 {
   permission: {
@@ -271,12 +272,15 @@ export default
     maxVelocity: 2.0,
     rollback: true
   },
+  logger: {
+    console: false // 検知メッセージをコンテンツログに出力する
+  },
   others: {
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
-    fixBDS: false, // BDSで使う場合はオンにしてください,
+    fixBDS: false, // BDSで使う場合はオンにしてください
     blockCopy: true // 管理者アイテムでブロックをスニーク+タップするとコピーできます
   }
 }

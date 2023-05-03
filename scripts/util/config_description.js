@@ -195,6 +195,10 @@ export const description = {
     maxVelocity: '許容するスピードの最大値',
     rollback: '検知した時に前いた位置までテレポートする'
   },
+  logger: {
+    desc: 'ログの記録に関する設定',
+    console: '検知メッセージをコンテンツログに出力する'
+  },
   others: {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',
     sendws: 'メッセージをsayで出力します (discord-mcbe用)',

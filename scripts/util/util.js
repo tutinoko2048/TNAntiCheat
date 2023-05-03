@@ -1,4 +1,4 @@
-import { world, system, Player, Vector, GameMode } from '@minecraft/server';
+import { world, system, Player, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { properties } from './constants';
@@ -44,7 +44,11 @@ export class Util {
       default:
         throw new Error(`Received unexpected punishment type: ${punishment}`);
     }
-    if (showNotify) Util.notify(`§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`);
+    if (showNotify) {
+      const output = `§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`;
+      Util.notify(output);
+      if (config.logger.console) console.warn(`[TNAC] ${output}`);
+    }
   }
   
   /** @param {Player} player */
@@ -127,6 +131,11 @@ export class Util {
     return str.length > length ? `${str.slice(0,length)}...` : str;
   }
   
+  /**
+   * @param {string} str 
+   * @param {boolean} [noquote] 
+   * @returns {string[]}
+   */
   static splitNicely(str, noquote = true) {
     const split = str.split(/(?<!['"]\w+) +(?!\w+['"])/);
     return noquote ? split.map(x => x.replace(/^"(.*)"$/g, '$1')) : split;
