@@ -31,9 +31,10 @@ export function ban(player) {
 }
 
 export function banByXuid() {
+  const overworld = world.getDimension('overworld');
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
-    const res = world.getDimension('overworld').runCommand(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`);
-    if (res.successCount > 0) Util.notify(`BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました`);
+    const res = Util.runCommandSafe(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`, overworld);
+    if (res) Util.notify(`BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました`);
   }
 }
 

@@ -210,8 +210,8 @@ export class AdminPanel {
     if (canceled) return;
     const [ mute ] = formValues;
     if (mute != _mute) {
-      const res = player.runCommand(`ability @s mute ${mute}`);
-      if (res.successCount === 0) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
+      const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
+      if (res) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       player.setDynamicProperty(properties.mute, mute);
       Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
       

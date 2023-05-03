@@ -154,8 +154,8 @@ export class TNAntiCheat {
     modules.banByXuid();
     
     if (player.getDynamicProperty(properties.mute)) {
-      Util.notify(`§7あなたはミュートされています`, player);
-      player.runCommand('ability @s mute true');
+      const res = Util.runCommandSafe('ability @s mute true', player);
+      if (res) Util.notify(`§7あなたはミュートされています`, player);
     }
   }
   

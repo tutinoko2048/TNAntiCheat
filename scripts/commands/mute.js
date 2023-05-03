@@ -19,8 +19,8 @@ export default {
     
     const err = () => { throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
     try {
-      const res = player.runCommand(`ability @s mute ${mute}`);
-      if (res.successCount === 0) err();
+      const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
+      if (res) err();
     
       player.setDynamicProperty(properties.mute, mute);
       Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${mute} に設定しました`);

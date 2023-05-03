@@ -58,10 +58,14 @@ export class Util {
   /** @param {Player} player */
   static kick(player, reason, ban = false) {
     if (Util.isOwner(player)) return console.warn('kick failed: cannot kick owner');
-    try {
-      overworld.runCommand(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`);
+    
+    const res = Util.runCommandSafe(
+      `kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`,
+      overworld
+    );
+    if (res) {
       return true;
-    } catch {
+    } else {
       player.triggerEvent('tn:kick');
       this.notify('Kickに失敗したため強制退出させました');
       return false;
@@ -118,15 +122,7 @@ export class Util {
   static isOwner(player) {
     return world.getDynamicProperty(properties.ownerId) === player.id;
   }
-  
-  static sendMsg(msg, target = '@a') {
-    if (!target.match(/@s|@p|@a|@r|@e/)) target = `"${target}"`;
-    let rawtext = JSON.stringify({
-      rawtext: [{ text: String(msg) }]
-    });
-    return overworld.runCommand(`tellraw ${target} ${rawtext}`);
-  }
-  
+        
   static safeString(str, length) {
     return str.length > length ? `${str.slice(0,length)}...` : str;
   }
@@ -141,11 +137,7 @@ export class Util {
     if (str.startsWith('@')) str = str.slice(1);
     return str.replace(/"(.*)"/, '$1');
   }
-  
-  static distance(vec1, vec2) {
-    return Vector.distance(vec1, vec2);
-  }
-  
+    
   /** @param {number[]} numbers */
   static median(numbers) {
     const half = (numbers.length / 2) | 0;
