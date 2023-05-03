@@ -72,7 +72,7 @@ export class CommandManager extends BaseManager {
     Promise.all(wait).then(data => {
       if (config.others.debug)
         console.warn(`[CommandManager] Registered ${data.filter(Boolean).length}/${COMMANDS.length} commands`);
-    })
+    });
   }
   
   /** @param {import('../types/index').ICommand} command */

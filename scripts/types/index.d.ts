@@ -50,11 +50,13 @@ export interface CommandInput {
   cancel?: boolean;
 }
 
+export type CommandCallback = (sender: mc.Player, args: string[], manager: import('../managers/CommandManager').CommandManager) => void;
+
 export interface ICommand {
   name: string,
   description: string,
   permission?: (player: mc.Player) => boolean;
-  func?: (sender: mc.Player, args: string[], manager: import('../managers/CommandManager').CommandManager) => any;
+  func?: CommandCallback;
   disableScriptEvent?: boolean;
   aliases?: string[]
 }
