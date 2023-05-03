@@ -50,7 +50,7 @@ export interface CommandInput {
   cancel?: boolean;
 }
 
-export interface Command {
+export interface ICommand {
   name: string,
   description: string,
   permission?: (player: mc.Player) => boolean;
