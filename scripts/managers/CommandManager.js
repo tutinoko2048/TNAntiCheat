@@ -36,7 +36,7 @@ export class CommandManager extends BaseManager {
     const command = this.getCommand(commandName);
     if (!command) return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
     if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
-    if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません')
+    if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません');
 
     try {
       command.func(sender, args, this);
@@ -58,26 +58,26 @@ export class CommandManager extends BaseManager {
     return this.registeredCommands.get(commandName) ?? this.getAll().find(c => c.aliases?.includes(commandName));
   }
   
-  load() {
+  async load() {
     const showError = (msg) => {
       console.error(msg);
       world.sendMessage(msg);
     }
     
-    const wait = COMMANDS.map(name => {
+    const wait = COMMANDS.map(async name => {
       return import(`../commands/${name}`)
         .then(file => this.create(file.default))
         .catch(e => showError(`[CommandManager] §cError: failed to load command: ${name}\n${e}\n${e.stack}`));
     });
-    Promise.all(wait).then(data => {
-      if (config.others.debug)
-        console.warn(`[CommandManager] Registered ${data.filter(Boolean).length}/${COMMANDS.length} commands`);
-    });
+    
+    const data = await Promise.all(wait);
+    if (config.others.debug)
+      console.warn(`[CommandManager] Registered ${data.filter(Boolean).length}/${COMMANDS.length} commands`);
   }
   
-  /** @param {import('../types/index').ICommand} command */
+  /** @param {import('../util/Command').Command} command */
   create(command) {
-    this.registeredCommands.set(command.name, command);
+    this.registeredCommands.set(command.data.name, command.data);
     return command;
   }
 }

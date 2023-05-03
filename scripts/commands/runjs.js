@@ -8,16 +8,17 @@ import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
 import { Data } from '../util/Data';
+import { Command } from '../util/Command';
 
-export default {
+const runjsCommand = new Command({
   name: 'runjs',
+  description: 'debug command.',
   aliases: [ 'eval' ],
   args: [ '<code: string>' ],
-  permission: (player) => Util.isOP(player),
-  func: (sender, args) => {
-    eval(args.join(' '));
-  }
-}
+  permission: (player) => Util.isOP(player)
+}, (sender, args) => {
+  eval(args.join(' '));
+});
 
 function inspect(...args) {
   const message = args.map(v => {
@@ -28,3 +29,5 @@ function inspect(...args) {
   }).join(' ');
   world.sendMessage(message);
 }
+
+export default runjsCommand;
