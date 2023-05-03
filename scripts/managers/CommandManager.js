@@ -10,6 +10,8 @@ export class CommandManager extends BaseManager {
     super(ac);
     
     if (config.others.debug) console.warn('[CommandManager] initialized');
+
+    /** @type {Map<string, import('../types/index').Command>} */
     this.registeredCommands = new Map();
     
     this.load();
@@ -73,6 +75,7 @@ export class CommandManager extends BaseManager {
     })
   }
   
+  /** @param {import('../types/index').Command} command */
   create(command) {
     this.registeredCommands.set(command.name, command);
     return command;

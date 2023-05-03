@@ -49,3 +49,12 @@ export interface CommandInput {
   message: string;
   cancel?: boolean;
 }
+
+export interface Command {
+  name: string,
+  description: string,
+  permission?: (player: mc.Player) => boolean;
+  func?: (sender: mc.Player, args: string[], manager: import('../managers/CommandManager').CommandManager) => any;
+  disableScriptEvent?: boolean;
+  aliases?: string[]
+}
