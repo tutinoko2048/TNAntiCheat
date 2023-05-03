@@ -62,11 +62,11 @@ export class Permissions {
   }
   
   /**
-   * @param {PermissionType} permission 
-   * @returns {boolean}
+   * @param {string} permission 
+   * @returns {permission is PermissionType}
    */
   static isValid(permission) {
-    return this.list().includes(permission);
+    return this.list().some(p => p === permission);
   }
   
   static list() {
