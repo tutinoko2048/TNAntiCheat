@@ -6,10 +6,10 @@ try {
   const json = fs.readFileSync('manifest.json').toString();
   const manifest = JSON.parse(json);
   const name = manifest.header.name.split(' ')[0];
-  const version = typeof manifest.header.version == 'number'
+  const version = typeof manifest.header.version == 'string'
     ? manifest.header.version.join('.')
     : manifest.header.version;
-  const fileName = `${name}_v${version}.mcpack`
+  const fileName = `${name}_v${version}.mcpack`;
   core.setOutput("fileName", fileName);
   
 } catch (error) {

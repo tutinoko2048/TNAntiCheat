@@ -1,8 +1,10 @@
 name: 'Get filename'
+description: 'get the filename from package version'
 
 outputs:
   fileName:
     description: 'the name of the file.'
+
 runs:
   using: 'node16'
   main: 'index.js'

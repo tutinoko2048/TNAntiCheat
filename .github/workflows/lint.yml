@@ -1,11 +1,11 @@
-name: Lint
 on: push
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
@@ -16,5 +16,27 @@ jobs:
       - name: tsc
         run: |
           npx tsc
-
-    
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - run: echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" >> $GITHUB_ENV
+      - name: Make archive
+        run: |
+          DATE=$(date "+%Y%d%m-%H-%M")
+          NAME="${REPOSITORY_NAME}_${DATE}"
+          echo "FILE_NAME=${NAME}" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{env.FILE_NAME}}
+          path: |
+            ./
+            !*git*
+            !node_modules/*
+            !package-lock.json
+          if-no-files-found: error
