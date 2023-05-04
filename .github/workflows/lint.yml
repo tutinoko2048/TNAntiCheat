@@ -22,9 +22,6 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
       - run: echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" >> $GITHUB_ENV
       - name: Make archive
         run: |
