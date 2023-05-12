@@ -67,5 +67,5 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
     .button2(no);
   const { selection, canceled } = await form.show(player);
   if (canceled) return defaultValue;
-  return selection === 1;
+  return selection === 0;
 }
