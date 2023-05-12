@@ -99,7 +99,7 @@ export class TNAntiCheat {
       modules.placeCheckC(ev);
     });
     
-    world.beforeEvents.itemUse.subscribe(async ev => {
+  world.beforeEvents.itemUse.subscribe(async ev => {
       const { itemStack, source } = ev;
       if (
         source instanceof Player &&
