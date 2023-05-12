@@ -99,16 +99,19 @@ export class TNAntiCheat {
       modules.placeCheckC(ev);
     });
     
-    world.beforeEvents.itemUse.subscribe(ev => {
+    world.beforeEvents.itemUse.subscribe(async ev => {
+      const { itemStack, source } = ev;
       if (
-        ev.source instanceof Player &&
-        Util.isOP(ev.source) &&
-        AdminPanel.isPanelItem(ev.itemStack)
+        source instanceof Player &&
+        Util.isOP(source) &&
+        AdminPanel.isPanelItem(itemStack)
       ) {
-        const target = ev.source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
-        if (target instanceof Player) new AdminPanel(this, ev.source).playerInfo(target); // show playerInfo
-        else new AdminPanel(this, ev.source).show(); // show AdminPanel
         ev.cancel = true;
+        const target = source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
+        
+        await Util.sleep();
+        if (target instanceof Player) new AdminPanel(this, source).playerInfo(target); // show playerInfo
+        else new AdminPanel(this, source).show(); // show AdminPanel
       }
     });
     

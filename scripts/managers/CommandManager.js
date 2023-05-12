@@ -1,4 +1,4 @@
-import { world } from '@minecraft/server';
+import { world, system } from '@minecraft/server';
 import { Util } from '../util/util'
 import { BaseManager } from './BaseManager';
 import { CommandError } from '../util/CommandError';
@@ -37,13 +37,15 @@ export class CommandManager extends BaseManager {
     if (!command) return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
     if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
     if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません');
-
-    try {
-      command.func(sender, args, this);
-    } catch (e) {
-      sender.sendMessage(`[CommandManager] §c${e}`);
-      if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
-    }
+    
+    system.run(() => {
+      try {
+        command.func(sender, args, this);
+      } catch (e) {
+        sender.sendMessage(`[CommandManager] §c${e}`);
+        if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
+      }
+    });
   }
   
   getAll() {

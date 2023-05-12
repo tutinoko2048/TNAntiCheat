@@ -1,4 +1,4 @@
-import { world, Player } from '@minecraft/server';
+import { world, system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -110,11 +110,13 @@ export function getBlock(ev) {
   if (
     !config.others.blockCopy ||
     !(source instanceof Player) ||
-    !source.isSneaking ||
     !Util.isCreative(source) ||
     !AdminPanel.isPanelItem(item)
   ) return;
   
-  const blockItem = block.getItemStack(1, true);
-  source.getComponent('minecraft:inventory').container.addItem(blockItem);
+  system.run(() => {
+    if (!source.isSneaking) return;
+    const blockItem = block.getItemStack(1, true);
+    source.getComponent('minecraft:inventory').container.addItem(blockItem);
+  });
 }

@@ -285,14 +285,25 @@ export class Util {
   /**
    * @param {string} command A command to execute
    * @param {import('@minecraft/server').Entity|import('@minecraft/server').Dimension} source
-   * @returns {boolean} Whether command has successfully executed
+   * @returns {boolean} Whether command has successfully executed, false is error
    */
   static runCommandSafe(command, source) {
     try {
-      const res = source.runCommand(command);
-      return res.successCount > 0;
-    } catch {
+      const { successCount } = source.runCommand(command);
+      const success = successCount > 0;
+      if (!success && config.others.debug) console.error('[CommandResult] successCount:', successCount);
+      return success;
+    } catch(e) {
+      if (config.others.debug) console.error(`[CommandError] ${e}\n${e.stack}`);
       return false;
     }
+  }
+  
+  /**
+   * @param {number} ticks
+   * @returns {Promise<void>}
+   */
+  static sleep(ticks = 0) {
+    return new Promise(res => system.runTimeout(res, ticks));
   }
 }
