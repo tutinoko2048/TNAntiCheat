@@ -65,13 +65,13 @@ export class AdminPanel {
   /** @param {import('@minecraft/server').Player} player */
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
-    const { currentValue, defaultValue } = player.getComponent('minecraft:health');
+    const { currentValue, effectiveMax } = player.getComponent('minecraft:health');
     const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'builder') ? '§ebuilder§f' : 'member';
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
-      `§7Health: §f${Math.floor(currentValue)} / ${defaultValue}`,
+      `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`,
       `§7Permission: §f${viewPermission(player)}`,
@@ -327,22 +327,13 @@ function coloredEntityCount(typeId, count) {
  */
 function getAllEquipments(player) {
   const equipments = player.getComponent('minecraft:equipment_inventory');
-  /*
-  return Object.values(EquipmentSlot).map(slotId => {
-    if (slotId === EquipmentSlot.mainhand) return;
-    const item = equipments.getEquipment(slotId);
-    if (item) {
-      item._slot = slotId;
-      item._isEquipment = true;
-    }
-    return item;
-  });
-  */
-  return Object.values(EquipmentSlot).map(slotId => ({
-    item: equipments.getEquipment(slotId),
-    slot: slotId
-  }))
-  
+
+  return Object.values(EquipmentSlot)
+    .filter(slotId => slotId !== EquipmentSlot.mainhand)
+    .map(slotId => ({
+      item: equipments.getEquipment(slotId),
+      slot: slotId
+    }));
 }
 
 /**

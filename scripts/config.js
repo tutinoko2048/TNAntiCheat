@@ -71,7 +71,7 @@ export default
     punishment: "kick"
   },
   namespoof: {
-    state: false,
+    state: true,
     maxLength: 20, // 指定した値より長い名前を検知
     punishment: "kick"
   },
@@ -181,6 +181,7 @@ export default
       "minecraft:chest_boat",
       "minecraft:acacia_chest_boat",
       "minecraft:birch_chest_boat",
+      "minecraft:cherry_chest_boat",
       "minecraft:dark_oak_chest_boat",
       "minecraft:jungle_chest_boat",
       "minecraft:mangrove_chest_boat",

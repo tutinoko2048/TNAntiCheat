@@ -47,7 +47,7 @@ export class Util {
     if (showNotify) {
       const output = `§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`;
       Util.notify(output);
-      if (config.logger.console) console.warn(`[TNAC] ${output}`);
+      if (config.logger.console) console.warn(`[§aTNAC§r] ${output}`);
     }
   }
   
