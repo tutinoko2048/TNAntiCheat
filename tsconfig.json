@@ -4,6 +4,7 @@
       "node_modules",
       "./scripts/util/secret.js"
     ],
+    "files": [ "scripts/types/index.d.ts" ],
     "compilerOptions": {
       "allowJs": true,
       "checkJs": true,

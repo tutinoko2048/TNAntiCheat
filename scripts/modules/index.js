@@ -16,6 +16,7 @@ export * from './combat';
 export * from './nuker';
 export * from './movement';
 
+/** @param {Player} player */
 export function ban(player) {
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
     if (unbanQueue.includes(player.name)) {
@@ -75,24 +76,25 @@ export function notify() {
   }
 }
 
-
+/** @param {Player} player */
 export function crasher(player) {
   if (!config.crasher.state) return;
   const { x, y, z } = player.location;
   if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
-    player.teleport({ x: 0, y: 255, z: 0 }, player.dimension, 0, 0);
+    player.teleport({ x: 0, y: 255, z: 0 }, { dimension: player.dimension });
     if (Util.isOP(player)) return; // prevent crasher by all players but don't punish OP
     Util.flag(player, 'Crasher', config.crasher.punishment, 'Crasherの使用を検知しました');
   }
 }
 
+/** @param {Player} player */
 export function namespoof(player) {
   if (!config.namespoof.state) return;
   if (player.name.length > config.namespoof.maxLength) // 長い名前対策
     Util.flag(player, 'Namespoof', config.namespoof.punishment, `長すぎる名前を検知しました`);
 }
 
-/** @param {import('@minecraft/server').Player} player */
+/** @param {Player} player */
 export async function creative(player) {
   if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
   if (Util.isCreative(player)) {

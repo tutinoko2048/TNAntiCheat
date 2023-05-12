@@ -2,6 +2,7 @@ import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
+/** @param {import('@minecraft/server').ItemStack} item */
 export function itemMessageBuilder(item, needs = 'name') {
   return `§c${item.typeId}§r${needs == 'amount' ? ` x${item.amount}`:''}${item.nameTag && needs == 'name' ? `§7, Name: §r${safeItemName(item.nameTag)}`:''}§r`
 }

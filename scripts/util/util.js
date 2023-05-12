@@ -216,10 +216,11 @@ export class Util {
     return `${hour}時間 ${min}分 ${Math.floor(sec)}秒`
   }
   
+  /** @typedef {import('../lib/form/ActionForm').ActionForm} CustomActionForm */
   /**
    * Thanks: https://discord.com/channels/950040604186931351/954636266614439986/1035305927655559300
    * @author aikayu1op.js
-   * @template {UI.ActionFormData | UI.MessageFormData | UI.ModalFormData} Form
+   * @template {UI.ActionFormData | UI.MessageFormData | UI.ModalFormData | CustomActionForm} Form
    * @param {Player} player
    * @param {Form} form
    * @returns {Promise<Awaited<ReturnType<Form["show"]>>>}
