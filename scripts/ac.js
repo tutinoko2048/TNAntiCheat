@@ -127,7 +127,7 @@ export class TNAntiCheat {
       namespaces: [ 'ac' ]
     });
     
-    world.afterEvents.itemReleaseUse.subscribe(ev => {
+    world.afterEvents.itemReleaseCharge.subscribe(ev => {
       const { itemStack, source } = ev;
       if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });

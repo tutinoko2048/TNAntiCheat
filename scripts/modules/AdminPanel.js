@@ -65,13 +65,13 @@ export class AdminPanel {
   /** @param {import('@minecraft/server').Player} player */
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
-    const { currentValue, effectiveMax } = player.getComponent('minecraft:health');
+    const { current, value } = player.getComponent('minecraft:health');
     const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'builder') ? '§ebuilder§f' : 'member';
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
-      `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
+      `§7Health: §f${Math.floor(current)} / ${value}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`,
       `§7Permission: §f${viewPermission(player)}`,
