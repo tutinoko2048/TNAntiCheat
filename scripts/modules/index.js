@@ -16,7 +16,10 @@ export * from './combat';
 export * from './nuker';
 export * from './movement';
 
-/** @param {Player} player */
+/**
+ * @param {Player} player
+ * @returns {boolean}
+ */
 export function ban(player) {
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
     if (unbanQueue.includes(player.name)) {
@@ -25,7 +28,7 @@ export function ban(player) {
       return;
     }
     
-    const reason = player.getDynamicProperty(properties.banReason);
+    const reason = /** @type {string} */ (player.getDynamicProperty(properties.banReason));
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     return Util.kick(player, reason ?? '-', true);
   }

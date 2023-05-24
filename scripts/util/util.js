@@ -51,18 +51,31 @@ export class Util {
     }
   }
   
-  /** @param {Player} player */
+  /**
+   * @param {Player} player
+   * @param {string} reason
+   * @returns {boolean}
+   */
   static ban(player, reason, type) {
-    if (Util.isOwner(player)) return console.warn('ban failed: cannot ban owner');
+    if (Util.isOwner(player)) {
+      console.warn('ban failed: cannot ban owner');
+      return false;
+    }
     player.setDynamicProperty(properties.ban, true);
     type && player.setDynamicProperty(properties.banReason, type);
     return this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
   }
 
-  /** @param {Player} player */
+  /**
+   * @param {Player} player
+   * @param {string} reason
+   * @returns {boolean}
+   */
   static kick(player, reason, ban = false) {
-    if (Util.isOwner(player)) return console.warn('kick failed: cannot kick owner');
-    
+    if (Util.isOwner(player)) {
+      console.warn('kick failed: cannot kick owner');
+      return false;
+    }
     const res = Util.runCommandSafe(
       `kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`,
       overworld
@@ -71,7 +84,7 @@ export class Util {
       return true;
     } else {
       player.triggerEvent('tn:kick');
-      this.notify('Kickに失敗したため強制退出させました');
+      Util.notify('Kickに失敗したため強制退出させました');
       return false;
     }
   }
@@ -293,7 +306,7 @@ export class Util {
       const success = successCount > 0;
       if (!success && config.others.debug) console.error('[CommandResult] successCount:', successCount);
       return success;
-    } catch(e) {
+    } catch (e) {
       if (config.others.debug) console.error(`[CommandError] ${e}\n${e.stack}`);
       return false;
     }

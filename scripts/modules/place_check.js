@@ -1,4 +1,4 @@
-import { system, Player, GameMode } from '@minecraft/server';
+import { system, Player, GameMode, MinecraftEntityTypes } from '@minecraft/server';
 import config from '../config.js';
 import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';
@@ -9,7 +9,9 @@ export function placeCheckA(ev) {
   if (!config.placeCheckA.state || !(source instanceof Player) || Util.isOP(source)) return;
   if (isIllegalItem(item?.typeId)) {
     ev.cancel = true;
-    Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
+    system.run(() => {
+      Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
+    });
   }
   
   if (
@@ -92,6 +94,13 @@ export async function placeCheckD(ev) {
   if (!config.placeCheckD.state || !(source instanceof Player) || Util.isOP(source)) return;
   const gameMode = Util.getGamemode(source);
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
+  const { container } = source.getComponent('minecraft:inventory');
+
+  /** @param {string} typeId */
+  const spawn = (typeId) => {
+    const e = source.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
+    e.setRotation({ x: source.getRotation().x, y: 0 })
+  }
   
   if (
     config.placeCheckD.minecarts.includes(item?.typeId) &&
@@ -99,23 +108,28 @@ export async function placeCheckD(ev) {
   ) {
     ev.cancel = true;
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, source);
-    
     await Util.sleep(); // make delay for before events
-    source.dimension.spawnEntity(item.typeId, { x: loc.x, y: loc.y+1, z: loc.z });
+    spawn(item.typeId);
     
     if (gameMode === GameMode.creative) return;
-    item.amount--;
-    source.getComponent('minecraft:inventory').container.setItem(source.selectedSlot, item);
+    if (item.amount === 1) {
+      container.setItem(source.selectedSlot);
+    } else {
+      item.amount--;
+      container.setItem(source.selectedSlot, item);
+    }
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
     ev.cancel = true;
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, source);
-    
     await Util.sleep();
-    source.dimension.spawnEntity('minecraft:chest_boat', { x: loc.x, y: loc.y+1, z: loc.z });
-    
+    spawn(MinecraftEntityTypes.chestBoat.id);
     if (gameMode === GameMode.creative) return;
-    item.amount--;
-    source.getComponent('minecraft:inventory').container.setItem(source.selectedSlot, item);
+    if (item.amount === 1) {
+      container.setItem(source.selectedSlot);
+    } else {
+      item.amount--;
+      container.setItem(source.selectedSlot, item);
+    }
   }
 }
