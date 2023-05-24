@@ -63,9 +63,9 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
   const form = new UI.MessageFormData();
   form.title(title)
     .body(body)
-    .button1(yes)
-    .button2(no);
+    .button1(no)
+    .button2(yes);
   const { selection, canceled } = await form.show(player);
   if (canceled) return defaultValue;
-  return selection === 0;
+  return selection === 1;
 }
