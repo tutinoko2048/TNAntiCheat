@@ -99,7 +99,7 @@ export async function placeCheckD(ev) {
   /** @param {string} typeId */
   const spawn = (typeId) => {
     const e = source.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
-    e.setRotation({ x: source.getRotation().x, y: 0 })
+    e.setRotation({ x: 0, y: source.getRotation().y });
   }
   
   if (
