@@ -28,7 +28,7 @@ export function ban(player) {
       return;
     }
     
-    const reason = /** @type {string} */ (player.getDynamicProperty(properties.banReason));
+    const reason = player.getDynamicProperty(properties.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     return Util.kick(player, reason ?? '-', true);
   }

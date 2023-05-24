@@ -202,7 +202,7 @@ export class AdminPanel {
   
   /** @param {import('@minecraft/server').Player} player */
   async toggleMute(player) {
-    const _mute = /** @type {boolean} */(player.getDynamicProperty(properties.mute) ?? false);
+    const _mute = player.getDynamicProperty(properties.mute) ?? false;
     const form = new UI.ModalFormData();
     form.title('Mute')
       .toggle('ミュート / Mute', _mute);

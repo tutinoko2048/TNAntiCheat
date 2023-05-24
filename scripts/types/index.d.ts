@@ -1,7 +1,7 @@
 import * as mc from '@minecraft/server';
 import { properties as PropertyKeys } from '../util/constants';
 
-interface DynamicPropertyTypes {
+interface DynamicPropertyTypes extends Record<keyof typeof PropertyKeys, boolean | number | string> {
   [PropertyKeys.ban]: boolean;
   [PropertyKeys.banReason]: string;
   [PropertyKeys.configData]: string;
@@ -47,7 +47,11 @@ declare module '@minecraft/server' {
     getComponent(componentId: 'minecraft:item'): mc.EntityItemComponent;
     getComponent(componentId: 'minecraft:variant'): mc.EntityVariantComponent;
 
-    //getDynamicProperty<T extends keyof typeof PropertyKeys>(identifier: T): DynamicPropertyTypes[T];
+    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
+  }
+
+  interface World {
+    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
   }
 
   interface Block {
