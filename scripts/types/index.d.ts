@@ -1,7 +1,7 @@
 import * as mc from '@minecraft/server';
 import { properties as PropertyKeys } from '../util/constants';
 
-interface DynamicPropertyTypes extends Record<keyof typeof PropertyKeys, boolean | number | string> {
+interface DynamicPropertyTypes {
   [PropertyKeys.ban]: boolean;
   [PropertyKeys.banReason]: string;
   [PropertyKeys.configData]: string;
