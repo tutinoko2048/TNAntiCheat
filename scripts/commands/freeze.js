@@ -17,14 +17,14 @@ const freezeCommand =  new Command({
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   const freezeState = toBoolean(value);
 
-  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState}`, player);
+  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'enabled' : 'disabled'}`, player);
   if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
   
   Util.notify(`§7${sender.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`);
 });
 
 function toBoolean(str) {
-  if (typeof str !== 'string') throw new CommandError('Boolean (true/false)を入力してください');
+  if (typeof str !== 'string') throw new CommandError('Boolean(true/false)を入力してください');
   if (str.toLowerCase() === 'true') return true;
   else if (str.toLowerCase() === 'false') return false;
   else throw new CommandError('Boolean(true|false)を入力してください');
