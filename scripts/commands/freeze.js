@@ -17,7 +17,7 @@ const freezeCommand =  new Command({
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   const freezeState = toBoolean(value);
 
-  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'enabled' : 'disabled'}`, player);
+  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'disabled' : 'enabled'}`, player);
   if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
   
   Util.notify(`§7${sender.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`);

@@ -134,9 +134,11 @@ export function debugView(p, ac) {
   const cps = p.cps && Util.median(p.cps);
   
   p.onScreenDisplay.setActionBar([
-    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}, slot: ${format(p.selectedSlot)}, mainHand: ${format(mainHand)}`,
-    `isSneaking: ${format(p.isSneaking)}, isMoved: ${format(p.isMoved)}, cps: ${format(cps.toFixed(1))}`,
-    `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}], rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
+    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}`,
+`slot: ${format(p.selectedSlot)}, hand: ${format(mainHand)}`,
+    `isSneaking: ${format(p.isSneaking)}, isOnGround: ${format(p.hasTag('ac:on_ground'))}, cps: ${format(cps?.toFixed(1))}`,
+    `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,
+    `rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
   ].join('\n'));
 }
 
