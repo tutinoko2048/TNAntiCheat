@@ -59,7 +59,7 @@ export class TNAntiCheat {
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
         
-        modules.debugView(player);
+        modules.debugView(player, this);
         
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;
