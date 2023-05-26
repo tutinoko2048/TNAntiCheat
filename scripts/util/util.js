@@ -246,6 +246,11 @@ export class Util {
     return player.getComponent('minecraft:inventory').container.getItem(player.selectedSlot);
   }
   
+  /**
+   * @param {string} playerName
+   * @param {boolean} [expect=false]
+   * @returns {Player}
+   */
   static getPlayerByName(playerName, expect = false) {
     const [ player ] = world.getPlayers({ name: playerName });
     if (player || !expect) return player;
@@ -293,7 +298,7 @@ export class Util {
       const success = successCount > 0;
       if (!success && config.others.debug) console.error('[CommandResult] successCount:', successCount);
       return success;
-    } catch(e) {
+    } catch (e) {
       if (config.others.debug) console.error(`[CommandError] ${e}\n${e.stack}`);
       return false;
     }
