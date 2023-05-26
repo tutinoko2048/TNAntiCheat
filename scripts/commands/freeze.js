@@ -1,13 +1,12 @@
 import { Util } from '../util/util';
 import { CommandError } from '../util/CommandError';
-import { properties } from '../util/constants';
 import { Command } from '../util/Command';
 
-const muteCommand = new Command({
-  name: 'mute',
-  description: 'プレイヤーをミュートします',
+const freezeCommand =  new Command({
+  name: 'freeze',
+  description: 'プレイヤーを移動できなく(フリーズ状態に)します',
   args: [ '<name: playerName> <value: boolean>' ],
-  aliases: [ 'muto', 'myuto' ],
+  aliases: [],
   permission: (player) => Util.isOP(player)
 }, (sender, args) => {
   const [ _playerName, value ] = args;
@@ -16,15 +15,12 @@ const muteCommand = new Command({
   
   const player = Util.getPlayerByName(playerName);
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-  const muteState = toBoolean(value);
+  const freezeState = toBoolean(value);
+
+  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState}`, player);
+  if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
   
-  const err = () => { throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
-  
-  const res = Util.runCommandSafe(`ability @s mute ${muteState}`, player);
-  if (!res) err();
-  
-  player.setDynamicProperty(properties.mute, muteState);
-  Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${muteState} に設定しました`);
+  Util.notify(`§7${sender.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`);
 });
 
 function toBoolean(str) {
@@ -34,4 +30,4 @@ function toBoolean(str) {
   else throw new CommandError('Boolean(true|false)を入力してください');
 }
 
-export default muteCommand;
+export default freezeCommand;

@@ -254,11 +254,6 @@ export class Util {
     return str.replace(/(.)/g, '§$1');
   }
   
-  /** @param {Player} player */
-  static getHoldingItem(player) {
-    return player.getComponent('minecraft:inventory').container.getItem(player.selectedSlot);
-  }
-  
   /**
    * @param {string} playerName
    * @param {boolean} [expect=false]

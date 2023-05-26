@@ -15,5 +15,6 @@ export const COMMANDS = [
   'unban',
   'data',
   'config',
+  'freeze',
   //'runjs', // for debug
 ]
