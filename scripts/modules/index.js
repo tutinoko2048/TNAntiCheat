@@ -16,7 +16,10 @@ export * from './combat';
 export * from './nuker';
 export * from './movement';
 
-/** @param {Player} player */
+/**
+ * @param {Player} player
+ * @returns {boolean}
+ */
 export function ban(player) {
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
     if (unbanQueue.includes(player.name)) {

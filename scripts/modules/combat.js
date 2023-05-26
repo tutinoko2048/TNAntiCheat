@@ -26,8 +26,8 @@ export function reachB(ev) { // placement
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
   const distance = Vector.distance(source.getHeadLocation(), block.location);
   if (distance > config.reachB.maxReach) {
-    source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
     if (config.reachB.cancel) ev.cancel = true;
+    source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
   }
 }
 

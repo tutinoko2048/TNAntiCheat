@@ -1,4 +1,13 @@
 import * as mc from '@minecraft/server';
+import { properties as PropertyKeys } from '../util/constants';
+
+interface DynamicPropertyTypes {
+  [PropertyKeys.ban]: boolean;
+  [PropertyKeys.banReason]: string;
+  [PropertyKeys.configData]: string;
+  [PropertyKeys.mute]: boolean;
+  [PropertyKeys.ownerId]: string;
+}
 
 declare module '@minecraft/server' {
   interface World {
@@ -37,6 +46,12 @@ declare module '@minecraft/server' {
     getComponent(componentId: 'minecraft:health'): mc.EntityHealthComponent;
     getComponent(componentId: 'minecraft:item'): mc.EntityItemComponent;
     getComponent(componentId: 'minecraft:variant'): mc.EntityVariantComponent;
+
+    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
+  }
+
+  interface World {
+    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
   }
 
   interface Block {

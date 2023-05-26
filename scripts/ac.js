@@ -10,8 +10,11 @@ import { Data, deleteDupe } from './util/Data';
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
 export class TNAntiCheat {
+  /** @type {number[]} */
   #deltaTimes;
+  /** @type {number} */
   #lastTick;
+  /** @type {boolean} */
   #isEnabled;
   
   constructor() {
@@ -153,7 +156,8 @@ export class TNAntiCheat {
   #joinHandler(player) {
     player.joinedAt = Date.now();
     modules.namespoof(player);
-    modules.ban(player);
+    const banned = modules.ban(player);
+    if (banned) return;
     modules.banByXuid();
     
     if (player.getDynamicProperty(properties.mute)) {
