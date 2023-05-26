@@ -59,13 +59,15 @@ export class TNAntiCheat {
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
         
-        player.breakCount = 0;
+        modules.debugView(player);
+        
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;
           player.dimensionSwitchedAt = Date.now();
           player.isMoved = false;
         }
         player.lastLocation = player.location;
+        player.breakCount = 0;
       }
       
       if (!(system.currentTick % calcInterval(this.getTPS()))) modules.entityCounter();

@@ -16,10 +16,10 @@ export * from './combat';
 export * from './nuker';
 export * from './movement';
 
-/**
- * @param {Player} player
- * @returns {boolean}
- */
+  /**
+   * @param {Player} player
+   * @returns {boolean}
+   */
 export function ban(player) {
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
     if (unbanQueue.includes(player.name)) {
@@ -122,4 +122,26 @@ export function getBlock(ev) {
     const blockItem = block.getItemStack(1, true);
     source.getComponent('minecraft:inventory').container.addItem(blockItem);
   });
+}
+
+/** @arg {Player} p @arg {import('../ac').TNAntiCheat} ac */
+export function debugView(p, ac) {
+  if (!p.hasTag('ac:debug')) return;
+  const loc = p.location;
+  const rot = p.getRotation();
+  const vel = p.getVelocity();
+  const mainHand = p.getComponent('minecraft:inventory').container.getItem(p.selectedSlot)?.typeId;
+  const cps = p.cps && Util.median(p.cps);
+  
+  p.onScreenDisplay.setActionBar([
+    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}, slot: ${format(p.selectedSlot)}, mainHand: ${format(mainHand)}`,
+    `isSneaking: ${format(p.isSneaking)}, isMoved: ${format(p.isMoved)}, cps: ${format(cps.toFixed(1))}`,
+    `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}], rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
+  ].join('\n'));
+}
+
+function format(value) {
+  if (typeof value === 'boolean') return value ? `§a${value}§r` : `§c${value}§r`;
+  if (value === undefined || value === null) return `§7${value}§r`;
+  return value;
 }
