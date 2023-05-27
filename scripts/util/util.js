@@ -48,6 +48,8 @@ export class Util {
       const output = `§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`;
       Util.notify(output);
       if (config.logger.console) console.warn(`[§aTNAC§r] ${output}`);
+      
+      Util.log({ playerName: player.name, playerId: player.id, type, punishment, message });
     }
   }
   
@@ -138,6 +140,15 @@ export class Util {
   /** @param {Player} player */
   static isOwner(player) {
     return world.getDynamicProperty(properties.ownerId) === player.id;
+  }
+  
+  /** @arg {import('../types/index').ActionLog} content */
+  static log(content) {
+    world.logs ??= [];
+    if (world.logs.length > config.logger.maxLogs) world.logs.shift();
+    
+    content.createdAt ??= Date.now();
+    world.logs.push(content);
   }
         
   static safeString(str, length) {

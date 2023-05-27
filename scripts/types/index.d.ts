@@ -14,6 +14,9 @@ declare module '@minecraft/server' {
     arrowSpawnCount?: number;
     cmdSpawnCount?: number;
     entityCheck?: any;
+    logs?: ActionLog[];
+    
+    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
   }
 
   interface ItemStack {
@@ -50,10 +53,6 @@ declare module '@minecraft/server' {
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
   }
 
-  interface World {
-    getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
-  }
-
   interface Block {
     getComponent(componentId: 'minecraft:inventory'): mc.BlockInventoryComponent;
   }
@@ -75,4 +74,13 @@ export interface ICommand {
   func?: CommandCallback;
   disableScriptEvent?: boolean;
   aliases?: string[];
+}
+
+interface ActionLog {
+  createdAt?: number;
+  playerName: string;
+  playerId: string;
+  'type': string;
+  punishment?: string;
+  message?: string;
 }

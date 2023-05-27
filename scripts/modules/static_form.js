@@ -5,10 +5,11 @@ import { ICONS, VERSION, DISCORD_URL } from '../util/constants';
 export const FORMS = {
   main: new UI.ActionFormData()
     .title('TN-AntiCheat AdminPanel')
-    .button('§lプレイヤーリスト / Player List', ICONS.playerList)
-    .button('§lエンティティ数を表示 / Show entities', ICONS.entities)
-    .button('§l設定 / Config', ICONS.config)
-    .button('§lこのアドオンについて / About', ICONS.about),
+    .button('§lプレイヤーリスト / Player List', ICONS.playerList) // 0
+    .button('§lエンティティ数を表示 / Show entities', ICONS.entities) // 1
+    .button('§l設定 / Config', ICONS.config) // 2
+    .button('§lログ / Logs') // 3
+    .button('§lこのアドオンについて / About', ICONS.about), // 4
   playerInfo: new UI.ActionFormData()
     .title('PlayerInfo')
     .button('§lインベントリを表示 / Show inventory', ICONS.inventory)

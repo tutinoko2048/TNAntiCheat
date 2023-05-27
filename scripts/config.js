@@ -274,7 +274,8 @@ export default
     rollback: true
   },
   logger: {
-    console: false // 検知メッセージをコンテンツログに出力する
+    console: false, // 検知メッセージをコンテンツログに出力する
+    maxLogs: 50 // 保存する検知ログの数
   },
   others: {
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム

@@ -6,6 +6,7 @@ import { properties, ICONS, panelItem } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
+import { ActionForm } from '../lib/form/index';
 
 /** @typedef {{ item: ItemStack, slot: EquipmentSlot | number }} ItemInformation */
 
@@ -40,7 +41,8 @@ export class AdminPanel {
     if (selection === 0) return await this.playerList();
     if (selection === 1) return await this.showEntities();
     if (selection === 2) return await this.configPanel();
-    if (selection === 3) return await this.about();
+    if (selection === 3) return await this.actionLogs();
+    if (selection === 4) return await this.about();
   }
   
   async playerList() {
@@ -292,6 +294,37 @@ export class AdminPanel {
   
   async configPanel() {
     new ConfigPanel(this.ac, this.player, false);
+  }
+  
+  async actionLogs() {
+    const logs = world.logs ?? [];
+    const form = new ActionForm();
+    logs.forEach((log, i) => form.button(`[${log.type}] ${log.playerName}§r\n§7date: ${Util.getTime(log.createdAt)}§r`, null, i));
+    form.button('§l戻る / Return', ICONS.returnBtn, 'return');
+    
+    const { canceled, button } = await form.show(this.player);
+    if (canceled) return;
+    if (button.id === 'return') return await this.main();
+    return await this.logDetail(logs[button.id]);
+  }
+  
+  /** @arg {import('../types/index').ActionLog} log */
+  async logDetail(log) {
+    const form = new ActionForm();
+    form.body([
+      `§l§o[${log.type}]§r`,
+      `§7記録日時: §6${Util.getTime(log.createdAt)}§r`,
+      `§7プレイヤー名: §r${log.playerName}§r`,
+      `§7プレイヤーID: §r${log.playerId}`,
+      log.punishment ? `§7警告タイプ: §r${log.punishment}§r` : null,
+      log.message,
+      ''
+    ].filter(Boolean).join('\n'));
+    form.button('§l戻る / Return', ICONS.returnBtn, 'return');
+    
+    const { canceled, button } = await form.show(this.player);
+    if (canceled) return;
+    if (button.id === 'return') return await this.actionLogs();
   }
 
   async about() {
