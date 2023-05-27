@@ -16,6 +16,7 @@ const deopCommand = new Command({
   if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
   Permissions.remove(player, 'admin');
   Util.notify(`§7${sender.name} >> §e${player.name} の管理者権限を削除しました`);
+  Util.log({ type: 'command/deop', message: `by ${sender.name}` }, player);
 });
 
 export default deopCommand;

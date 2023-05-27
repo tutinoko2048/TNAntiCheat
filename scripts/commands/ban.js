@@ -17,7 +17,9 @@ const banCommand =  new Command({
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (sender.name === player.name) throw new CommandError('自分をbanすることはできません');
   Util.ban(player, reason, '(from command)');
+  
   Util.notify(`§7${sender.name} >> §fプレイヤー: §c${player.name}§r をbanしました\n§7Reason: §r${reason}`);
+  Util.log({ type: 'command/ban', message: `Banned by ${sender.name}` }, player);
 });
 
 export default banCommand;

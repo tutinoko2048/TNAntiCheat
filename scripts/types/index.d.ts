@@ -76,10 +76,10 @@ export interface ICommand {
   aliases?: string[];
 }
 
-interface ActionLog {
+export interface ActionLog {
   createdAt?: number;
-  playerName: string;
-  playerId: string;
+  playerName?: string;
+  playerId?: string;
   'type': string;
   punishment?: string;
   message?: string;

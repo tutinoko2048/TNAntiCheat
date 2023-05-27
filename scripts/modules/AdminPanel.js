@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot, Player } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -13,9 +13,10 @@ import { ActionForm } from '../lib/form/index';
 export class AdminPanel {
   /**
    * @param {import('../ac').TNAntiCheat} ac 
-   * @param {import('@minecraft/server').Player} player 
+   * @param {Player} player 
    */
   constructor(ac, player) {
+    if (!(player instanceof Player)) throw TypeError('Argument "player" must be a player instance');
     this.ac = ac;
     this.player = player;
   }
@@ -64,7 +65,7 @@ export class AdminPanel {
     return await this.playerInfo(players[selection]);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
     const { current, value } = player.getComponent('minecraft:health');
@@ -100,7 +101,7 @@ export class AdminPanel {
     if (selection === 9) return await this.playerList();
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async showInventory(player) {
     const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
    
@@ -150,7 +151,7 @@ export class AdminPanel {
   }
   
   /**
-   * @param {import('@minecraft/server').Player} player 
+   * @param {Player} player 
    * @param {ItemInformation} info 
    */
   async itemInfo(player, info) {
@@ -195,10 +196,12 @@ export class AdminPanel {
     if (builder != _builder) {
       Permissions.set(player, 'builder', builder);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
+      Util.log({ type: 'panel/builder', message: `permission:builder を ${builder} に設定しました by ${this.player.name}` }, player);
     }
     if (admin != _admin) {
       Permissions.set(player, 'admin', admin);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
+      Util.log({ type: 'panel/admin', message: `permission:admin を ${admin} に設定しました by ${this.player.name}` }, player);
     }
   }
   
@@ -220,7 +223,7 @@ export class AdminPanel {
     } else return await this.playerInfo(player);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async kickPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にkickしますか？`,
@@ -231,10 +234,11 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
       Util.kick(player, '-');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
+      Util.log({ type: 'panel/kick', message: `Kicked by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async banPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にbanしますか？`,
@@ -245,10 +249,11 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
       Util.ban(player, '-', '(from AdminPanel)');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
+      Util.log({ type: 'panel/ban', message: `Banned by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async showTags(player) {
     const tags = player.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
@@ -260,7 +265,7 @@ export class AdminPanel {
     if (selection === 0) return await this.playerInfo(player);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async showScores(player) {
     const messages = world.scoreboard
       .getObjectives()
@@ -297,9 +302,11 @@ export class AdminPanel {
   }
   
   async actionLogs() {
-    const logs = world.logs ?? [];
+    const logs = (world.logs ?? []).reverse();
     const form = new ActionForm();
-    logs.forEach((log, i) => form.button(`[${log.type}] ${log.playerName}§r\n§7date: ${Util.getTime(log.createdAt)}§r`, null, i));
+    form.title('ActionLogs');
+    form.body(logs.length ? `§o直近${logs.length}件のログを表示しています` : '§o何も記録されていないようです');
+    logs.forEach((log, i) => form.button(`[${log.type}] ${log.playerName ?? ''}§r\n§7date: ${Util.getTime(log.createdAt)}§r`, null, i));
     form.button('§l戻る / Return', ICONS.returnBtn, 'return');
     
     const { canceled, button } = await form.show(this.player);
@@ -310,16 +317,18 @@ export class AdminPanel {
   
   /** @arg {import('../types/index').ActionLog} log */
   async logDetail(log) {
-    const form = new ActionForm();
-    form.body([
+    const body = [
       `§l§o[${log.type}]§r`,
       `§7記録日時: §6${Util.getTime(log.createdAt)}§r`,
-      `§7プレイヤー名: §r${log.playerName}§r`,
-      `§7プレイヤーID: §r${log.playerId}`,
+      log.playerName ? `§7プレイヤー名: §r${log.playerName}§r` : null,
+      log.playerId ? `§7プレイヤーID: §r${log.playerId}` : null,
       log.punishment ? `§7警告タイプ: §r${log.punishment}§r` : null,
       log.message,
-      ''
-    ].filter(Boolean).join('\n'));
+      '§r' // spacer
+    ];
+    const form = new ActionForm();
+    form.title('ActionLog');
+    form.body(body.filter(Boolean).join('\n'));
     form.button('§l戻る / Return', ICONS.returnBtn, 'return');
     
     const { canceled, button } = await form.show(this.player);
@@ -341,10 +350,14 @@ export class AdminPanel {
     return item;
   }
   
-  /** @param {import('@minecraft/server').ItemStack} item */
+  /** @arg {ItemStack} item  @returns {boolean} */
   static isPanelItem(item) {
     if (!item) return false;
-    return item.typeId === config.others.adminPanel && item.nameTag === panelItem.nameTag && item.getLore()[0] === Util.hideString(panelItem.lore);
+    return (
+      item.typeId === config.others.adminPanel &&
+      item.nameTag === panelItem.nameTag &&
+      item.getLore()[0] === Util.hideString(panelItem.lore)
+    );
   }
 }
 
@@ -354,13 +367,9 @@ function coloredEntityCount(typeId, count) {
   return `${color}${count}§r`;
 }
 
-/**
- * @param {import('@minecraft/server').Player} player
- * @returns {ItemInformation[]}
- */
+/** @arg {Player} player  @returns {ItemInformation[]} */
 function getAllEquipments(player) {
   const equipments = player.getComponent('minecraft:equipment_inventory');
-
   return Object.values(EquipmentSlot)
     .filter(slotId => slotId !== EquipmentSlot.mainhand)
     .map(slotId => ({
@@ -369,10 +378,7 @@ function getAllEquipments(player) {
     }));
 }
 
-/**
- * @param {import('@minecraft/server').Player} player
- * @returns {ItemInformation[]}
- */
+/** @arg {Player} player  @returns {ItemInformation[]} */
 function getAllItems(player) {
   const { container } = player.getComponent('minecraft:inventory');
   return Array(container.size).fill(null).map((_,i) => ({

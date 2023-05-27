@@ -142,15 +142,22 @@ export class Util {
     return world.getDynamicProperty(properties.ownerId) === player.id;
   }
   
-  /** @arg {import('../types/index').ActionLog} content */
-  static log(content) {
+  /**
+   * @arg {import('../types/index').ActionLog} content
+   * @arg {Player} [player]
+   */
+  static log(content, player) {
     world.logs ??= [];
-    if (world.logs.length > config.logger.maxLogs) world.logs.shift();
+    if (world.logs.length >= config.logger.maxLogs) world.logs.shift();
     
     content.createdAt ??= Date.now();
+    if (player) { // Playerが投げられたら補完する
+      content.playerName ??= player.name;
+      content.playerId ??= player.id;
+    }
     world.logs.push(content);
   }
-        
+  
   static safeString(str, length) {
     return str.length > length ? `${str.slice(0,length)}...` : str;
   }
