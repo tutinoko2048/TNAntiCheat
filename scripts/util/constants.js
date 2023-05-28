@@ -15,6 +15,7 @@ export const ICONS = /** @type {const} */ ({
   config: 'textures/ui/icon_setting',
   returnBtn: 'textures/ui/realms_red_x',
   about: 'textures/items/book_written',
+  logs: 'textures/ui/bookshelf_flat',
   
   inventory: 'textures/ui/icon_recipe_equipment',
   permission: 'textures/ui/icon_lock',

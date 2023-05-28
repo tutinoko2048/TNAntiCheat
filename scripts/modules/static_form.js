@@ -8,7 +8,7 @@ export const FORMS = {
     .button('§lプレイヤーリスト / Player List', ICONS.playerList) // 0
     .button('§lエンティティ数を表示 / Show entities', ICONS.entities) // 1
     .button('§l設定 / Config', ICONS.config) // 2
-    .button('§lログ / Logs') // 3
+    .button('§lログ / Logs', ICONS.logs) // 3
     .button('§lこのアドオンについて / About', ICONS.about), // 4
   playerInfo: new UI.ActionFormData()
     .title('PlayerInfo')

@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 1
+// configVersion: 2
 export default
 {
   permission: {
@@ -275,7 +275,7 @@ export default
   },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
-    maxLogs: 50 // 保存する検知ログの数
+    maxLogs: 50 // 保存するログの数
   },
   others: {
     adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム

@@ -16,10 +16,10 @@ const kickCommand = new Command({
   const player = Util.getPlayerByName(playerName, expect === 'true');
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (sender.name === player.name) throw new CommandError('自分をkickすることはできません');
-  Util.kick(player, reason);
+  Util.kick(player, `Reason: ${reason}`);
   
   Util.notify(`§7${sender.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`);
-  Util.log({ type: 'command/kick', message: `Kicked by ${sender.name}` }, player);
+  Util.log({ type: 'command.kick', message: `Kicked by ${sender.name}\nReason: ${reason}` }, player);
 });
 
 export default kickCommand;

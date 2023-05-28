@@ -196,12 +196,12 @@ export class AdminPanel {
     if (builder != _builder) {
       Permissions.set(player, 'builder', builder);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
-      Util.log({ type: 'panel/builder', message: `permission:builder を ${builder} に設定しました by ${this.player.name}` }, player);
+      Util.log({ type: 'panel.permission', message: `§epermission:builder を §f${builder} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
     if (admin != _admin) {
       Permissions.set(player, 'admin', admin);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
-      Util.log({ type: 'panel/admin', message: `permission:admin を ${admin} に設定しました by ${this.player.name}` }, player);
+      Util.log({ type: 'panel.permission', message: `§epermission:admin を §f${admin} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
   }
   
@@ -234,7 +234,7 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
       Util.kick(player, '-');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
-      Util.log({ type: 'panel/kick', message: `Kicked by ${this.player.name}` }, player);
+      Util.log({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   
@@ -249,7 +249,7 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
       Util.ban(player, '-', '(from AdminPanel)');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
-      Util.log({ type: 'panel/ban', message: `Banned by ${this.player.name}` }, player);
+      Util.log({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   
@@ -302,15 +302,21 @@ export class AdminPanel {
   }
   
   async actionLogs() {
-    const logs = (world.logs ?? []).reverse();
+    const logs = (world.logs ?? []).slice().reverse();
     const form = new ActionForm();
     form.title('ActionLogs');
     form.body(logs.length ? `§o直近${logs.length}件のログを表示しています` : '§o何も記録されていないようです');
-    logs.forEach((log, i) => form.button(`[${log.type}] ${log.playerName ?? ''}§r\n§7date: ${Util.getTime(log.createdAt)}§r`, null, i));
+    logs.forEach((log, i) => form.button(`§8[${log.punishment?'§4':''}${log.type}§r§8] ${log.playerName ?? ''}§r\n§7${Util.getTime(log.createdAt)}§r`, null, i));
+    form.button('§l§cログをクリア / Clear all logs', ICONS.clear, 'clear');
     form.button('§l戻る / Return', ICONS.returnBtn, 'return');
     
     const { canceled, button } = await form.show(this.player);
     if (canceled) return;
+    if (button.id === 'clear') {
+      world.logs = [];
+      Util.notify('§a全てのログをクリアしました', this.player);
+      return;
+    }
     if (button.id === 'return') return await this.main();
     return await this.logDetail(logs[button.id]);
   }
@@ -318,8 +324,7 @@ export class AdminPanel {
   /** @arg {import('../types/index').ActionLog} log */
   async logDetail(log) {
     const body = [
-      `§l§o[${log.type}]§r`,
-      `§7記録日時: §6${Util.getTime(log.createdAt)}§r`,
+      `[§l${log.punishment?'§c':''}${log.type}§r] §7- ${Util.getTime(log.createdAt)}§r`,
       log.playerName ? `§7プレイヤー名: §r${log.playerName}§r` : null,
       log.playerId ? `§7プレイヤーID: §r${log.playerId}` : null,
       log.punishment ? `§7警告タイプ: §r${log.punishment}§r` : null,

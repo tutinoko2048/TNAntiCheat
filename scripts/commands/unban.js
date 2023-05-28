@@ -16,7 +16,7 @@ const unbanCommand = new Command({
     unbanQueue.push(playerName);
     Util.notify(`プレイヤー: §c${playerName}§r をunbanのリストに追加しました`, sender);
     
-    Util.log({ type: 'command/unban', playerName, message: `by ${sender.name}` });
+    Util.log({ type: 'command.unban', playerName, message: `Executed by ${sender.name}` });
   }
   Util.notify(`§7Unban queue:\n§f${unbanQueue.join(', ')}`, sender);
 });

@@ -18,7 +18,7 @@ const opCommand = new Command({
   if (Util.isOP(player)) throw new CommandError(`${player.name} は既に権限を持っています`);
   Permissions.add(player, 'admin');
   Util.notify(`§7${sender.name} >> §e${player.name} に管理者権限を与えました`);
-  Util.log({ type: 'command/op', message: `by ${sender.name}` }, player);
+  Util.log({ type: 'command.op', message: `Executed by ${sender.name}` }, player);
 });
 
 export default opCommand;

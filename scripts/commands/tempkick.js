@@ -16,8 +16,8 @@ const tempkickCommand = new Command({
   const player = Util.getPlayerByName(playerName, expect === 'true');
   if (!player) throw new CommandError(`プレイヤー: ${playerName} が見つかりませんでした`);
   if (sender.name === player.name) throw new CommandError('自分をkickすることはできません');
-  Util.notify(`${sender.name} >> プレイヤー: §c${player.name}§r をtempkickしました(再参加できます)\n§7Reason: §r${reason}`);
-  Util.log({ type: 'command/tempkick', message: `by ${sender.name}` }, player);
+  Util.notify(`§7${sender.name} >> §rプレイヤー: §c${player.name}§r をtempkickしました(再参加できます)\n§7Reason: §r${reason}`);
+  Util.log({ type: 'command.tempkick', message: `TempKicked by ${sender.name}\nReason: ${reason}` }, player);
   Util.disconnect(player);
 });
 

@@ -197,7 +197,8 @@ export const description = {
   },
   logger: {
     desc: 'ログの記録に関する設定',
-    console: '検知メッセージをコンテンツログに出力する'
+    console: '検知メッセージをコンテンツログに出力する',
+    maxLogs: '保存するログの数'
   },
   others: {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',
