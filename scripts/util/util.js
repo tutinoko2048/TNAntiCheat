@@ -7,7 +7,6 @@ import { Permissions } from './Permissions';
 const overworld = world.getDimension('overworld');
 
 export class Util {
-
   /**
    *
    * @param {Player} player
@@ -93,7 +92,7 @@ export class Util {
   
   /** @param {Player} player */
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('discinnect failed: cannot disconnect owner');
+    if (Util.isOwner(player)) return console.warn('disconnect failed: cannot disconnect owner');
     player.triggerEvent('tn:kick');
   }
   

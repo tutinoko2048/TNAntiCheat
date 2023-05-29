@@ -9,14 +9,12 @@
       "scripts": {
         "animate": [
           "on_ground",
-          "is_gliding",
-          "is_riding"
+          "is_gliding"
         ]
       },
       "animations": {
         "on_ground": "controller.animation.on_ground",
-        "is_gliding": "controller.animation.is_gliding",
-        "is_riding": "controller.animation.is_riding"
+        "is_gliding": "controller.animation.is_gliding"
       }
     },
     "component_groups": {
