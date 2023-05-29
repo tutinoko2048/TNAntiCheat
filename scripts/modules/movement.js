@@ -1,4 +1,4 @@
-import { world, MinecraftEffectTypes, GameMode } from '@minecraft/server';
+import { world, MinecraftEffectTypes, GameMode, EntityRidingComponent } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -14,11 +14,12 @@ export function speedA(player) {
   //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
   
   player.lastDimensionId ??= player.dimension.id;
+  const isRiding = player.getComponent(EntityRidingComponent.componentId);
   if (
     Util.isOP(player) ||
     player.getEffect(MinecraftEffectTypes.speed) ||
+    isRiding ||
     !player.hasTag('ac:on_ground') ||
-    player.hasTag('ac:is_riding') ||
     player.hasTag('ac:is_gliding') ||
     excluded.includes(Util.getGamemode(player)) ||
     player.lastDimensionId != player.dimension.id ||
@@ -62,7 +63,8 @@ export function checkMoving(player) {
     player.isMoved = true;
     return;
   }
-  if (
+  // ディメンション変えた直後速度がバグるから遅延かける
+  if ( 
     Date.now() - player.dimensionSwitchedAt > 4*1000 &&
     !vectorEquals(player.lastLocation, player.location)
   ) {
@@ -71,9 +73,8 @@ export function checkMoving(player) {
 }
 
 /**
- * @template {import('@minecraft/server').Vector3} V
- * @param {V} vec1
- * @param {V} vec2
+ * @param {import('@minecraft/server').Vector3} vec1
+ * @param {import('@minecraft/server').Vector3} vec2
  */
 function vectorEquals(vec1, vec2) {
   return vec1.x === vec2.x && vec1.y === vec2.y && vec1.z === vec2.z;
