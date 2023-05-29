@@ -13,7 +13,7 @@ export const COMMANDS = [
   'tps',
   'permission',
   'unban',
-  'data',
+  'module',
   'config',
   'freeze',
   //'runjs', // for debug

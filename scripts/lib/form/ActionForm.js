@@ -5,6 +5,7 @@ export class ActionForm {
   constructor() {
     /**
      * @type {ActionFormData}
+     * @private
      * @readonly
      */
     this._data = new ActionFormData();
@@ -29,9 +30,8 @@ export class ActionForm {
   }
   
   /**
-   * 
    * @param {string} text 
-   * @returns {ActionForm}
+   * @returns {this}
    */
   body(text) {
     this._data.body(text);
@@ -39,11 +39,10 @@ export class ActionForm {
   }
   
   /**
-   * 
    * @param {string} text 
    * @param {string} [iconPath] 
    * @param {any} [id] 
-   * @returns {ActionForm}
+   * @returns {this}
    */
   button(text, iconPath, id) {
     this._data.button(text, iconPath);
@@ -52,9 +51,8 @@ export class ActionForm {
   }
   
   /**
-   * 
    * @param {string} text 
-   * @returns {ActionForm}
+   * @returns {this}
    */
   title(text) {
     this._data.title(text);
