@@ -15,7 +15,7 @@ export function reachA(ev) { // attacking
   
   const distance = Vector.distance(entity.getHeadLocation(), hitEntity.location);
   if (distance > config.reachA.maxReach)
-    entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, length: ${distance.toFixed(2)})§r`;
+    entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)})§r`;
 }
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
@@ -27,7 +27,7 @@ export function reachB(ev) { // placement
   const distance = Vector.distance(source.getHeadLocation(), block.location);
   if (distance > config.reachB.maxReach) {
     if (config.reachB.cancel) ev.cancel = true;
-    source.reachBFlag = `長いリーチの設置を検知しました §7(length: ${distance.toFixed(2)})§r`;
+    source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)})§r`;
   }
 }
 
@@ -39,7 +39,7 @@ export function reachC(ev) { // destruction
   
   const distance = Vector.distance(player.getHeadLocation(), block.location);
   if (distance > config.reachC.maxReach) {
-    player.reachCFlag = `長いリーチの破壊を検知しました §7(length: ${distance.toFixed(2)})§r`;
+    player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)})§r`;
     system.run(() => {
       killDroppedItem(block.location, block.dimension);
       if (config.reachC.cancel) block.setPermutation(brokenBlockPermutation);

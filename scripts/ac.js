@@ -25,6 +25,9 @@ export class TNAntiCheat {
     this.#isEnabled;
     
     this.commands = new CommandManager(this);
+    
+    /** @type {Map<string, import('@minecraft/server').Vector3>} */
+    this.frozenPlayerMap = new Map();
   }
   
   enable() {
@@ -62,6 +65,8 @@ export class TNAntiCheat {
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
         
         modules.debugView(player, this);
+        
+        if (this.frozenPlayerMap.has(player.id)) player.teleport(this.frozenPlayerMap.get(player.id));
         
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;
@@ -124,6 +129,10 @@ export class TNAntiCheat {
     
     world.afterEvents.playerSpawn.subscribe(ev => {
       if (ev.initialSpawn) this.#joinHandler(ev.player);
+    });
+    
+    world.afterEvents.playerLeave.subscribe(ev => {
+      this.frozenPlayerMap.delete(ev.playerId);
     });
     
     system.events.scriptEventReceive.subscribe(ev => {

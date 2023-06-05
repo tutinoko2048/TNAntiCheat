@@ -8,7 +8,7 @@ const freezeCommand =  new Command({
   args: [ '<name: playerName> <value: boolean>' ],
   aliases: [],
   permission: (player) => Util.isOP(player)
-}, (sender, args) => {
+}, (sender, args, handler) => {
   const [ _playerName, value ] = args;
   if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
   const playerName = Util.parsePlayerName(_playerName);
@@ -20,6 +20,7 @@ const freezeCommand =  new Command({
   const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'disabled' : 'enabled'}`, player);
   if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
   
+  handler.ac.frozenPlayerMap.set(player.id, player.location);
   Util.notify(`§7${sender.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`);
 });
 
