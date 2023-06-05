@@ -142,7 +142,7 @@ export class Util {
   }
   
   /**
-   * @arg {import('../types/index').ActionLog} content
+   * @arg {import('../types').ActionLog} content
    * @arg {Player} [player]
    */
   static log(content, player) {

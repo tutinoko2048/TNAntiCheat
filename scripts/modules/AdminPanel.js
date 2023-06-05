@@ -321,7 +321,7 @@ export class AdminPanel {
     return await this.logDetail(logs[button.id]);
   }
   
-  /** @arg {import('../types/index').ActionLog} log */
+  /** @arg {import('../types').ActionLog} log */
   async logDetail(log) {
     const body = [
       `[§l${log.punishment?'§c':''}${log.type}§r] §7- ${Util.getTime(log.createdAt)}§r`,

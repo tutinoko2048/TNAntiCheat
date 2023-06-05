@@ -1,5 +1,5 @@
 import * as mc from '@minecraft/server';
-import { properties as PropertyKeys } from '../util/constants';
+import { properties as PropertyKeys } from './util/constants';
 
 interface DynamicPropertyTypes {
   [PropertyKeys.ban]: boolean;
@@ -64,9 +64,9 @@ export interface CommandInput {
   cancel?: boolean;
 }
 
-export type CommandCallback = (sender: mc.Player, args: string[], manager: import('../managers/CommandManager').CommandManager) => void;
+export type CommandCallback = (sender: mc.Player, args: string[], manager: import('./managers/CommandManager').CommandManager) => void;
 
-export interface ICommand {
+export interface CommandData {
   name: string;
   description: string;
   args?: string[];

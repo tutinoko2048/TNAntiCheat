@@ -5,24 +5,28 @@ import { CommandError } from '../util/CommandError';
 import config from '../config.js';
 import { COMMANDS } from '../commands/index';
 
+/** @typedef {import('../types').CommandData} CommandData */
+
 export class CommandManager extends BaseManager {
+  /** @param {import('../ac').TNAntiCheat} ac */
   constructor(ac) {
     super(ac);
     
     if (config.others.debug) console.warn('[CommandManager] initialized');
 
-    /** @type {Map<string, import('../types/index').ICommand>} */
+    /** @type {Map<string, CommandData>} */
     this.registeredCommands = new Map();
     
     this.load();
   }
   
+  /** @type {string} */
   get prefix() {
     return config.command.prefix;
   }
   
   /**
-   * @param {import('../types/index').CommandInput} ev 
+   * @param {import('../types').CommandInput} ev 
    * @param {boolean} [scriptEvent]
    */
   handle(ev, scriptEvent) {
@@ -48,14 +52,20 @@ export class CommandManager extends BaseManager {
     });
   }
   
+  /** @returns {CommandData[]} */
   getAll() {
     return [...this.registeredCommands.values()];
   }
   
+  /** @param {string} message */
   isCommand(message) {
     return message.startsWith(this.prefix);
   }
   
+  /**
+   * @param {string} commandName
+   * @returns {CommandData}
+   */
   getCommand(commandName) {
     return this.registeredCommands.get(commandName) ?? this.getAll().find(c => c.aliases?.includes(commandName));
   }

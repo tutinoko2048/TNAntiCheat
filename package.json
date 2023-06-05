@@ -3,9 +3,9 @@
   "version": "3.5.0",
   "description": "Anti-cheat addon with ScriptAPI / For Multiplayer, Realms, Servers / Recommended Japanese",
   "main": "scripts/index.js",
-  "typings": "scripts/type/index.d.ts",
+  "typings": "scripts/types.d.ts",
   "scripts": {
-    "lint": "eslint . --ext .js",
+    "lint": "eslint . --ext .js & tsc",
     "update-types": "npm i @minecraft/server@beta -D --save-exact & npm i @minecraft/server-ui@beta -D --save-exact"
   },
   "repository": {
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@minecraft/server": "1.3.0-beta.1.20.0-preview.25",
     "@minecraft/server-ui": "1.1.0-beta.1.20.0-preview.25",
-    "eslint": "^8.31.0",
-    "typescript": "^4.9.5"
+    "eslint": "^8.42.0",
+    "typescript": "^5.1.3"
   }
 }
