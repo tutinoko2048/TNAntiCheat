@@ -66,7 +66,11 @@ export class TNAntiCheat {
         
         modules.debugView(player, this);
         
-        if (this.frozenPlayerMap.has(player.id)) player.teleport(this.frozenPlayerMap.get(player.id));
+        try {
+          if (this.frozenPlayerMap.has(player.id)) player.teleport(this.frozenPlayerMap.get(player.id));
+        } catch (e) {
+          if (config.others.debug) console.error(e, e.stack);
+        }
         
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;

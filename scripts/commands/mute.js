@@ -28,7 +28,7 @@ const muteCommand = new Command({
 });
 
 function toBoolean(str) {
-  if (typeof str !== 'string') throw new CommandError('Boolean (true/false)を入力してください');
+  if (typeof str !== 'string') throw new CommandError('Boolean (true|false)を入力してください');
   if (str.toLowerCase() === 'true') return true;
   else if (str.toLowerCase() === 'false') return false;
   else throw new CommandError('Boolean(true|false)を入力してください');
