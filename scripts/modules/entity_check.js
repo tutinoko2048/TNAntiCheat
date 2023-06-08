@@ -1,4 +1,4 @@
-import { world, Entity } from '@minecraft/server';
+import { world, EntityLifetimeState } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { isIllegalItem, isSpawnEgg, queueNotify } from './util';
@@ -6,9 +6,9 @@ const overworld = world.getDimension('overworld');
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
 
-/** @param {Entity} entity */
+/** @param {import('@minecraft/server').Entity} entity */
 export function entityCheck(entity) {
-  if (!(entity instanceof Entity)) return; // 矢を打って即当たった時にundefinedになるから弾く
+  if (entity?.lifetimeState !== EntityLifetimeState.loaded) return; // スポーンしてすぐしぬと間に合わないから対策
   const { typeId, location } = entity;
 
   if (config.entityCheckC.state) {
