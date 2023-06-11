@@ -1,13 +1,11 @@
 # TN-AntiCheat
   
-<img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/total?style=for-the-badge"> <img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/latest/total?style=for-the-badge">  
-<a href="https://github.com/tutinoko2048/TNAntiCheat/releases">
-  <img src="https://img.shields.io/github/v/release/tutinoko2048/TNAntiCheat?display_name=tag&style=for-the-badge">
-</a>
+<img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/total?style=for-the-badge"> <a href="https://github.com/tutinoko2048/TNAntiCheat/releases/latest"><img src="https://img.shields.io/github/downloads/tutinoko2048/TNAntiCheat/latest/total?style=for-the-badge"></a><br/>
+<a href="https://github.com/tutinoko2048/TNAntiCheat/releases"><img src="https://img.shields.io/github/v/release/tutinoko2048/TNAntiCheat?display_name=tag&style=for-the-badge"></a>
 
 MinecraftBE用のチート対策アドオンです。  
   
-[ダウンロードはこちらから](https://github.com/tutinoko2048/TNAntiCheat/releases)
+[ダウンロードはこちらから](https://github.com/tutinoko2048/TNAntiCheat/releases/latest)
   
 ![img1](docs/hasitem.jpeg)  
   
@@ -125,9 +123,11 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
   > **Note**  
   builder権限をつけるとCreativeの検知から除外されます
 
-- Admin Panel  
-管理者用のForm画面です。
+<ul>
+<li>Admin Panel</li>
 
+管理者用のForm画面です。  
+  
 <details><summary><strong>詳しい使い方はこちら</strong></summary>
 
 `!settings`コマンドや`!settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。  
@@ -135,20 +135,22 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
 プレイヤーに向けて棒(settingitem)を使うと
 ![panel](docs/panel.jpeg)  
 ![player-info](docs/player_info.jpeg)  
-![item-info](docs/item_info.jpeg)
-</details>  
-<br>
+</details>
+</ul>
 
 - Config  
 ワールド内でConfig(このアドオンの設定)を編集できます  
 アドオンフォルダ内の`config.js`ファイルを直接編集することもできます  
 ![config](docs/config_editor.jpeg)  
 
+- Action Logs  
+検知ログやアンチチートの操作に関するログを表示します。保存するログの最大数はconfigの`logger/maxLogs`で変更できます   
+
 ## BDS
 現在BDSにはop関連の機能に~~バグ~~(そういう仕様のようです)があるため個別に対策する必要があります  
 Configのothersから `fixBDS` をtrueにしてください
 
 ## Acknowledgements
-- [Scythe-AntiCheat](https://github.com/MrDiamond64/Scythe-AntiCheat)
+- [Scythe-AntiCheat](https://github.com/Scythe-Anticheat/Scythe-AntiCheat)
 - [timer.js](https://github.com/Lapis256/timer.js)
 - [gametest-utility-library/toJson](https://github.com/Lapis256/gametest-utility-library)
