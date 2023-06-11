@@ -26,6 +26,7 @@
 `git push`で変更内容をプッシュします
 
 ## その他注意点やメモ
+- バージョンを上げる時はmanifestを4箇所, package.jsonを1箇所, util/constantsを1箇所編集します
 - クラスに新しくプロパティ生やす時は`scripts/types.d.ts`に定義を追加してください
 - コマンドの追加は`commands/index.js`でしてます
 - イベントのsubscribeは基本`ac.js`内で行います
