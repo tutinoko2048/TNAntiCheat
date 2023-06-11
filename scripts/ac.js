@@ -139,7 +139,7 @@ export class TNAntiCheat {
       this.frozenPlayerMap.delete(ev.playerId);
     });
     
-    system.events.scriptEventReceive.subscribe(ev => {
+    system.afterEvents.scriptEventReceive.subscribe(ev => {
       const { id, sourceEntity, message } = ev;
       if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
       this.commands.handle({ sender: sourceEntity, message }, true);
@@ -147,7 +147,7 @@ export class TNAntiCheat {
       namespaces: [ 'ac' ]
     });
     
-    world.afterEvents.itemReleaseCharge.subscribe(ev => {
+    world.afterEvents.itemReleaseUse.subscribe(ev => {
       const { itemStack, source } = ev;
       if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });

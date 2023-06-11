@@ -28,7 +28,7 @@ world.afterEvents.dataDrivenEntityTriggerEvent.subscribe(ev => {
   eventTypes: [ 'ac:start' ]
 });
 
-system.events.scriptEventReceive.subscribe(ev => {
+system.afterEvents.scriptEventReceive.subscribe(ev => {
   const { id, sourceEntity } = ev;
   if (!(sourceEntity instanceof Player) || id != 'ac:start') return;
   start(sourceEntity);
