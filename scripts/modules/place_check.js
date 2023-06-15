@@ -33,7 +33,7 @@ export function placeCheckB(ev) {
     (config.placeCheckB.shulkerBox && !isShulkerBox(block.typeId))
   ) return;
   
-const container = block.getComponent('minecraft:inventory')?.container;
+  const container = block.getComponent('minecraft:inventory')?.container;
   if (!container) return;
   const checkedItems = [];
   
@@ -50,7 +50,7 @@ const container = block.getComponent('minecraft:inventory')?.container;
     player.placeBCount++
     const mainHand = player.getComponent('minecraft:inventory').container.getSlot(player.selectedSlot);
     system.run(() => {
-      if (mainHand.typeId === block.typeId) mainHand.amount = 0;
+      if (mainHand.typeId === block.typeId) mainHand.setItem();
     });
     
     let flagMsg = checkedItems.slice(0, 2).map(item => `- ${itemMessageBuilder(item)}`).join('\n');
