@@ -1,4 +1,4 @@
-import { world, MinecraftEffectTypes, GameMode, EntityRidingComponent } from '@minecraft/server';
+import { world, GameMode, EntityRidingComponent } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -14,13 +14,12 @@ export function speedA(player) {
   //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
   
   player.lastDimensionId ??= player.dimension.id;
-  const isRiding = player.hasComponent(EntityRidingComponent.componentId);
   if (
     Util.isOP(player) ||
-    player.getEffect(MinecraftEffectTypes.speed) ||
-    isRiding ||
-    !player.hasTag('ac:on_ground') ||
-    player.hasTag('ac:is_gliding') ||
+    player.getEffect('speed') ||
+    player.hasComponent(EntityRidingComponent.componentId) ||
+    !player.isOnGround ||
+    player.isGliding ||
     excluded.includes(Util.getGamemode(player)) ||
     player.lastDimensionId != player.dimension.id ||
     Date.now() - player.joinedAt < 5000 ||

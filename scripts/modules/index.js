@@ -102,7 +102,7 @@ export function namespoof(player) {
 }
 
 /** @param {Player} player */
-export async function creative(player) {
+export function creative(player) {
   if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
   if (Util.isCreative(player)) {
     player.runCommand(`gamemode ${config.creative.defaultGamemode} @s`);
@@ -140,7 +140,7 @@ export function debugView(p, ac) {
   p.onScreenDisplay.setActionBar([
     `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}`,
 `slot: ${format(p.selectedSlot)}, hand: ${format(mainHand)}`,
-    `isSneaking: ${format(p.isSneaking)}, isOnGround: ${format(p.hasTag('ac:on_ground'))}, cps: ${format(cps?.toFixed(1))}`,
+    `isSneaking: ${format(p.isSneaking)}, isOnGround: ${format(p.isOnGround)}, isFlying: ${format(p.isFlying)}, cps: ${format(cps?.toFixed(1))}`,
     `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,
     `rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
   ].join('\n'));

@@ -260,7 +260,7 @@ export class Util {
     player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
     return new Promise(res => {
       system.run(async function run() {
-        const response = await /** @type {ReturnType<Form["show"]>} */ (form.show(player));
+        const response = await /** @type {ReturnType<Form['show']>} */ (form.show(player));
         const { canceled, cancelationReason: reason } = response;
         if (canceled && reason === UI.FormCancelationReason.UserBusy) return system.run(run);
         res(response);
