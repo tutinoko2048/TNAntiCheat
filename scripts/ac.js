@@ -152,7 +152,7 @@ export class TNAntiCheat {
       if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });
     
-    world.afterEvents.entityHit.subscribe(ev => {
+    world.afterEvents.entityHitEntity.subscribe(ev => {
       modules.reachA(ev);
       modules.autoClicker(ev);
 

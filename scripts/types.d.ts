@@ -9,6 +9,22 @@ interface DynamicPropertyTypes {
   [PropertyKeys.ownerId]: string;
 }
 
+interface EntityComponentTypes {
+  'minecraft:inventory': mc.EntityInventoryComponent;
+  'minecraft:equipment_inventory': mc.EntityEquipmentInventoryComponent;
+  'minecraft:health': mc.EntityHealthComponent;
+  'minecraft:variant': mc.EntityVariantComponent;
+  'minecraft:item': mc.EntityItemComponent;
+}
+
+interface BlockComponentTypes {
+  'minecraft:inventory': mc.BlockInventoryComponent;
+}
+
+interface ItemComponentTypes {
+  'minecraft:enchantments': mc.ItemEnchantsComponent;
+}
+
 declare module '@minecraft/server' {
   interface World {
     arrowSpawnCount?: number;
@@ -17,10 +33,6 @@ declare module '@minecraft/server' {
     logs?: ActionLog[];
     
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
-  }
-
-  interface ItemStack {
-    getComponent(componentId: 'minecraft:enchantments'): mc.ItemEnchantsComponent;
   }
 
   interface Entity {
@@ -43,18 +55,18 @@ declare module '@minecraft/server' {
     reachBFlag?: string;
     reachCFlag?: string;
     flagQueue?: string;
-
-    getComponent(componentId: 'minecraft:inventory'): mc.EntityInventoryComponent;
-    getComponent(componentId: 'minecraft:equipment_inventory'): mc.EntityEquipmentInventoryComponent;
-    getComponent(componentId: 'minecraft:health'): mc.EntityHealthComponent;
-    getComponent(componentId: 'minecraft:item'): mc.EntityItemComponent;
-    getComponent(componentId: 'minecraft:variant'): mc.EntityVariantComponent;
+    
+    getComponent<K extends keyof EntityComponentTypes>(componentId: K): EntityComponentTypes[K];
 
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
   }
 
   interface Block {
-    getComponent(componentId: 'minecraft:inventory'): mc.BlockInventoryComponent;
+    getComponent<K extends keyof BlockComponentTypes>(componentId: K): BlockComponentTypes[K];
+  }
+  
+  interface ItemStack {
+    getComponent<K extends keyof ItemComponentTypes>(componentId: K): ItemComponentTypes[K];
   }
 }
 

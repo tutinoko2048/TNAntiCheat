@@ -55,6 +55,7 @@ export class Util {
   /**
    * @param {Player} player
    * @param {string} reason
+   * @param {string} [type]
    * @returns {boolean}
    */
   static ban(player, reason, type) {
@@ -261,7 +262,7 @@ export class Util {
       system.run(async function run() {
         const response = await /** @type {ReturnType<Form["show"]>} */ (form.show(player));
         const { canceled, cancelationReason: reason } = response;
-        if (canceled && reason === UI.FormCancelationReason.userBusy) return system.run(run);
+        if (canceled && reason === UI.FormCancelationReason.UserBusy) return system.run(run);
         res(response);
       });
     });

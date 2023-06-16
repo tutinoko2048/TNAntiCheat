@@ -3,19 +3,19 @@ import { Util } from '../util/util';
 import { killDroppedItem } from './util';
 import config from '../config.js';
 
-/** @param {import('@minecraft/server').EntityHitAfterEvent} ev */
+/** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
-  const { entity, hitEntity } = ev;
-  if (!hitEntity || !(entity instanceof Player) || Util.isCreative(entity) || Util.isOP(entity)) return;
+  const { damagingEntity: attacker, hitEntity } = ev;
+  if (!hitEntity || !(attacker instanceof Player) || Util.isCreative(attacker) || Util.isOP(attacker)) return;
   if (
     (config.reachA.excludeCustomEntities && !hitEntity.typeId.startsWith('minecraft:')) ||
     config.reachA.excludeEntities.includes(hitEntity.typeId)
   ) return;
   
-  const distance = Vector.distance(entity.getHeadLocation(), hitEntity.location);
+  const distance = Vector.distance(attacker.getHeadLocation(), hitEntity.location);
   if (distance > config.reachA.maxReach)
-    entity.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)})§r`;
+    attacker.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)})§r`;
 }
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
@@ -47,23 +47,23 @@ export function reachC(ev) { // destruction
   }
 }
 
-/** @param {import('@minecraft/server').EntityHitAfterEvent} ev */
+/** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
 export function autoClicker(ev) {
-  const { entity, hitEntity } = ev;
-  if (!config.autoClicker.state || !hitEntity || !(entity instanceof Player) || Util.isOP(entity)) return;
-  entity.cps ??= [];
+  const { damagingEntity: attacker, hitEntity } = ev;
+  if (!config.autoClicker.state || !hitEntity || !(attacker instanceof Player) || Util.isOP(attacker)) return;
+  attacker.cps ??= [];
   
-  const time = Date.now() - entity.lastHitAt;
-  if (entity.lastHitAt && 1 < time) {
+  const time = Date.now() - attacker.lastHitAt;
+  if (attacker.lastHitAt && 1 < time) {
     const cps = 1000 / time;
     if (cps === Infinity) return;
-    if (entity.cps.length > 5) entity.cps.shift();
-    entity.cps.push(cps);
-    const avg = Util.median(entity.cps);
-    if (entity.cps.length > 3 && avg > config.autoClicker.maxCPS) {
-      entity.autoClickerFlag = `高いCPSを検知しました §7(${avg.toFixed(1)}clicks/s)§r`;
-      entity.cps = [];
+    if (attacker.cps.length > 5) attacker.cps.shift();
+    attacker.cps.push(cps);
+    const avg = Util.median(attacker.cps);
+    if (attacker.cps.length > 3 && avg > config.autoClicker.maxCPS) {
+      attacker.autoClickerFlag = `高いCPSを検知しました §7(${avg.toFixed(1)}clicks/s)§r`;
+      attacker.cps = [];
     }
   }
-  entity.lastHitAt = Date.now();
+  attacker.lastHitAt = Date.now();
 }
