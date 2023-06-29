@@ -60,7 +60,7 @@ export const description = {
     desc: '壊せないブロックの破壊を検知',
     state,
     punishment,
-    place: '壊されたブロックを再設置する',
+    cancel: '壊されたブロックを再設置する',
     detect: '検知するブロックのID'
   },
   itemCheckA: {
@@ -94,9 +94,7 @@ export const description = {
   placeCheckA: {
     desc: '禁止アイテムを置いたら検知',
     state,
-    notifyCreative: 'true -> クリエの人はキャンセルだけしてbanやkickはしない',
-    antiShulker: 'シュルカーボックスの設置をキャンセルするかどうか',
-    shulkerExcludes: 'シュルカー禁止を除外するタグ'
+    notifyCreative: 'true -> クリエの人はキャンセルだけしてbanやkickはしない'
   },
   placeCheckB: {
     desc: '設置した時にインベントリをチェック',
