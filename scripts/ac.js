@@ -54,7 +54,6 @@ export class TNAntiCheat {
       for (const player of world.getPlayers()) {
         if (!player.isMoved) modules.checkMoving(player);
         
-        modules.crasher(player);
         modules.itemCheck(player);
         
         modules.nukerFlag(player);

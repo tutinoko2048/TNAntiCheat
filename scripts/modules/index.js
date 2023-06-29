@@ -13,7 +13,7 @@ export * from './spammer';
 export * from './place_check';
 export * from './entity_check';
 export * from './combat';
-export * from './nuker';
+export * from './break_check';
 export * from './movement';
 
   /**
@@ -80,17 +80,6 @@ export function notify() {
     if (entityCheck.length > 3) msg += `\n§7more ${entityCheck.length - 3} entities...`;
     Util.notify(`禁止エンティティをkillしました\n${msg}`);
     world.entityCheck = {};
-  }
-}
-
-/** @param {Player} player */
-export function crasher(player) {
-  if (!config.crasher.state) return;
-  const { x, y, z } = player.location;
-  if (Math.abs(x) > 30000000 || Math.abs(y) > 30000000 || Math.abs(z) > 30000000) {
-    player.teleport({ x: 0, y: 255, z: 0 }, { dimension: player.dimension });
-    if (Util.isOP(player)) return; // prevent crasher by all players but don't punish OP
-    Util.flag(player, 'Crasher', config.crasher.punishment, 'Crasherの使用を検知しました');
   }
 }
 

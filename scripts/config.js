@@ -60,10 +60,6 @@ export default
       "minecraft:barrier"
     ]
   },
-  crasher: {
-    state: false, // crasher検知(pcのみ)
-    punishment: "ban"
-  },
   nuker: {
     state: true,
     limit: 8, // 1tickに何ブロックの破壊で検知するか(ラグも考慮)
@@ -89,7 +85,9 @@ export default
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,
     punishment: "kick",
-    place: true,
+    /** @deprecated 代わりに下のcancelを使ってください */
+    //place: true,
+    cancel: true,
     detect: [
       "minecraft:bedrock",
       "minecraft:barrier",
@@ -132,8 +130,6 @@ export default
   placeCheckA: { // 置いたら検知 アイテムはitemList参照
     state: true,
     notifyCreative: true, // クリエの人は削除だけしてbanやkickはしない
-    antiShulker: false, // シュルカーボックスの設置をキャンセル
-    shulkerExcludes: [] // シュルカー禁止を除外するタグ
   },
   placeCheckB: { // 置いたときに中身をチェック アイテムはitemList参照
     state: true,
