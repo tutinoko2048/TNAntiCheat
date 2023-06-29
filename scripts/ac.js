@@ -6,6 +6,7 @@ import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
 import { Data, deleteDupe } from './util/Data';
+import { updateConfig } from './util/update_config';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -189,6 +190,8 @@ export class TNAntiCheat {
   }
   
   getConfig() {
+    updateConfig(); // アプデ時のデータ移行処理
+    
     const data = Data.fetch();
     
     const res = deleteDupe(data, config);

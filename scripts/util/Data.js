@@ -97,5 +97,6 @@ export function setWorldProperty(key, value) {
     world.setDynamicProperty(key, value);
   } catch (e) {
     Util.notify(`§cSetError: ${e}`);
+    console.error(e);
   }
 }

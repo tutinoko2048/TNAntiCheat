@@ -24,11 +24,6 @@ export const description = {
     kick: 'このアイテムを使用/所持したプレイヤーはKICKされます',
     notify: 'このアイテムを使用/所持したプレイヤーは通知されます'
   },
-  crasher: {
-    desc: 'Crasherを検知 (仕様上PC限定)',
-    state,
-    punishment
-  },
   nuker: {
     desc: 'Nukerを検知',
     state,
