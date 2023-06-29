@@ -1,17 +1,14 @@
 {
-    "include": ["scripts/"],
-    "exclude": [
-      "node_modules",
-      "./scripts/util/secret.js"
-    ],
-    "files": [ "scripts/types.d.ts" ],
-    "compilerOptions": {
-      "allowJs": true,
-      "checkJs": true,
-      "module": "ES2020",
-      "target": "es2021",
-      "noEmit": true,
-      "moduleResolution": "node",
-      "skipLibCheck": true
-    }
+  "include": ["scripts/"],
+  "exclude": ["node_modules", "./scripts/util/secret.js"],
+  "files": ["scripts/types.d.ts"],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "module": "ES2020",
+    "target": "es2021",
+    "noEmit": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true
   }
+}

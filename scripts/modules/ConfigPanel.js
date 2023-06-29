@@ -4,7 +4,7 @@ import { Util } from '../util/util';
 import config from '../config.js';
 import { ICONS } from '../util/constants';
 import { description } from '../util/config_description';
-import { Data } from '../util/Data';
+import { DataManager } from '../util/DataManager';
 import { DROPDOWNS, confirmForm } from './static_form';
 import { canAdd } from '../util/config_setting';
 
@@ -46,7 +46,7 @@ export class ConfigPanel {
         no: '§lキャンセル'
       });
       if (!res) return await this.selectModule();
-      Data.resetAll();
+      DataManager.resetAll();
       Util.notify('§a全ての設定をリセットしました', this.player);
       Util.log({ type: 'config.resetAll', message: `全ての設定をリセットしました` }, this.player);
       return await this.selectModule(false, `§a全ての設定をリセットしました`);
@@ -60,8 +60,8 @@ export class ConfigPanel {
       isModule: true
     });
     if (res.edited) {
-      Data.patch(config[moduleName], diff);
-      Data.update(moduleName, diff);
+      DataManager.patch(config[moduleName], diff);
+      DataManager.update(moduleName, diff);
     }
     if (res.reopen) await this.selectModule(false, res.message);
   }
@@ -99,7 +99,7 @@ export class ConfigPanel {
           if (canceled) return { reopen: false };
           if (button.id === 'return') return { reopen: true };
           if (button.id === 'reset') {
-            Data.reset(key);
+            DataManager.reset(key);
             Util.log({ type: 'config.edit', message: `§a${key} をリセットしました` }, this.player);
             return { reopen: true, message: `§a${key} をリセットしました` };
           }

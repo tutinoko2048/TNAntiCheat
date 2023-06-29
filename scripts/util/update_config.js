@@ -1,7 +1,7 @@
-import { Data } from './Data';
+import { DataManager } from './DataManager';
 
 export function updateConfig() {
-  const data = Data.fetch();
+  const data = DataManager.fetch();
   delete data.crasher; // crasher削除
   
   if (data.instaBreak && 'place' in data.instaBreak) { // instaBreak.place → .cancel
@@ -9,5 +9,5 @@ export function updateConfig() {
     delete data.instaBreak.place;
   }
   
-  Data.save(data);
+  DataManager.save(data);
 }

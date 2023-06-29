@@ -5,7 +5,7 @@ import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
 import { AdminPanel } from './modules/AdminPanel';
-import { Data, deleteDupe } from './util/Data';
+import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
@@ -185,18 +185,18 @@ export class TNAntiCheat {
   
   loadConfig() {
     const data = this.getConfig();
-    Data.patch(config, data);
+    DataManager.patch(config, data);
     if (config.others.debug) console.warn('[debug] loaded Config data');
   }
   
   getConfig() {
     updateConfig(); // アプデ時のデータ移行処理
     
-    const data = Data.fetch();
+    const data = DataManager.fetch();
     
     const res = deleteDupe(data, config);
     if (res.length > 0) {
-      Data.save(data);
+      DataManager.save(data);
       if (config.others.debug)  console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
     }
     return data;

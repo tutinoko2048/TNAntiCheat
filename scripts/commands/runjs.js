@@ -7,7 +7,7 @@ import toJson from '../lib/toJson';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
-import { Data } from '../util/Data';
+import { DataManager } from '../util/DataManager';
 import { Command } from '../util/Command';
 
 const runjsCommand = new Command({
