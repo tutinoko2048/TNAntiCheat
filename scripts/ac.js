@@ -168,7 +168,7 @@ export class TNAntiCheat {
     !modules.spammerB(ev);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   #handleJoin(player) {
     player.joinedAt = Date.now();
     modules.namespoof(player);

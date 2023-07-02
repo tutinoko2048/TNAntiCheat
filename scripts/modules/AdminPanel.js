@@ -182,7 +182,7 @@ export class AdminPanel {
     if (selection === 3) return await this.showInventory(player);
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async managePermission(player) {
     const _builder = Permissions.has(player, 'builder');
     const _admin = Permissions.has(player, 'admin');
@@ -205,7 +205,7 @@ export class AdminPanel {
     }
   }
   
-  /** @param {import('@minecraft/server').Player} player */
+  /** @param {Player} player */
   async toggleMute(player) {
     const _mute = player.getDynamicProperty(properties.mute) ?? false;
     const form = new UI.ModalFormData();
@@ -289,9 +289,9 @@ export class AdminPanel {
       .sort((a,b) => b[1] - a[1])
       .map(([ type, n ]) => `- ${type} : ${coloredEntityCount(type, n)}`);
     const form = new UI.ActionFormData();
-    form.title(`Entities`)
-      .body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません')
-      .button('戻る / Return', ICONS.returnBtn);
+    form.title(`Entities`);
+    form.body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
+    form.button('戻る / Return', ICONS.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.main();

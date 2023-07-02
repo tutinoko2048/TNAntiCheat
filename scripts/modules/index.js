@@ -18,7 +18,7 @@ export * from './movement';
 
   /**
    * @param {Player} player
-   * @returns {boolean}
+   * @returns {boolean} banしたかどうか
    */
 export function ban(player) {
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
@@ -46,7 +46,7 @@ export function banByXuid() {
   }
 }
 
-/** @param {import('@minecraft/server').Player} player */
+/** @param {Player} player */
 export function flag(player) { // don't run every tick not to spam
   if (player.reachAFlag) {
     Util.flag(player, 'Reach/A', config.reachA.punishment, player.reachAFlag);
