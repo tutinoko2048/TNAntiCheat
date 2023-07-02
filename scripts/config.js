@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 2
+// configVersion: 3
 export default
 {
   permission: {
@@ -112,7 +112,7 @@ export default
     state: true,
     punishment: "notify"
   },
-  itemCheckC: { // 1スタックに値より大きい数を持っていたら検知
+  itemCheckC: { // 最大の個数より大きい数を持っていたら検知
     state: true,
     punishment: "notify"
   },

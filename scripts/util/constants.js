@@ -1,4 +1,4 @@
-export const VERSION = '3.5.0';
+export const VERSION = '3.6.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const properties = /** @type {const} */ ({
@@ -6,7 +6,7 @@ export const properties = /** @type {const} */ ({
   banReason: 'tn:banReason',
   configData: 'tn:configData',
   mute: 'tn:isMuted',
-  ownerId: 'tn:ownerId'
+  ownerId: 'tn:ownerId' // ここ変えると再登録できる
 });
 
 export const ICONS = /** @type {const} */ ({

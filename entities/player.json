@@ -195,12 +195,9 @@
     "events": {
       "tn:kick": {
         "add": {
-          "component_groups": [
-            "tn:kick"
-          ]
+          "component_groups": [ "tn:kick" ]
         }
       },
-      "ac:start": {},
       "minecraft:gain_bad_omen": {
         "add": {
           "component_groups": [

@@ -5,7 +5,7 @@ import { properties } from './util/constants';
 import { Permissions } from './util/Permissions';
 import './system/dog.js';
 import './system/register_properties.js';
-//import './system/polyfill.js'; // not needed after 1.19.60
+
 const ac = new TNAntiCheat();
 events.worldLoad.subscribe(() => {
   if (world.getDynamicProperty(properties.ownerId)) {
@@ -16,16 +16,6 @@ events.worldLoad.subscribe(() => {
   } else {
     world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
   }
-});
-
-world.afterEvents.dataDrivenEntityTriggerEvent.subscribe(ev => {
-  const { entity, id } = ev;
-  if (!(entity instanceof Player) || id != 'ac:start') return;
-  start(entity);
-  
-}, {
-  entityTypes: [ 'minecraft:player' ],
-  eventTypes: [ 'ac:start' ]
 });
 
 system.afterEvents.scriptEventReceive.subscribe(ev => {

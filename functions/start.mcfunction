@@ -1,1 +1,1 @@
-event entity @s "ac:start"
+scriptevent ac:start
