@@ -5,17 +5,7 @@
       "identifier": "minecraft:player",
       "is_spawnable": false,
       "is_summonable": false,
-      "is_experimental": false,
-      "scripts": {
-        "animate": [
-          "on_ground",
-          "is_gliding"
-        ]
-      },
-      "animations": {
-        "on_ground": "controller.animation.on_ground",
-        "is_gliding": "controller.animation.is_gliding"
-      }
+      "is_experimental": false
     },
     "component_groups": {
       "tn:kick": {

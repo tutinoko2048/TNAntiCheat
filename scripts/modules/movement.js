@@ -11,7 +11,7 @@ export function speedA(player) {
   const { x, y, z } = player.getVelocity();
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
   // for debug
-  //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.hasTag('ac:is_gliding'))}, on_ground: ${color(player.hasTag('ac:on_ground'))}`);
+  //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.isGliding}, on_ground: ${color(player.isOnGround}`);
   
   player.lastDimensionId ??= player.dimension.id;
   if (

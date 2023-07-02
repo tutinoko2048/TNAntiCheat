@@ -38,7 +38,7 @@ export class TNAntiCheat {
     world.sendMessage(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
     world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています§r');
     
-    this.loadConfig();
+    this.#loadConfig();
     checkPlayerJson();
     
     Util.log({ type: 'load', playerName: 'system', message: 'TNAC has enabled' });
@@ -95,7 +95,7 @@ export class TNAntiCheat {
       modules.reachC(ev);
     });
     
-    world.beforeEvents.chatSend.subscribe(ev => this.#chatHandler(ev));
+    world.beforeEvents.chatSend.subscribe(this.#handleChat);
     
     world.afterEvents.entitySpawn.subscribe(ev => {
       modules.entityCheck(ev.entity);
@@ -108,7 +108,6 @@ export class TNAntiCheat {
       
       modules.getBlock(ev);
     });
-    
     
     world.afterEvents.blockPlace.subscribe(ev => {
       modules.placeCheckB(ev);
@@ -132,19 +131,11 @@ export class TNAntiCheat {
     });
     
     world.afterEvents.playerSpawn.subscribe(ev => {
-      if (ev.initialSpawn) this.#joinHandler(ev.player);
+      if (ev.initialSpawn) this.#handleJoin(ev.player);
     });
     
     world.afterEvents.playerLeave.subscribe(ev => {
       this.frozenPlayerMap.delete(ev.playerId);
-    });
-    
-    system.afterEvents.scriptEventReceive.subscribe(ev => {
-      const { id, sourceEntity, message } = ev;
-      if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
-      this.commands.handle({ sender: sourceEntity, message }, true);
-    }, {
-      namespaces: [ 'ac' ]
     });
     
     world.afterEvents.itemReleaseUse.subscribe(ev => {
@@ -157,10 +148,18 @@ export class TNAntiCheat {
       modules.autoClicker(ev);
 
     }, entityOption);
+    
+    system.afterEvents.scriptEventReceive.subscribe(ev => {
+      const { id, sourceEntity, message } = ev;
+      if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
+      this.commands.handle({ sender: sourceEntity, message }, true);
+    }, {
+      namespaces: [ 'ac' ]
+    });
   }
   
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
-  #chatHandler(ev) {
+  #handleChat(ev) {
     const tooFast = modules.spammerC(ev);
     if (!tooFast && this.commands.isCommand(ev.message)) return this.commands.handle(ev);
     
@@ -170,7 +169,7 @@ export class TNAntiCheat {
   }
   
   /** @param {import('@minecraft/server').Player} player */
-  #joinHandler(player) {
+  #handleJoin(player) {
     player.joinedAt = Date.now();
     modules.namespoof(player);
     const banned = modules.ban(player);
@@ -183,13 +182,7 @@ export class TNAntiCheat {
     }
   }
   
-  loadConfig() {
-    const data = this.getConfig();
-    DataManager.patch(config, data);
-    if (config.others.debug) console.warn('[debug] loaded Config data');
-  }
-  
-  getConfig() {
+  #loadConfig() {
     updateConfig(); // アプデ時のデータ移行処理
     
     const data = DataManager.fetch();
@@ -199,9 +192,17 @@ export class TNAntiCheat {
       DataManager.save(data);
       if (config.others.debug)  console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
     }
-    return data;
-  }
     
+    DataManager.patch(config, data);
+    if (config.others.debug) console.warn('[debug] loaded Config data');
+  }
+  
+  /** @return {typeof config} */
+  getConfig() {
+    return config;
+  }
+  
+  /** @returns {number} */
   getTPS() {
     return Math.min(
       Util.average(this.#deltaTimes.map(n => 1000 / n)),
@@ -209,12 +210,11 @@ export class TNAntiCheat {
     );
   }
   
+  /** @type {boolean} */
   get isEnabled() {
     return this.#isEnabled;
   }
 }
-
-/** @typedef {import('@minecraft/server').EntityVariantComponent} EntityVariantComponent*/
 
 function checkPlayerJson() { // checks player.json conflict
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
