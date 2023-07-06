@@ -108,7 +108,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.button('§l§1更新 / Reload', ICONS.reload);
     if (itemList.length === 0) form.body('何も持っていないようです\n ');
-    itemList.forEach(info => form.button(`§r${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§7slot: ${info.slot}, amount: ${info.item.amount}`));
+    itemList.forEach(info => form.button(`§0${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§8slot: ${info.slot}, amount: ${info.item.amount}`));
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', ICONS.clear)
       .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
@@ -306,7 +306,7 @@ export class AdminPanel {
     const form = new ActionForm();
     form.title('ActionLogs');
     form.body(logs.length ? `§o直近${logs.length}件のログを表示しています` : '§o何も記録されていないようです');
-    logs.forEach((log, i) => form.button(`§8[${log.punishment?'§4':''}${log.type}§r§8] ${log.playerName ?? ''}§r\n§7${Util.getTime(log.createdAt)}§r`, null, i));
+    logs.forEach((log, i) => form.button(`§0[${log.punishment?'§4':''}${log.type}§r§0] ${log.playerName ?? ''}§r\n§o§8${Util.getTime(log.createdAt)}§r`, null, i));
     form.button('§l§cログをクリア / Clear all logs', ICONS.clear, 'clear');
     form.button('§l戻る / Return', ICONS.returnBtn, 'return');
     

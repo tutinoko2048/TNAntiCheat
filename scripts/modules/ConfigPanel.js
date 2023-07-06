@@ -88,7 +88,7 @@ export class ConfigPanel {
           
         } else {
           const keys = Object.keys(value);
-          keys.forEach(k => form.button(`${k}\n§7${getPreview(value[k])}`));
+          keys.forEach(k => form.button(`§0${k}\n§8${getPreview(value[k])}`));
           if (canAdd[title]) form.button('§1値を追加する / Add value', ICONS.plus, 'add');
           if (isModule) {
             form.body(`${getDescription(key) ?? ''}\n `);
@@ -99,6 +99,12 @@ export class ConfigPanel {
           if (canceled) return { reopen: false };
           if (button.id === 'return') return { reopen: true };
           if (button.id === 'reset') {
+            const res = await confirmForm(this.player, {
+              body: `${title} を初期設定に戻しますか？`,
+              yes: '§cリセットする',
+              no: '§lキャンセル'
+            });
+            if (!res) return { reopen: true };
             DataManager.reset(key);
             Util.log({ type: 'config.edit', message: `§a${key} をリセットしました` }, this.player);
             return { reopen: true, message: `§a${key} をリセットしました` };
