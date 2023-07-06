@@ -9,5 +9,10 @@ export function updateConfig() {
     delete data.instaBreak.place;
   }
   
+  if (data.nuker && 'place' in data.nuker) { // nuker.place → .cancel
+    data.nuker.cancel = data.nuker.place;
+    delete data.nuker.place;
+  }
+  
   DataManager.save(data);
 }

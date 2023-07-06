@@ -29,7 +29,7 @@ export const description = {
     state,
     punishment,
     limit: '1tickに何ブロックの破壊で検知するかの設定(ラグも考慮)',
-    place: '壊されたブロックを再設置する'
+    cancel: '壊されたブロックを再設置する'
   },
   namespoof: {
     desc: '不正な名前を検知します',

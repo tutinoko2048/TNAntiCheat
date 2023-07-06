@@ -95,7 +95,7 @@ export class TNAntiCheat {
       modules.reachC(ev);
     });
     
-    world.beforeEvents.chatSend.subscribe(this.#handleChat);
+    world.beforeEvents.chatSend.subscribe(ev => this.#handleChat(ev));
     
     world.afterEvents.entitySpawn.subscribe(ev => {
       modules.entityCheck(ev.entity);

@@ -24,7 +24,7 @@ export function nukerBreak(ev) {
   if (player.breakCount > config.nuker.limit) {
     system.run(() => {
       killDroppedItem(block.location, block.dimension);
-      if (config.nuker.place) block.setPermutation(brokenBlockPermutation);
+      if (config.nuker.cancel) block.setPermutation(brokenBlockPermutation);
     }); // 1tick delay
     return true; // illegal destruction -> return true
   }
