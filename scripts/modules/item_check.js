@@ -3,9 +3,15 @@
 import { Util } from '../util/util';
 import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
-import { EnchantmentList } from '@minecraft/server';
+import { EnchantmentList, EquipmentSlot } from '@minecraft/server';
 
-/** @param {import('@minecraft/server').Player} player */
+/** @typedef {import('@minecraft/server').ItemStack} ItemStack */
+/** @typedef {import('@minecraft/server').Player} Player */
+/** @typedef {{ flag: boolean, item?: ItemStack | null }} EnchantCheckResult */
+
+const ArmorSlots = [ EquipmentSlot.head, EquipmentSlot.chest, EquipmentSlot.legs, EquipmentSlot.feet ];
+
+/** @param {Player} player */
 export function itemCheck(player) {
   if (Util.isOP(player)) return;
   const { container } = player.getComponent('minecraft:inventory');
@@ -34,28 +40,38 @@ export function itemCheck(player) {
     
     if (config.itemCheckD.state || config.itemCheckE.state) {
       if (config.itemCheckD.mode == 'hand' && i === player.selectedSlot) {
-        enchantCheck(item, container, i, player);
+        const result = enchantCheck(item, i, player);
+        if (result.flag) container.setItem(i, result.item); // flagされてたら更新
       
       } else if (config.itemCheckD.mode == 'inventory') {
-        enchantCheck(item, container, i, player);
-        
+        const result = enchantCheck(item, i, player);
+        if (result.flag) container.setItem(i, result.item);
       }
+    }
+  }
+  
+  const equipment = player.getComponent('minecraft:equipment_inventory');
+  for (const slotId of ArmorSlots) {
+    const item = equipment.getEquipment(slotId);
+    if (!item) continue;
+    
+    if (config.itemCheckD.state || config.itemCheckE.state) {
+      const result = enchantCheck(item, slotId, player);
+      if (result.flag) equipment.setEquipment(slotId, result.item); // flagされてたら更新
     }
   }
 }
 
-/** @typedef {import('@minecraft/server').ItemEnchantsComponent} ItemEnchantsComponent */
-
 /**
- * @param {import('@minecraft/server').ItemStack} item
- * @param {import('@minecraft/server').Container} container
- * @param {number} slot
- * @param {import('@minecraft/server').Player} player
+ * @param {ItemStack} item
+ * @param {number|EquipmentSlot} slot
+ * @param {Player} player
+ * @returns {EnchantCheckResult}
  */
-function enchantCheck(item, container, slot, player) {
-  if (!item) return;
+function enchantCheck(item, slot, player) {
   const levelChecked = [];
   const itemChecked = [];
+  let shouldClearItem = false; // アイテム消すかどうか
 
   const enchantment = item.getComponent('minecraft:enchantments');
   const { enchantments } = enchantment;
@@ -80,7 +96,7 @@ function enchantCheck(item, container, slot, player) {
   }
   if (levelChecked.length > 0) {
     enchantment.enchantments = enchantments;
-    config.itemCheckD.clearItem ? container.setItem(slot) : container.setItem(slot, item);
+    if (config.itemCheckD.clearItem) shouldClearItem = true;
     
     const msg = levelChecked.map(e => `- §7ID: §9${e.id}§7, Level: §9${e.level}§r`);
     const safeMessage = msg.length > 3
@@ -91,7 +107,7 @@ function enchantCheck(item, container, slot, player) {
   
   if (itemChecked.length > 0) {
     enchantment.enchantments = enchantments;
-    config.itemCheckE.clearItem ? container.setItem(slot) : container.setItem(slot, item);
+    if (config.itemCheckE.clearItem) shouldClearItem = true;
     
     const msg = itemChecked.map(e => `- §7ID: §9${e.id}§7, Level: §9${e.level}§r`);
     const safeMessage = msg.length > 2
@@ -100,4 +116,8 @@ function enchantCheck(item, container, slot, player) {
     Util.flag(player, 'ItemCheck/E', config.itemCheckE.punishment, `不正なエンチャントを検知しました (${itemMessageBuilder(item)})\n${safeMessage}`);
   }
   
+  return {
+    flag: levelChecked.length > 0 || itemChecked.length > 0, // setItemかけるかどうか
+    item: shouldClearItem ? null : item // アイテムを消すか更新するか
+  }
 }

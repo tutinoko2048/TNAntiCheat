@@ -41,7 +41,7 @@ export class TNAntiCheat {
     this.#loadConfig();
     checkPlayerJson();
     
-    Util.log({ type: 'load', playerName: 'system', message: 'TNAC has enabled' });
+    Util.log({ type: 'load', playerName: 'system', message: 'TNAC has enabled.' });
     
     system.runInterval(() => { 
       if (config.entityCheckC.state) {
