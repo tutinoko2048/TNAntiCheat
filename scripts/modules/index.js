@@ -3,7 +3,7 @@ import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import unbanQueue from '../unban_queue.js';
-import  { properties } from '../util/constants';
+import  { PropertyIds } from '../util/constants';
 import { AdminPanel } from './AdminPanel';
 
 /** @typedef {import('@minecraft/server').EntityInventoryComponent} InventoryComponent */
@@ -28,7 +28,7 @@ export function ban(player) {
       return;
     }
     
-    const reason = player.getDynamicProperty(properties.banReason);
+    const reason = player.getDynamicProperty(PropertyIds.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     Util.writeLog({ type: 'disconnect.ban', message: `接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}` }, player);
     return Util.kick(player, reason ?? '-', true);

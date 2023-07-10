@@ -1,7 +1,7 @@
 export const VERSION = '3.6.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
-export const properties = /** @type {const} */ ({
+export const PropertyIds = /** @type {const} */ ({
   ban: 'tn:isBanned',
   banReason: 'tn:banReason',
   configData: 'tn:configData',

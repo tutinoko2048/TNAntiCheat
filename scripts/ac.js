@@ -1,5 +1,5 @@
 import { world, system, Player } from '@minecraft/server';
-import { VERSION, properties } from './util/constants';
+import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
@@ -176,7 +176,7 @@ export class TNAntiCheat {
     if (banned) return;
     modules.banByXuid();
     
-    if (player.getDynamicProperty(properties.mute)) {
+    if (player.getDynamicProperty(PropertyIds.mute)) {
       const res = Util.runCommandSafe('ability @s mute true', player);
       if (res) Util.notify(`§7あなたはミュートされています`, player);
     }

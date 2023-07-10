@@ -1,12 +1,12 @@
 import * as mc from '@minecraft/server';
-import { properties as PropertyKeys } from './util/constants';
+import { PropertyIds } from './util/constants';
 
 interface DynamicPropertyTypes {
-  [PropertyKeys.ban]: boolean;
-  [PropertyKeys.banReason]: string;
-  [PropertyKeys.configData]: string;
-  [PropertyKeys.mute]: boolean;
-  [PropertyKeys.ownerId]: string;
+  [PropertyIds.ban]: boolean;
+  [PropertyIds.banReason]: string;
+  [PropertyIds.configData]: string;
+  [PropertyIds.mute]: boolean;
+  [PropertyIds.ownerId]: string;
 }
 
 interface EntityComponentTypes {

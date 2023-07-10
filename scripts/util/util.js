@@ -1,7 +1,7 @@
 import { world, system, Player, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
-import { properties } from './constants';
+import { PropertyIds } from './constants';
 import { Permissions } from './Permissions';
 
 const overworld = world.getDimension('overworld');
@@ -66,8 +66,8 @@ export class Util {
       console.warn('ban failed: cannot ban owner');
       return false;
     }
-    player.setDynamicProperty(properties.ban, true);
-    type && player.setDynamicProperty(properties.banReason, type);
+    player.setDynamicProperty(PropertyIds.ban, true);
+    type && player.setDynamicProperty(PropertyIds.banReason, type);
     return this.kick(player, `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`, true);
   }
 
@@ -116,14 +116,14 @@ export class Util {
   static unban(player) {
     try {
       if (player.hasTag(config.permission.ban.tag)) player.removeTag(config.permission.ban.tag);
-      player.removeDynamicProperty(properties.ban);
-      player.removeDynamicProperty(properties.banReason);
+      player.removeDynamicProperty(PropertyIds.ban);
+      player.removeDynamicProperty(PropertyIds.banReason);
     } catch {}
   }
   
   /** @param {Player} player */
   static isBanned(player) {
-    return Permissions.has(player, 'ban') || player.getDynamicProperty(properties.ban);
+    return Permissions.has(player, 'ban') || player.getDynamicProperty(PropertyIds.ban);
   }
   
   /** @param {Player} player */
@@ -142,7 +142,7 @@ export class Util {
   
   /** @param {Player} player */
   static isOwner(player) {
-    return world.getDynamicProperty(properties.ownerId) === player.id;
+    return world.getDynamicProperty(PropertyIds.ownerId) === player.id;
   }
   
   /**

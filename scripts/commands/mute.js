@@ -1,6 +1,6 @@
 import { Util } from '../util/util';
 import { CommandError } from '../util/CommandError';
-import { properties } from '../util/constants';
+import { PropertyIds } from '../util/constants';
 import { Command } from '../util/Command';
 
 const muteCommand = new Command({
@@ -23,7 +23,7 @@ const muteCommand = new Command({
   const res = Util.runCommandSafe(`ability @s mute ${muteState}`, player);
   if (!res) err();
   
-  player.setDynamicProperty(properties.mute, muteState);
+  player.setDynamicProperty(PropertyIds.mute, muteState);
   Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${muteState} に設定しました`);
 });
 

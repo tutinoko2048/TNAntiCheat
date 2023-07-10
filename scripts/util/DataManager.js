@@ -1,7 +1,7 @@
 import config from '../config.js';
 import { Util } from './util.js';
 import { world } from '@minecraft/server';
-import { properties } from './constants.js';
+import { PropertyIds } from './constants.js';
 
 const data = {
   config,
@@ -75,12 +75,12 @@ export class DataManager {
   }
   
   static fetch() {
-    return JSON.parse(world.getDynamicProperty(properties.configData) ?? '{}');
+    return JSON.parse(world.getDynamicProperty(PropertyIds.configData) ?? '{}');
   }
   
   /** @arg {any} data */
   static save(data) {
-    setWorldProperty(properties.configData, JSON.stringify(data));
+    setWorldProperty(PropertyIds.configData, JSON.stringify(data));
   }
 }
 

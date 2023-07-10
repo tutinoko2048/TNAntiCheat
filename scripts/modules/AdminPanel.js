@@ -2,7 +2,7 @@ import { world, ItemStack, ItemTypes, EquipmentSlot, Player } from '@minecraft/s
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { properties, ICONS, panelItem } from '../util/constants';
+import { PropertyIds, ICONS, panelItem } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
@@ -207,7 +207,7 @@ export class AdminPanel {
   
   /** @param {Player} player */
   async toggleMute(player) {
-    const _mute = player.getDynamicProperty(properties.mute) ?? false;
+    const _mute = player.getDynamicProperty(PropertyIds.mute) ?? false;
     const form = new UI.ModalFormData();
     form.title('Mute')
       .toggle('ミュート / Mute', _mute);
@@ -217,7 +217,7 @@ export class AdminPanel {
     if (mute != _mute) {
       const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
       if (!res) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
-      player.setDynamicProperty(properties.mute, mute);
+      player.setDynamicProperty(PropertyIds.mute, mute);
       Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
       
     } else return await this.playerInfo(player);
