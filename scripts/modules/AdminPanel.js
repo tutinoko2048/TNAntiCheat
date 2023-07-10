@@ -2,7 +2,7 @@ import { world, ItemStack, ItemTypes, EquipmentSlot, Player } from '@minecraft/s
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { PropertyIds, ICONS, panelItem } from '../util/constants';
+import { PropertyIds, Icons, panelItem } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
@@ -48,7 +48,7 @@ export class AdminPanel {
   
   async playerList() {
     const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '§6[Builder]' : null;
-    const icon = (p) => Util.isOP(p) ? ICONS.op : Permissions.has(p, 'builder') ? ICONS.builder : ICONS.member;
+    const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, 'builder') ? Icons.builder : Icons.member;
     // @ts-ignore
     const players = world.getAllPlayers().sort((a,b) => a.name - b.name);
     const form = new UI.ActionFormData();
@@ -58,7 +58,7 @@ export class AdminPanel {
     );
     form.body(`§7Players: §f${players.length}`)
       .title('プレイヤーリスト / Player List')
-      .button('戻る / Return', ICONS.returnBtn);
+      .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === players.length) return await this.main(); // return button
@@ -106,13 +106,13 @@ export class AdminPanel {
     const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
    
     const form = new UI.ActionFormData();
-    form.button('§l§1更新 / Reload', ICONS.reload);
+    form.button('§l§1更新 / Reload', Icons.reload);
     if (itemList.length === 0) form.body('何も持っていないようです\n ');
     itemList.forEach(info => form.button(`§0${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§8slot: ${info.slot}, amount: ${info.item.amount}`));
     form.title(`${player.name}'s inventory`)
-      .button('§l§c全て削除 / Clear all', ICONS.clear)
-      .button('§l§cエンダーチェストをクリア / Clear enderchest', ICONS.enderchest)
-      .button('戻る / Return', ICONS.returnBtn);
+      .button('§l§c全て削除 / Clear all', Icons.clear)
+      .button('§l§cエンダーチェストをクリア / Clear enderchest', Icons.enderchest)
+      .button('戻る / Return', Icons.returnBtn);
     
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -259,7 +259,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s tags`)
       .body(tags.length > 0 ? `タグ一覧:\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
-      .button('戻る / Return', ICONS.returnBtn);
+      .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.playerInfo(player);
@@ -273,7 +273,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
-      .button('戻る / Return', ICONS.returnBtn);
+      .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.playerInfo(player);
@@ -291,7 +291,7 @@ export class AdminPanel {
     const form = new UI.ActionFormData();
     form.title(`Entities`);
     form.body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
-    form.button('戻る / Return', ICONS.returnBtn);
+    form.button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.main();
@@ -307,8 +307,8 @@ export class AdminPanel {
     form.title('ActionLogs');
     form.body(logs.length ? `§o直近${logs.length}件のログを表示しています` : '§o何も記録されていないようです');
     logs.forEach((log, i) => form.button(`§0[${log.punishment?'§4':''}${log.type}§r§0] ${log.playerName ?? ''}§r\n§o§8${Util.getTime(log.createdAt)}§r`, null, i));
-    form.button('§l§cログをクリア / Clear all logs', ICONS.clear, 'clear');
-    form.button('§l戻る / Return', ICONS.returnBtn, 'return');
+    form.button('§l§cログをクリア / Clear all logs', Icons.clear, 'clear');
+    form.button('§l戻る / Return', Icons.returnBtn, 'return');
     
     const { canceled, button } = await form.show(this.player);
     if (canceled) return;
@@ -334,7 +334,7 @@ export class AdminPanel {
     const form = new ActionForm();
     form.title('ActionLog');
     form.body(body.filter(Boolean).join('\n'));
-    form.button('§l戻る / Return', ICONS.returnBtn, 'return');
+    form.button('§l戻る / Return', Icons.returnBtn, 'return');
     
     const { canceled, button } = await form.show(this.player);
     if (canceled) return;

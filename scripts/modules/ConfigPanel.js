@@ -2,7 +2,7 @@ import * as UI from '@minecraft/server-ui';
 import { ActionForm } from '../lib/form/ActionForm';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { ICONS } from '../util/constants';
+import { Icons } from '../util/constants';
 import { description } from '../util/config_description';
 import { DataManager } from '../util/DataManager';
 import { DROPDOWNS, confirmForm } from './static_form';
@@ -33,7 +33,7 @@ export class ConfigPanel {
       const desc = description[moduleName]?.desc ? `\n§o§9${description[moduleName].desc}§r` : '';
       form.button(`${color}§l${moduleName}§r${desc}`, null, 'moduleName');
     }
-    form.button('§l§c初期設定に戻す', ICONS.reset, 'reset');
+    form.button('§l§c初期設定に戻す', Icons.reset, 'reset');
     const { selection, canceled, button } = busy
       ? await Util.showFormToBusy(this.player, form) // from chat
       : await form.show(this.player);
@@ -73,8 +73,8 @@ export class ConfigPanel {
         
         if (value instanceof Array) {
           value.forEach(v => form.button(String(v)));
-          form.button('§1値を追加する / Add value', ICONS.plus);
-          form.button('戻る / Return', ICONS.returnBtn, 'return');
+          form.button('§1値を追加する / Add value', Icons.plus);
+          form.button('戻る / Return', Icons.returnBtn, 'return');
           const { canceled, selection, button } = await form.show(this.player);
           if (canceled) return { reopen: false };
           if (button.id === 'return') return { reopen: true };
@@ -89,12 +89,12 @@ export class ConfigPanel {
         } else {
           const keys = Object.keys(value);
           keys.forEach(k => form.button(`§0${k}\n§8${getPreview(value[k])}`));
-          if (canAdd[title]) form.button('§1値を追加する / Add value', ICONS.plus, 'add');
+          if (canAdd[title]) form.button('§1値を追加する / Add value', Icons.plus, 'add');
           if (isModule) {
             form.body(`${getDescription(key) ?? ''}\n `);
-            form.button('§l§c初期設定に戻す', ICONS.reset, 'reset');
+            form.button('§l§c初期設定に戻す', Icons.reset, 'reset');
           }
-          form.button('戻る / Return', ICONS.returnBtn, 'return');
+          form.button('戻る / Return', Icons.returnBtn, 'return');
           const { canceled, selection, button } = await form.show(this.player);
           if (canceled) return { reopen: false };
           if (button.id === 'return') return { reopen: true };

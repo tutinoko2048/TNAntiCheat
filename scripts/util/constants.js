@@ -9,7 +9,7 @@ export const PropertyIds = /** @type {const} */ ({
   ownerId: 'tn:ownerId' // ここ変えると再登録できる
 });
 
-export const ICONS = /** @type {const} */ ({
+export const Icons = /** @type {const} */ ({
   playerList: 'textures/ui/dressing_room_skins',
   entities: 'textures/items/egg_npc',
   config: 'textures/ui/icon_setting',

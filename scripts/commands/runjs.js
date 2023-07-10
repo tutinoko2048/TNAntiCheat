@@ -17,6 +17,8 @@ const runjsCommand = new Command({
   args: [ '<code: string>' ],
   permission: (player) => Util.isOP(player)
 }, (sender, args) => {
+  const self = sender;
+  
   eval(args.join(' '));
 });
 
