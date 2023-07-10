@@ -196,12 +196,12 @@ export class AdminPanel {
     if (builder != _builder) {
       Permissions.set(player, 'builder', builder);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
-      Util.log({ type: 'panel.permission', message: `§epermission:builder を §f${builder} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
+      Util.writeLog({ type: 'panel.permission', message: `§epermission:builder を §f${builder} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
     if (admin != _admin) {
       Permissions.set(player, 'admin', admin);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
-      Util.log({ type: 'panel.permission', message: `§epermission:admin を §f${admin} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
+      Util.writeLog({ type: 'panel.permission', message: `§epermission:admin を §f${admin} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
   }
   
@@ -234,7 +234,7 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
       Util.kick(player, '-');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
-      Util.log({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, player);
+      Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   
@@ -249,7 +249,7 @@ export class AdminPanel {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
       Util.ban(player, '-', '(from AdminPanel)');
       Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
-      Util.log({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, player);
+      Util.writeLog({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, player);
     } else return await this.playerInfo(player);
   }
   

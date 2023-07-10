@@ -19,7 +19,7 @@ const banCommand =  new Command({
   Util.ban(player, `Reason: ${reason ?? '-'}`, reason ?? '(from command)');
   
   Util.notify(`§7${sender.name} >> §fプレイヤー: §c${player.name}§r をbanしました\n§7Reason: §r${reason ?? '-'}`);
-  Util.log({ type: 'command.ban', message: `Banned by ${sender.name}\nReason: ${reason ?? '-'}` }, player);
+  Util.writeLog({ type: 'command.ban', message: `Banned by ${sender.name}\nReason: ${reason ?? '-'}` }, player);
 });
 
 export default banCommand;

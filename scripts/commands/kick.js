@@ -19,7 +19,7 @@ const kickCommand = new Command({
   Util.kick(player, `Reason: ${reason}`);
   
   Util.notify(`§7${sender.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`);
-  Util.log({ type: 'command.kick', message: `Kicked by ${sender.name}\nReason: ${reason}` }, player);
+  Util.writeLog({ type: 'command.kick', message: `Kicked by ${sender.name}\nReason: ${reason}` }, player);
 });
 
 export default kickCommand;

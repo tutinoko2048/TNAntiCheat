@@ -30,7 +30,7 @@ export function ban(player) {
     
     const reason = player.getDynamicProperty(properties.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
-    Util.log({ type: 'disconnect.ban', message: `接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}` }, player);
+    Util.writeLog({ type: 'disconnect.ban', message: `接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}` }, player);
     return Util.kick(player, reason ?? '-', true);
   }
 }
@@ -41,7 +41,7 @@ export function banByXuid() {
     const res = Util.runCommandSafe(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`, overworld);
     if (res) {
       Util.notify(`BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました`);
-      Util.log({ type: 'disconnect.xuid', playerName: '(banned player)', message: `BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました` });
+      Util.writeLog({ type: 'disconnect.xuid', playerName: '(banned player)', message: `BANリストに含まれる XUID: §c${xuid}§r のプレイヤーをキックしました` });
     }
   }
 }

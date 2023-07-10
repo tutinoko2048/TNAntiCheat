@@ -6,6 +6,9 @@ import { Permissions } from './Permissions';
 
 const overworld = world.getDimension('overworld');
 
+/** @typedef {import('@minecraft/server').Entity} Entity */
+/** @typedef {import('@minecraft/server').Vector3} Vector3 */
+
 export class Util {
   /**
    *
@@ -23,7 +26,7 @@ export class Util {
       `§l§6>>§r ${message}`
     ];
     
-    let showNotify = true;
+    let shouldNotify = true;
     switch (punishment) {
       case 'ban':
         Util.ban(player, message, type);
@@ -35,20 +38,20 @@ export class Util {
         Util.disconnect(player);
         break;
       case 'notify':
-        reasons.splice(1, 1);
+        reasons.splice(1, 1); // punishmentの行削除(見やすくするため)
         break;
       case 'none':
-        showNotify = false;
+        shouldNotify = false;
         break;
       default:
         throw new Error(`Received unexpected punishment type: ${punishment}`);
     }
-    if (showNotify) {
+    if (shouldNotify) {
       const output = `§lFlagged §r${this.safeString(player.name, 25)}§r | ${reasons.join('\n')}`;
       Util.notify(output);
       if (config.logger.console) console.warn(`[§aTNAC§r] ${output}`);
       
-      Util.log({ playerName: player.name, playerId: player.id, type, punishment, message });
+      Util.writeLog({ playerName: player.name, playerId: player.id, type, punishment, message });
     }
   }
   
@@ -146,7 +149,7 @@ export class Util {
    * @arg {import('../types').ActionLog} content
    * @arg {Player} [player]
    */
-  static log(content, player) {
+  static writeLog(content, player) {
     world.logs ??= [];
     if (world.logs.length >= config.logger.maxLogs) world.logs.shift();
     
@@ -284,8 +287,8 @@ export class Util {
   }
   
   /**
-   * @param {import('@minecraft/server').Vector3} vec
-   * @returns {import('@minecraft/server').Vector3}
+   * @param {Vector3} vec
+   * @returns {Vector3}
    */
   static vectorNicely(vec) {
     return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
@@ -293,15 +296,13 @@ export class Util {
 
   /**
    *
-   * @param {import('@minecraft/server').Entity|string} target
-   * @param {string} obj
+   * @param {Entity|string} target
+   * @param {string} objective
    * @returns {number|null}
    */
-  static getScore(target, obj) {
+  static getScore(target, objective) {
     try {
-      return (typeof target === 'string')
-        ? world.scoreboard.getObjective(obj).getScores().find(({ participant }) => participant.displayName === target).score
-        : world.scoreboard.getObjective(obj).getScore(target.scoreboardIdentity);
+      return world.scoreboard.getObjective(objective).getScore(target);
     } catch {
       return null;
     }
@@ -315,7 +316,7 @@ export class Util {
   
   /**
    * @param {string} command A command to execute
-   * @param {import('@minecraft/server').Entity|import('@minecraft/server').Dimension} source
+   * @param {Entity|import('@minecraft/server').Dimension} source
    * @returns {boolean} Whether command has successfully executed, false is error
    */
   static runCommandSafe(command, source) {

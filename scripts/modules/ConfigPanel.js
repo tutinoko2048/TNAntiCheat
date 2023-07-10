@@ -48,7 +48,7 @@ export class ConfigPanel {
       if (!res) return await this.selectModule();
       DataManager.resetAll();
       Util.notify('§a全ての設定をリセットしました', this.player);
-      Util.log({ type: 'config.resetAll', message: `全ての設定をリセットしました` }, this.player);
+      Util.writeLog({ type: 'config.resetAll', message: `全ての設定をリセットしました` }, this.player);
       return await this.selectModule(false, `§a全ての設定をリセットしました`);
     }
     const moduleName = modules[selection];
@@ -106,7 +106,7 @@ export class ConfigPanel {
             });
             if (!res) return { reopen: true };
             DataManager.reset(key);
-            Util.log({ type: 'config.edit', message: `§a${key} をリセットしました` }, this.player);
+            Util.writeLog({ type: 'config.edit', message: `§a${key} をリセットしました` }, this.player);
             return { reopen: true, message: `§a${key} をリセットしました` };
           }
           
@@ -180,7 +180,7 @@ export class ConfigPanel {
     if (edited) {
       ref[key] = newValue;
       Util.notify(`§e${title} を §f${newValue} §eに設定しました`, this.player);
-      Util.log({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
+      Util.writeLog({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
     }
     return { edited, reopen: true }
   }
@@ -198,7 +198,7 @@ export class ConfigPanel {
     if (edited) {
       ref[key] = newValue;
       Util.notify(`§e${title} を §f${newValue} §eに設定しました`, this.player);
-      Util.log({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
+      Util.writeLog({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
     }
     return { edited, reopen: true }
   }
@@ -225,7 +225,7 @@ export class ConfigPanel {
       if (isNaN(value)) return { message: `§cTypeError: 数字を入力してください` };
     }
     Util.notify(`§e${title}.${key} を §f${value} §eに設定しました`, this.player);
-    Util.log({ type: 'config.edit', message: `§e${title}.${key} を §f${value} §eに設定しました` }, this.player);
+    Util.writeLog({ type: 'config.edit', message: `§e${title}.${key} を §f${value} §eに設定しました` }, this.player);
     return { key, value }
   }
 }
