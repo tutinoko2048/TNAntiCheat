@@ -121,11 +121,10 @@ export class TNAntiCheat {
         Util.isOP(source) &&
         AdminPanel.isPanelItem(itemStack)
       ) {
-        ev.cancel = true;
+        await Util.cancel(ev);
         const target = source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
-        
-        await Util.sleep();
-        if (target instanceof Player) new AdminPanel(this, source).playerInfo(target); // show playerInfo
+        if (!target) return;
+        if (target.entity instanceof Player) new AdminPanel(this, source).playerInfo(target.entity); // show playerInfo
         else new AdminPanel(this, source).show(); // show AdminPanel
       }
     });

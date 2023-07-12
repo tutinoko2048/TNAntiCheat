@@ -1,4 +1,4 @@
-import { world, system } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import { Util } from '../util/util'
 import { BaseManager } from './BaseManager';
 import { CommandError } from '../util/CommandError';
@@ -26,13 +26,13 @@ export class CommandManager extends BaseManager {
   }
   
   /**
-   * @param {import('../types').CommandInput} ev 
-   * @param {boolean} [scriptEvent]
+   * @arg {import('../types').CommandInput} ev
+   * @arg {boolean} [scriptEvent]
    */
-  handle(ev, scriptEvent) {
+  async handle(ev, scriptEvent) {
     const { message, sender } = ev;
     if (!this.isCommand(message) && !scriptEvent) return;
-    ev.cancel = true;
+    await Util.cancel(ev);
 
     const [ commandName, ...args ] = Util.splitNicely(
       scriptEvent ? message : message.slice(this.prefix.length)
@@ -42,14 +42,12 @@ export class CommandManager extends BaseManager {
     if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
     if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません');
     
-    system.run(() => {
-      try {
-        command.func(sender, args, this);
-      } catch (e) {
-        sender.sendMessage(`[CommandManager] §c${e}`);
-        if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
-      }
-    });
+    try {
+      command.func(sender, args, this);
+    } catch (e) {
+      sender.sendMessage(`[CommandManager] §c${e}`);
+      if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
+    }
   }
   
   /** @returns {CommandData[]} */

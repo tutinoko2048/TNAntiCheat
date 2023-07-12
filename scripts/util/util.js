@@ -338,4 +338,12 @@ export class Util {
   static sleep(ticks = 0) {
     return new Promise(res => system.runTimeout(res, ticks));
   }
+  
+  /**
+   * イベントをキャンセルしつつ遅延をかける用
+   * @arg {{ cancel?: boolean }} eventData
+   */
+  static async cancel(eventData) {
+    eventData.cancel = true;
+  }
 }

@@ -97,9 +97,8 @@ export async function placeCheckD(ev) {
     config.placeCheckD.minecarts.includes(item?.typeId) &&
     RAILS.includes(block.typeId)
   ) {
-    ev.cancel = true;
+    await Util.cancel(ev);
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, source);
-    await Util.sleep(); // make delay for before events
     spawn(item.typeId);
     
     if (gameMode === GameMode.creative) return;
@@ -111,9 +110,8 @@ export async function placeCheckD(ev) {
     }
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
-    ev.cancel = true;
+    await Util.cancel(ev);
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, source);
-    await Util.sleep();
     spawn(MinecraftEntityTypes.chestBoat.id);
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
