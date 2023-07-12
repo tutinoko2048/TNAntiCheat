@@ -11,7 +11,7 @@ export function speedA(player) {
   const { x, y, z } = player.getVelocity();
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
   // for debug
-  //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.isGliding}, on_ground: ${color(player.isOnGround}`);
+  //if (config.others.debug && player.isOp) player.onScreenDisplay.setActionBar(`vx: ${x.toFixed(3)}, vy: ${y.toFixed(3)}, vz: ${z.toFixed(3)}, velocity: §6${velocity.toFixed(3)}§r\nisMoved: ${color(player.isMoved)}, gliding: ${color(player.isGliding)}, on_ground: ${color(player.isOnGround)}`);
   
   player.lastDimensionId ??= player.dimension.id;
   if (
@@ -19,7 +19,7 @@ export function speedA(player) {
     player.getEffect('speed') ||
     player.hasComponent(EntityRidingComponent.componentId) ||
     !player.isOnGround ||
-    player.isGliding || (Date.now() - player.stopGlideAt < 3*20) ||
+    player.isGliding || (Date.now() - player.stopGlideAt < 80) ||
     excluded.includes(Util.getGamemode(player)) ||
     player.lastDimensionId != player.dimension.id ||
     Date.now() - player.joinedAt < 5000 ||
