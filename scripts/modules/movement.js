@@ -19,7 +19,7 @@ export function speedA(player) {
     player.getEffect('speed') ||
     player.hasComponent(EntityRidingComponent.componentId) ||
     !player.isOnGround ||
-    player.isGliding ||
+    player.isGliding || (Date.now() - player.stopGlideAt < 3*20) ||
     excluded.includes(Util.getGamemode(player)) ||
     player.lastDimensionId != player.dimension.id ||
     Date.now() - player.joinedAt < 5000 ||

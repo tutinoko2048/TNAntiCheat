@@ -56,6 +56,11 @@ declare module '@minecraft/server' {
     reachCFlag?: string;
     flagQueue?: string;
     
+    /** 前のtickで飛んでたかどうか */
+    wasGliding?: boolean;
+    /** エリトラの使用をやめた時刻 */
+    stopGlideAt?: number;
+    
     getComponent<K extends keyof EntityComponentTypes>(componentId: K): EntityComponentTypes[K];
 
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];

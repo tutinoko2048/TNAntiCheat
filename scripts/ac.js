@@ -54,6 +54,7 @@ export class TNAntiCheat {
       
       for (const player of world.getPlayers()) {
         if (!player.isMoved) modules.checkMoving(player);
+        if (player.wasGliding && !player.isGliding) player.stopGlideAt = Date.now();
         
         modules.itemCheck(player);
         
@@ -79,6 +80,7 @@ export class TNAntiCheat {
         }
         player.lastLocation = player.location;
         player.breakCount = 0;
+        player.wasGliding = player.isGliding;
       }
       
       if (!(system.currentTick % calcInterval(this.getTPS()))) modules.entityCounter();
