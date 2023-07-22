@@ -182,6 +182,7 @@ export class TNAntiCheat {
     }
   }
   
+  /** configをDPから読み込む */
   #loadConfig() {
     updateConfig(); // アプデ時のデータ移行処理
     

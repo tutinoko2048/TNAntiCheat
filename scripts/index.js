@@ -29,9 +29,8 @@ system.afterEvents.scriptEventReceive.subscribe(ev => {
 /** @param {Player} player */
 function start(player) {
   if (world.getDynamicProperty(PropertyIds.ownerId)) return player.sendMessage('TNAC is already registered!');
-  
-  world.setDynamicProperty(PropertyIds.ownerId, player.id);
   Permissions.add(player, 'admin');
+  world.setDynamicProperty(PropertyIds.ownerId, player.id);
   
   ac.enable();
   player.sendMessage('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');

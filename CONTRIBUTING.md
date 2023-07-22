@@ -5,24 +5,18 @@
 
 ## ブランチ
 編集する時やプルリクエストを送る時は`dev`ブランチを使います。**基本的に`main`には直接コミットしないでください。**  
-次のマイクラのアップデート(Preview版)の対応作業には`preview`ブランチ(名前は例)(devから生やしてね)を使います
 
 ## 編集するとき
 アプデ対応やらバグ発見やらが超楽になるのでJSDocはつけてほしいです  
 
 1. `npm i`でマイクラの型定義などをインストール  
 バージョンに合った型定義を入れてください [バージョン一覧](https://www.npmjs.com/package/@minecraft/server?activeTab=versions)  
-1. 編集できたら`npm run lint`でeslintとtscが通るか確認。だめだったら直してください。
+2. 編集できたら`npm run lint`でeslintとtscが通るか確認。だめだったら直してください。
 
 ## マージするとき
 - devからmain  
 `git switch main`でmainに移動して  
 `git merge dev`でマージ  
-`git push`で変更内容をプッシュします
-
-- previewからdev  
-`git switch dev`でdevに移動して  
-`git merge preview`でマージ  
 `git push`で変更内容をプッシュします
 
 ## その他注意点やメモ

@@ -1,4 +1,4 @@
-import { system, Player, GameMode, MinecraftEntityTypes } from '@minecraft/server';
+import { system, Player, GameMode } from '@minecraft/server';
 import config from '../config.js';
 import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';
@@ -89,8 +89,12 @@ export async function placeCheckD(ev) {
 
   /** @param {string} typeId */
   const spawn = (typeId) => {
-    const e = source.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
-    e.setRotation({ x: 0, y: source.getRotation().y });
+    try {
+      const e = source.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
+      e.setRotation({ x: 0, y: source.getRotation().y });
+    } catch (e) {
+      if (config.others.debug) console.error(e);
+    }
   }
   
   if (
@@ -112,7 +116,7 @@ export async function placeCheckD(ev) {
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
     await Util.cancel(ev);
     if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, source);
-    spawn(MinecraftEntityTypes.chestBoat.id);
+    spawn('minecraft:chest_boat');
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
       container.setItem(source.selectedSlot);
