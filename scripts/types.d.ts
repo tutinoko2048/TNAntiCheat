@@ -7,6 +7,7 @@ interface DynamicPropertyTypes {
   [PropertyIds.configData]: string;
   [PropertyIds.mute]: boolean;
   [PropertyIds.ownerId]: string;
+  [PropertyIds.unbanQueue]: string;
 }
 
 interface EntityComponentTypes {

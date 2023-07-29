@@ -2,7 +2,6 @@ import { world, system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
-import unbanQueue from '../unban_queue.js';
 import  { PropertyIds } from '../util/constants';
 import { AdminPanel } from './AdminPanel';
 
@@ -21,8 +20,10 @@ export * from './movement';
    * @returns {boolean} banしたかどうか
    */
 export function ban(player) {
+  const unbanQueue = Util.getUnbanQueue();
+  
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
-    if (unbanQueue.includes(player.name)) {
+    if (unbanQueue.some(entry => entry.name === player.name)) {
       Util.unban(player);
       Util.notify(`§aUnbanned: ${player.name}`);
       return;

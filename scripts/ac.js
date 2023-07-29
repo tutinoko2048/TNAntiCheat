@@ -198,6 +198,11 @@ export class TNAntiCheat {
     if (config.others.debug) console.warn('[debug] loaded Config data');
   }
   
+  /** @returns {import('./util/util').UnbanQueueEntry[]} */
+  getUnbanQueue() {
+    return Util.getUnbanQueue();
+  }
+  
   /** @return {typeof config} */
   getConfig() {
     return config;

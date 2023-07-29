@@ -3,11 +3,13 @@ import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { PropertyIds } from './constants';
 import { Permissions } from './Permissions';
+import unbanQueue from '../unban_queue.js';
 
 const overworld = world.getDimension('overworld');
 
 /** @typedef {import('@minecraft/server').Entity} Entity */
 /** @typedef {import('@minecraft/server').Vector3} Vector3 */
+/** @typedef {{ name: string, source: 'property' | 'file' }} UnbanQueueEntry */
 
 export class Util {
   /**
@@ -345,5 +347,43 @@ export class Util {
    */
   static async cancel(eventData) {
     eventData.cancel = true;
+  }
+  
+  /** @returns {UnbanQueueEntry[]} */
+  static getUnbanQueue() {
+    /** @type {UnbanQueueEntry[]} */
+    const queue = unbanQueue.map(name => ({ name, source: 'file' }));
+    try {
+      const fetched = JSON.parse(world.getDynamicProperty(PropertyIds.unbanQueue) ?? '[]');
+      for (const name of fetched) {
+        const isInFile = queue.some(entry => entry.name === name);
+        if (!isInFile) queue.push({ name, source: 'property' });
+      }
+    } catch {}
+    
+    return [...queue];
+  }
+  
+  /**
+   * @arg {UnbanQueueEntry[]} queue
+   * @returns {UnbanQueueEntry[]}
+   */
+  static setUnbanQueue(queue) {
+    // 重複防止 ファイルに保存されているものは除外
+    const _queue = new Set(
+      queue.filter(e => e.source === 'property').map(e => e.name)
+    );
+    world.setDynamicProperty(PropertyIds.unbanQueue, JSON.stringify([..._queue]));
+    return queue;
+  }
+  
+  /**
+   * @arg {string} playerName
+   * @returns {UnbanQueueEntry[]}
+   */
+  static addUnbanQueue(playerName) {
+    const queue = Util.getUnbanQueue();
+    queue.push({ name: playerName, source: 'property' });
+    return Util.setUnbanQueue(queue);
   }
 }

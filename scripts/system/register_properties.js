@@ -9,6 +9,7 @@ def.defineBoolean(PropertyIds.mute);
 const def2 = new DynamicPropertiesDefinition(); // world
 def2.defineString(PropertyIds.configData, 7000);
 def2.defineString(PropertyIds.ownerId, 30);
+def2.defineString(PropertyIds.unbanQueue, 1000);
 
 world.afterEvents.worldInitialize.subscribe(({ propertyRegistry }) => {
   propertyRegistry.registerEntityTypeDynamicProperties(def, 'minecraft:player');

@@ -6,7 +6,8 @@ export const PropertyIds = /** @type {const} */ ({
   banReason: 'tn:banReason',
   configData: 'tn:configData',
   mute: 'tn:isMuted',
-  ownerId: 'tn:ownerId' // ここ変えると再登録できる
+  ownerId: 'tn:ownerId', // ここ変えると再登録できる
+  unbanQueue: 'tn:unbanQueue'
 });
 
 export const Icons = /** @type {const} */ ({
