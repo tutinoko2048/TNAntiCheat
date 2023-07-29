@@ -361,7 +361,7 @@ export class Util {
       }
     } catch {}
     
-    return [...queue];
+    return queue;
   }
   
   /**
