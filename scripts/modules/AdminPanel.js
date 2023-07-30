@@ -258,7 +258,7 @@ export class AdminPanel {
     const tags = player.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s tags`)
-      .body(tags.length > 0 ? `タグ一覧:\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
+      .body(tags.length > 0 ? `タグ一覧 (${tags.length} tags)\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -267,12 +267,17 @@ export class AdminPanel {
   
   /** @param {Player} player */
   async showScores(player) {
-    const messages = world.scoreboard
-      .getObjectives()
+    const objectives = world.scoreboard.getObjectives();
+    objectives.sort((obj0, obj1) => {
+      const score = [ Util.getScore(player, obj0.id), Util.getScore(player, obj1.id) ];
+      if (score[1] === null) return -1;
+      return score[1] - score[0];
+    });
+    const messages = objectives
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
-      .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
+      .body(messages.length > 0 ? `スコア一覧 (${objectives.length} objectives)\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -281,7 +286,8 @@ export class AdminPanel {
   
   async showEntities() {
     const count = {}
-    for (const e of world.getDimension('overworld').getEntities()) {
+    const entities = world.getDimension('overworld').getEntities();
+    for (const e of entities) {
       count[e.typeId] ??= 0;
       count[e.typeId]++
     }
@@ -290,7 +296,7 @@ export class AdminPanel {
       .map(([ type, n ]) => `- ${type} : ${coloredEntityCount(type, n)}`);
     const form = new UI.ActionFormData();
     form.title(`Entities`);
-    form.body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
+    form.body(messages.length > 0 ? `エンティティ一覧 (${entities.length} entities)\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
     form.button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
