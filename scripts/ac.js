@@ -61,6 +61,7 @@ export class TNAntiCheat {
         modules.nukerFlag(player);
         modules.creative(player); 
         modules.speedA(player);
+        modules.flyA(player);
         
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
@@ -148,6 +149,15 @@ export class TNAntiCheat {
       modules.autoClicker(ev);
 
     }, entityOption);
+    
+    world.afterEvents.pistonActivate.subscribe(ev => {
+      if (!config.flyA.state || !config.flyA.detectPiston) return;
+      if (ev.isExpanding) {
+        const loc = ev.block.location;
+        const nearby = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
+        nearby.forEach(p => p.pistonPushedAt = Date.now());
+      }
+    });
     
     system.afterEvents.scriptEventReceive.subscribe(ev => {
       const { id, sourceEntity, message } = ev;

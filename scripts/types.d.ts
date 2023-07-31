@@ -39,6 +39,7 @@ declare module '@minecraft/server' {
   interface Entity {
     lastHitAt?: number;
     threwTridentAt?: number;
+    pistonPushedAt?: number;
     dimensionSwitchedAt?: number;
     joinedAt?: number;
     lastLocation?: mc.Vector3;
@@ -48,6 +49,7 @@ declare module '@minecraft/server' {
     lastMsgSentAt?: number;
     isMoved?: boolean;
     speedACount?: number;
+    flyACount?: number;
     placeBCount?: number;
     breakCount?: number;
     cps?: number[];

@@ -188,6 +188,15 @@ export const description = {
     maxVelocity: '許容するスピードの最大値',
     rollback: '検知した時に前いた位置までテレポートする'
   },
+  flyA: {
+    desc: 'flyを検知 (ベータ)',
+    state,
+    punishment,
+    flagCount,
+    minFallDistance: '許容する落下距離の最小値',
+    detectPiston: 'ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)',
+    rollback: '検知した時に前いた位置までテレポートする'
+  },
   logger: {
     desc: 'ログの記録に関する設定',
     console: '検知メッセージをコンテンツログに出力する',

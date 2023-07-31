@@ -271,6 +271,14 @@ export default
     maxVelocity: 2.0,
     rollback: true
   },
+  flyA: { // flyを検知 (ベータ)
+    state: true,
+    punishment: "tempkick",
+    flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
+    minFallDistance: -2.0,
+    detectPiston: true, // ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)
+    rollback: true
+  },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
     maxLogs: 50 // 保存するログの数
