@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 3
+// configVersion: 4
 export default
 {
   permission: {
@@ -289,6 +289,7 @@ export default
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
     fixBDS: false, // BDSで使う場合はオンにしてください
-    blockCopy: true // 管理者アイテムでブロックをスニーク+タップするとコピーできます
+    blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
+    timezoneOffset: +9 // 時刻表示用
   }
 }
