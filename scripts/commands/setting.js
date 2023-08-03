@@ -1,6 +1,7 @@
 import { Util } from '../util/util';
 import { AdminPanel } from '../modules/AdminPanel';
 import { Command } from '../util/Command';
+import { CommandError } from '../util/CommandError';
 
 const settingCommand = new Command({
   name: 'setting',
@@ -8,8 +9,9 @@ const settingCommand = new Command({
   args: [ '' ],
   aliases: [ 'settings', 'seting' ],
   permission: (player) => Util.isOP(player)
-}, (sender, _, manager) => {
-  new AdminPanel(manager.ac, sender).show(true);
+}, (origin, _, manager) => {
+  if (origin.isPlayerOrigin()) new AdminPanel(manager.ac, origin.sender).show(true);
+  else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
 });
 
 export default settingCommand;

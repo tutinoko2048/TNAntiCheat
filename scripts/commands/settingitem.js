@@ -1,6 +1,7 @@
 import { Util } from '../util/util';
 import { AdminPanel } from '../modules/AdminPanel';
 import { Command } from '../util/Command';
+import { CommandError } from '../util/CommandError';
 
 const itemCommand = new Command({
   name: 'settingitem',
@@ -8,9 +9,12 @@ const itemCommand = new Command({
   args: [ '' ],
   aliases: [ 'item', 'wand', 'setingitem', 'adminitem', 'panelitem', 'configitem' ],
   permission: (player) => Util.isOP(player)
-}, (sender) => {
-  sender.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());
-  Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます', sender);
+}, (origin) => {
+  if (origin.isPlayerOrigin()) {
+    origin.sender.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());
+    Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます', origin.sender);
+    
+  } else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
 });
 
 export default itemCommand;

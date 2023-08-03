@@ -239,7 +239,9 @@ export default
       "minecraft:ender_dragon",
       "minecraft:enderman",
       "minecraft:ghast",
-      "minecraft:fireball"
+      "minecraft:fireball",
+      "minecraft:snowball",
+      "minecraft:shulker"
     ]
   },
   reachB: { // ブロック設置の長すぎるリーチを検知
@@ -288,8 +290,11 @@ export default
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
-    fixBDS: false, // BDSで使う場合はオンにしてください
+    fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
-    timezoneOffset: +9 // 時刻表示用
+    timezoneOffset: +9, // 時刻表示用
+    
+    /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
+    enableCommandFromConsole: false
   }
 }

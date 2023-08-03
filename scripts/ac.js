@@ -1,4 +1,4 @@
-import { world, system, Player } from '@minecraft/server';
+import { world, system, Player, ScriptEventSource } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
 import { Util } from './util/util';
@@ -160,9 +160,14 @@ export class TNAntiCheat {
     });
     
     system.afterEvents.scriptEventReceive.subscribe(ev => {
-      const { id, sourceEntity, message } = ev;
-      if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
-      this.commands.handle({ sender: sourceEntity, message }, true);
+      const { id, sourceEntity, message, sourceType } = ev;
+      if (id !== 'ac:command') return;
+      if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
+        this.commands.handle({ sender: sourceEntity, message }, true);
+        
+      } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
+        this.commands.handleFromServer({ message });
+      }
     }, {
       namespaces: [ 'ac' ]
     });

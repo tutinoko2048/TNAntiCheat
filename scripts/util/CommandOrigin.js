@@ -1,0 +1,80 @@
+/** @typedef {import('@minecraft/server').Player} Player */
+
+export const CommandOriginType = /** @type {const} */ ({
+  Player: 'Player',
+  ScriptEvent: 'ScriptEvent',
+  Server: 'Server'
+});
+
+/** @typedef {CommandOriginType[keyof CommandOriginType]} CommandOriginTypes */
+
+export class CommandOrigin {
+  constructor() {}
+  
+  /** @returns {this is PlayerCommandOrigin} */
+  isPlayerOrigin() {
+    return this instanceof PlayerCommandOrigin;
+  }
+  
+  /** @returns {this is ScriptEventCommandOrigin} */
+  isScriptEventOrigin() {
+    return this instanceof ScriptEventCommandOrigin;
+  }
+  
+  /** @returns {this is ServerCommandOrigin} */
+  isServerOrigin() {
+    return this instanceof ServerCommandOrigin;
+  }
+  
+  /** @type {CommandOriginTypes} */
+  get type() {
+    if (this.isPlayerOrigin()) return CommandOriginType.Player;
+    if (this.isScriptEventOrigin()) return CommandOriginType.ScriptEvent;
+    if (this.isServerOrigin()) return CommandOriginType.Server;
+    throw Error('invalid command origin type');
+  }
+}
+
+export class PlayerCommandOrigin extends CommandOrigin {
+  /** @type {Player} */
+  #sender;
+  
+  /** @arg {Player} sender */
+  constructor(sender) {
+    super();
+    this.#sender = sender;
+  }
+  
+  /** @type {string} */
+  get name() {
+    return this.sender.name;
+  }
+  
+  /** @type {Player} */
+  get sender() {
+    return this.#sender;
+  }
+  
+  /** @arg {string|import('@minecraft/server').RawMessage} message */
+  send(message) {
+    return this.sender.sendMessage(message);
+  }
+}
+
+export class ScriptEventCommandOrigin extends PlayerCommandOrigin {}
+
+export class ServerCommandOrigin extends CommandOrigin {
+  constructor() {
+    super()
+  }
+  
+  /** @type {string} */
+  get name() {
+    return 'Server';
+  }
+  
+  /** @arg {string} message */
+  send(message) {
+    return console.warn(message);
+  }
+}

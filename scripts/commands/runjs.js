@@ -16,8 +16,8 @@ const runjsCommand = new Command({
   aliases: [ 'eval' ],
   args: [ '<code: string>' ],
   permission: (player) => Util.isOP(player)
-}, (sender, args) => {
-  const self = sender;
+}, (origin, args) => {
+  const self = origin.isPlayerOrigin() ? origin.sender : null;
   
   eval(args.join(' '));
 });

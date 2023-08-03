@@ -8,10 +8,10 @@ const moduleCommand = new Command({
   aliases: [ 'modules' ],
   args: [],
   permission: (player) => Util.isOP(player),
-}, (sender) => {
+}, (origin) => {
   const modules = Object.keys(config).filter(key => 'state' in config[key]);
-  sender.sendMessage('§lModules');
-  sender.sendMessage(
+  origin.send('§lModules');
+  origin.send(
     modules.map(m => `- ${m}: ${config[m].state ? '§o§aEnabled§r' : '§o§cDisabled§r'}`).join('\n')
   );
 });

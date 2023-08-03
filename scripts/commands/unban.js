@@ -1,6 +1,7 @@
 import { Util } from '../util/util';
 import { Command } from '../util/Command';
 import { ModalFormData } from '@minecraft/server-ui';
+import { CommandError } from '../util/CommandError';
 
 const unbanCommand = new Command({
   name: 'unban',
@@ -8,16 +9,17 @@ const unbanCommand = new Command({
   args: [ '', '<name: playerName>' ],
   aliases: [ 'pardon' ],
   permission: (player) => Util.isOP(player)
-}, (sender, args) => {
+}, (origin, args) => {
   const [ _playerName ] = args;
   
   if (_playerName) {
     const playerName = Util.parsePlayerName(_playerName);
     Util.addUnbanQueue(playerName);
-    Util.notify(`プレイヤー: §c${playerName}§r をunbanのリストに追加しました`, sender);
-    Util.writeLog({ type: 'command.unban', playerName, message: `Executed by ${sender.name}` });
+    origin.send(`プレイヤー: §c${playerName}§r をunbanのリストに追加しました`);
+    Util.writeLog({ type: 'command.unban', playerName, message: `Executed by ${origin.name}` });
   } else {
-    showQueue(sender).catch(console.error);
+    if (origin.isPlayerOrigin()) showQueue(origin.sender).catch(console.error);
+    else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
   }
 });
 

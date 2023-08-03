@@ -1,5 +1,6 @@
 import * as mc from '@minecraft/server';
 import { PropertyIds } from './util/constants';
+import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './util/CommandOrigin';
 
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
@@ -78,13 +79,20 @@ declare module '@minecraft/server' {
   }
 }
 
-export interface CommandInput {
+export interface PlayerCommandInput extends Partial<mc.ChatSendBeforeEvent> {
   sender: mc.Player;
   message: string;
-  cancel?: boolean;
 }
 
-export type CommandCallback = (sender: mc.Player, args: string[], manager: import('./managers/CommandManager').CommandManager) => void;
+export interface ServerCommandInput {
+  message: string;
+}
+
+export type CommandCallback = (
+  origin: PlayerCommandOrigin | ScriptEventCommandOrigin | ServerCommandOrigin,
+  args: string[],
+  manager: import('./managers/CommandManager').CommandManage
+) => void;
 
 export interface CommandData {
   name: string;
