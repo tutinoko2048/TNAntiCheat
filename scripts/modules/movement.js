@@ -47,7 +47,7 @@ export function speedA(player) {
     Date.now() - player.joinedAt < 5000 ||
     Date.now() - player.threwTridentAt < 5000 ||
     Date.now() - player.pistonPushedAt < 2000 ||
-    player.isGliding || (Date.now() - player.stopGlideAt < 80) ||
+    player.isGliding || (Date.now() - player.stopGlideAt < 2000) ||
     !player.isMoved ||
     player.lastDimensionId != player.dimension.id ||
     !player.isOnGround ||
