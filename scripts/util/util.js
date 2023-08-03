@@ -102,16 +102,31 @@ export class Util {
     player.triggerEvent('tn:kick');
   }
   
-  /** @param {Player} [target] */
-  static notify(message, target) {
-    const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
+  /**
+   * @arg {string} message
+   * @arg {Player|boolean} [target]
+   * @arg {boolean} [showConsole]
+   */
+  static notify(message, target, showConsole) {
+    const result = Util.decorate(message);
     if (target instanceof Player) {
-      target.sendMessage(`[§l§a${name}§r] ${message}`);
+      target.sendMessage(result);
+      if (showConsole) console.warn(result);
     } else {
       config.others.sendws
-        ? overworld.runCommand(`say "[§l§aTN-AntiCheat§r] ${message}"`)
-        : world.sendMessage(`[§l§a${name}§r] ${message}`);
+        ? overworld.runCommandAsync(`say "${result}"`)
+        : world.sendMessage(result);
+      if (typeof target === 'boolean' && target) console.warn(result);
     }
+  }
+  
+  /**
+   * @arg {string} message
+   * @returns {string}
+   */
+  static decorate(message) {
+    const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
+    return `[§l§a${name}§r] ${message}`;
   }
   
   /** @param {Player} player */

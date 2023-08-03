@@ -9,7 +9,7 @@ const moduleCommand = new Command({
   args: [],
   permission: (player) => Util.isOP(player),
 }, (origin) => {
-  const modules = Object.keys(config).filter(key => 'state' in config[key]);
+  const modules = Object.keys(config).filter(key => isObject(config[key]) && 'state' in config[key]);
   origin.send('§lModules');
   origin.send(
     modules.map(m => `- ${m}: ${config[m].state ? '§o§aEnabled§r' : '§o§cDisabled§r'}`).join('\n')
@@ -17,3 +17,7 @@ const moduleCommand = new Command({
 });
 
 export default moduleCommand;
+
+function isObject(item) {
+  return typeof item === 'object' && item !== null;
+}

@@ -23,7 +23,7 @@ const freezeCommand =  new Command({
   if (freezeState) handler.ac.frozenPlayerMap.set(player.id, player.location);
   else handler.ac.frozenPlayerMap.delete(player.id);
 
-  Util.notify(`§7${origin.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`));
 });
 
 function toBoolean(str) {

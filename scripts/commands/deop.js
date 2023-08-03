@@ -19,7 +19,7 @@ const deopCommand = new Command({
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
   Permissions.remove(player, 'admin');
-  Util.notify(`§7${origin.name} >> §e${player.name} の管理者権限を削除しました`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} の管理者権限を削除しました`));
   Util.writeLog({ type: 'command.deop', message: `Executed by ${origin.name}` }, player);
 });
 

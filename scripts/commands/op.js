@@ -21,7 +21,7 @@ const opCommand = new Command({
   if (!player.isOp() && !config.others.fixBDS) throw new CommandError(`プレイヤー ${player.name} の権限が不足しています`);
   if (Util.isOP(player)) throw new CommandError(`${player.name} は既に権限を持っています`);
   Permissions.add(player, 'admin');
-  Util.notify(`§7${origin.name} >> §e${player.name} に管理者権限を与えました`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} に管理者権限を与えました`));
   Util.writeLog({ type: 'command.op', message: `Executed by ${origin.name}` }, player);
 });
 

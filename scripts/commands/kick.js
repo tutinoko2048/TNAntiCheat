@@ -18,7 +18,7 @@ const kickCommand = new Command({
   if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をkickすることはできません');
   Util.kick(player, `Reason: ${reason}`);
   
-  Util.notify(`§7${origin.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`));
   Util.writeLog({ type: 'command.kick', message: `Kicked by ${origin.name}\nReason: ${reason}` }, player);
 });
 

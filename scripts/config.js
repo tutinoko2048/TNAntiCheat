@@ -28,7 +28,10 @@ export default
     }
   },
   command: {
-    prefix: '!'
+    prefix: '!',
+    
+    /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
+    enableConsole: false
   },
   itemList: {
     ban: [
@@ -293,8 +296,5 @@ export default
     fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
-    
-    /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
-    enableCommandFromConsole: false
   }
 }

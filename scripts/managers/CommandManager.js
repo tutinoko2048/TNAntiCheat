@@ -65,7 +65,7 @@ export class CommandManager extends BaseManager {
    */
   async handleFromServer(ev) {
     const { message } = ev;
-    if (!config.others.enableCommandFromConsole) return;
+    if (!config.commands.enableConsole) return;
     
     const [ commandName, ...args ] = Util.splitNicely(message);
     const command = this.getCommand(commandName);

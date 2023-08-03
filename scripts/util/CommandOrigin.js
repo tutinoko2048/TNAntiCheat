@@ -1,3 +1,6 @@
+import config from '../config.js';
+import { world } from '@minecraft/server';
+
 /** @typedef {import('@minecraft/server').Player} Player */
 
 export const CommandOriginType = /** @type {const} */ ({
@@ -32,6 +35,14 @@ export class CommandOrigin {
     if (this.isScriptEventOrigin()) return CommandOriginType.ScriptEvent;
     if (this.isServerOrigin()) return CommandOriginType.Server;
     throw Error('invalid command origin type');
+  }
+  
+  /** @arg {string} message */
+  broadcast(message) {
+    config.others.sendws
+      ? world.getDimension('overworld').runCommandAsync(`say "${message}"`)
+      : world.sendMessage(message);
+    console.warn(message)
   }
 }
 

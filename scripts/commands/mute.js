@@ -24,7 +24,7 @@ const muteCommand = new Command({
   if (!res) err();
   
   player.setDynamicProperty(PropertyIds.mute, muteState);
-  Util.notify(`§7${origin.name} >> §a${player.name} のミュートを ${muteState} に設定しました`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${player.name} のミュートを ${muteState} に設定しました`));
 });
 
 function toBoolean(str) {
