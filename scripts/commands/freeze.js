@@ -24,6 +24,8 @@ const freezeCommand =  new Command({
   else handler.ac.frozenPlayerMap.delete(player.id);
 
   origin.broadcast(Util.decorate(`§7${origin.name} >> §a${player.name} のフリーズを ${freezeState} に設定しました`));
+  Util.writeLog({ type: 'command.freeze', message: `FreezeState: ${freezeState}\nExecuted by ${origin.name}` }, player);
+
 });
 
 function toBoolean(str) {
