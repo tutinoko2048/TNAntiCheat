@@ -5,8 +5,7 @@
   "main": "scripts/index.js",
   "typings": "scripts/types.d.ts",
   "scripts": {
-    "lint": "eslint . --ext .js & tsc",
-    "update-types": "npm i @minecraft/server@beta -D --save-exact & npm i @minecraft/server-ui@beta -D --save-exact"
+    "lint": "eslint . --ext .js & tsc"
   },
   "repository": {
     "type": "git",

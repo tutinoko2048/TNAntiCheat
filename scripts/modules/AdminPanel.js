@@ -269,9 +269,7 @@ export class AdminPanel {
   async showScores(player) {
     const objectives = world.scoreboard.getObjectives();
     objectives.sort((obj0, obj1) => {
-      const score = [ Util.getScore(player, obj0.id), Util.getScore(player, obj1.id) ];
-      if (score[1] === null) return -1;
-      return score[1] - score[0];
+      return Util.getScore(player, obj1.id) - Util.getScore(player, obj0.id);
     });
     const messages = objectives
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
