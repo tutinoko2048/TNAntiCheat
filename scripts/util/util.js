@@ -372,6 +372,7 @@ export class Util {
     /** @type {UnbanQueueEntry[]} */
     const queue = unbanQueue.map(name => ({ name, source: 'file' }));
     try {
+      /** @type {string[]} */
       const fetched = JSON.parse(world.getDynamicProperty(PropertyIds.unbanQueue) ?? '[]');
       for (const name of fetched) {
         const isInFile = queue.some(entry => entry.name === name);
@@ -403,5 +404,13 @@ export class Util {
     const queue = Util.getUnbanQueue();
     queue.push({ name: playerName, source: 'property' });
     return Util.setUnbanQueue(queue);
+  }
+  
+  /** 
+   * @arg {string} playerName
+   */
+  static removeUnbanQueue(playerName) {
+    const queue = Util.getUnbanQueue();
+    Util.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
   }
 }

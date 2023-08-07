@@ -42,10 +42,11 @@ export class CommandOrigin {
     config.others.sendws
       ? world.getDimension('overworld').runCommandAsync(`say "${message}"`)
       : world.sendMessage(message);
-    console.warn(message)
+    if (this.isServerOrigin()) console.warn(message);
   }
 }
 
+// チャット欄からの入力
 export class PlayerCommandOrigin extends CommandOrigin {
   /** @type {Player} */
   #sender;
@@ -72,8 +73,10 @@ export class PlayerCommandOrigin extends CommandOrigin {
   }
 }
 
+// scripteventコマンドからの場合
 export class ScriptEventCommandOrigin extends PlayerCommandOrigin {}
 
+// scripteventのsourceTypeがServerの場合
 export class ServerCommandOrigin extends CommandOrigin {
   constructor() {
     super()

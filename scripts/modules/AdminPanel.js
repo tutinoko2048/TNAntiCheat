@@ -370,6 +370,32 @@ export class AdminPanel {
   }
 }
 
+  /**
+   * @arg {import('@minecraft/server').Player} player
+   */
+export async function manageUnbanQueue(player) {
+  const queue = Util.getUnbanQueue();
+  queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
+  const form = new UI.ActionFormData();
+  form.title('UnbanQueue Manager');
+  form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
+  for (const entry of queue) form.button(entry.name);
+  
+  const { canceled, selection } = await Util.showFormToBusy(player, form);
+  if (canceled) return;
+  
+  const entry = queue[selection];
+  if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
+  
+  const res = await confirmForm(player, {
+    body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
+  });
+  if (!res) return await manageUnbanQueue(player);
+  Util.removeUnbanQueue(entry.name);
+  Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
+  Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
+}
+
 function coloredEntityCount(typeId, count) {
   const maxCount = config.entityCounter.detect[typeId] ?? config.entityCounter.defaultCount;
   const color = count > maxCount ? '§c' : (count > maxCount / 2 ? '§e' : '');

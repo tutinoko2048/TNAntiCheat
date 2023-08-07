@@ -1,7 +1,7 @@
 import { Util } from '../util/util';
 import { Command } from '../util/Command';
-import { ModalFormData } from '@minecraft/server-ui';
 import { CommandError } from '../util/CommandError';
+import { manageUnbanQueue } from '../modules/AdminPanel';
 
 const unbanCommand = new Command({
   name: 'unban',
@@ -15,27 +15,14 @@ const unbanCommand = new Command({
   if (_playerName) {
     const playerName = Util.parsePlayerName(_playerName);
     Util.addUnbanQueue(playerName);
-    origin.broadcast(Util.decorate(`プレイヤー: §c${playerName}§r をunbanのリストに追加しました`));
-    Util.writeLog({ type: 'command.unban', playerName, message: `Executed by ${origin.name}` });
+    origin.broadcast(Util.decorate(`§7${origin.name} >> §rプレイヤー: §c${playerName}§r をunbanのリストに追加しました`));
+    Util.writeLog({ type: 'unban.add', playerName, message: `source: command\nExecuted by ${origin.name}` });
   } else {
-    if (origin.isPlayerOrigin()) showQueue(origin.sender).catch(console.error);
-    else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
+    if (origin.isPlayerOrigin()) {
+      manageUnbanQueue(origin.sender).catch(e => console.error(e, e.stack));
+    }
+    if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
   }
 });
 
 export default unbanCommand;
-
-/** @arg {import('@minecraft/server').Player} player */
-async function showQueue(player) {
-  const queue = Util.getUnbanQueue()
-  const form = new ModalFormData();
-  form.title('Unban Queue');
-  for (const entry of queue) form.toggle(entry.name, true);
-  
-  const { canceled, formValues } = await Util.showFormToBusy(player, form);
-  if (canceled) return;
-  
-  formValues.forEach((value, i) => {
-    player.sendMessage(`${queue[i].name} (${queue[i].source}) を ${value} に設定しました`);
-  });
-}
