@@ -66,8 +66,6 @@ export default
   nuker: {
     state: true,
     limit: 8, // 1tickに何ブロックの破壊で検知するか(ラグも考慮)
-    /** @deprecated 代わりに下のcancelを使ってください */
-    //place: true,
     cancel: true, // 壊されたブロックを置き直す
     punishment: "kick"
   },
@@ -90,8 +88,6 @@ export default
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,
     punishment: "kick",
-    /** @deprecated 代わりに下のcancelを使ってください */
-    //place: true,
     cancel: true,
     detect: [
       "minecraft:bedrock",

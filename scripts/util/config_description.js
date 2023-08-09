@@ -16,7 +16,8 @@ export const description = {
   },
   command: {
     desc: 'コマンド関係の設定',
-    prefix: 'prefix(コマンドの先頭につける文字)'
+    prefix: 'prefix(コマンドの先頭につける文字)',
+    enableConsole: 'サーバーのコンソールからのコマンドの実行を許可する'
   },
   itemList: {
     desc: 'アイテム系のモジュールで使用する禁止アイテムの設定',
