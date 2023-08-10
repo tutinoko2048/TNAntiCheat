@@ -4,6 +4,7 @@ import config from '../config.js';
 import { PropertyIds } from './constants';
 import { Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
+import { resetCount } from '../modules/index';
 
 const overworld = world.getDimension('overworld');
 
@@ -65,7 +66,8 @@ export class Util {
    */
   static ban(player, reason, type) {
     if (Util.isOwner(player)) {
-      console.warn('ban failed: cannot ban owner');
+      console.error('ban failed: cannot ban owner');
+      resetCount(player);
       return false;
     }
     player.setDynamicProperty(PropertyIds.ban, true);
@@ -80,7 +82,8 @@ export class Util {
    */
   static kick(player, reason, ban = false) {
     if (Util.isOwner(player)) {
-      console.warn('kick failed: cannot kick owner');
+      console.error('kick failed: cannot kick owner');
+      resetCount(player);
       return false;
     }
     const res = Util.runCommandSafe(
@@ -98,25 +101,26 @@ export class Util {
   
   /** @param {Player} player */
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('disconnect failed: cannot disconnect owner');
+    if (Util.isOwner(player)) {
+      console.error('disconnect failed: cannot disconnect owner');
+      resetCount(player);
+      return;
+    }
     player.triggerEvent('tn:kick');
   }
   
   /**
    * @arg {string} message
-   * @arg {Player|boolean} [target]
-   * @arg {boolean} [showConsole]
+   * @arg {Player} [target]
    */
-  static notify(message, target, showConsole) {
+  static notify(message, target) {
     const result = Util.decorate(message);
     if (target instanceof Player) {
       target.sendMessage(result);
-      if (showConsole) console.warn(result);
     } else {
       config.others.sendws
         ? overworld.runCommandAsync(`say "${result}"`)
         : world.sendMessage(result);
-      if (typeof target === 'boolean' && target) console.warn(result);
     }
   }
   
@@ -135,6 +139,7 @@ export class Util {
       if (player.hasTag(config.permission.ban.tag)) player.removeTag(config.permission.ban.tag);
       player.removeDynamicProperty(PropertyIds.ban);
       player.removeDynamicProperty(PropertyIds.banReason);
+      Util.removeUnbanQueue(player.name);
     } catch {}
   }
   

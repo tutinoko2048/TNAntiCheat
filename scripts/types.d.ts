@@ -38,6 +38,7 @@ declare module '@minecraft/server' {
   }
 
   interface Entity {
+    // data
     lastHitAt?: number;
     threwTridentAt?: number;
     pistonPushedAt?: number;
@@ -49,9 +50,12 @@ declare module '@minecraft/server' {
     lastMsg?: string;
     lastMsgSentAt?: number;
     isMoved?: boolean;
+    
+    // punishment counts
     speedACount?: number;
     flyACount?: number;
     placeBCount?: number;
+    
     breakCount?: number;
     cps?: number[];
     autoClickerFlag?: string;
@@ -91,7 +95,7 @@ export interface ServerCommandInput {
 export type CommandCallback = (
   origin: PlayerCommandOrigin | ScriptEventCommandOrigin | ServerCommandOrigin,
   args: string[],
-  manager: import('./managers/CommandManager').CommandManage
+  manager: import('./managers/CommandManager').CommandManager
 ) => void;
 
 export interface CommandData {

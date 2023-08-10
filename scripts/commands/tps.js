@@ -5,7 +5,7 @@ const tpsCommand = new Command({
   description: 'TPSを表示します',
   args: [ '' ],
   aliases: [ 'ping' ],
-}, (origin, args, manager) => {
+}, (origin, _, manager) => {
   const tps = manager.ac.getTPS();
   origin.send(`Current TPS: ${getColor(tps)}${tps.toFixed(1)}`);
 });
