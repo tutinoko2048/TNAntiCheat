@@ -376,6 +376,9 @@ export class AdminPanel {
 export async function manageUnbanQueue(player) {
   const queue = Util.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
+  
+  if (queue.length === 0) return player.sendMessage('§cUnbanQueueに登録されているプレイヤーは居ません§r')
+  
   const form = new UI.ActionFormData();
   form.title('UnbanQueue Manager');
   form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
