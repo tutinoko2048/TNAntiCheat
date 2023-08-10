@@ -136,13 +136,6 @@ export function debugView(p, ac) {
   ].join('\n'));
 }
 
-/** @arg {Player} player */
-export function resetCount(player) {
-  player.speedACount = 0;
-  player.flyACount = 0;
-  player.placeBCount = 0;
-}
-
 function format(value) {
   if (typeof value === 'boolean') return value ? `§a${value}§r` : `§c${value}§r`;
   if (value === undefined || value === null) return `§7${value}§r`;

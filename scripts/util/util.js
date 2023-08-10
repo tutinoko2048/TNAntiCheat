@@ -4,7 +4,6 @@ import config from '../config.js';
 import { PropertyIds } from './constants';
 import { Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
-import { resetCount } from '../modules/index';
 
 const overworld = world.getDimension('overworld');
 
@@ -418,4 +417,11 @@ export class Util {
     const queue = Util.getUnbanQueue();
     Util.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
   }
+}
+
+/** @arg {Player} player */
+function resetCount(player) {
+  player.speedACount = 0;
+  player.flyACount = 0;
+  player.placeBCount = 0;
 }
