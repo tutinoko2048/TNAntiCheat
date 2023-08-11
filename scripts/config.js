@@ -276,7 +276,7 @@ export default
     state: true,
     punishment: "tempkick",
     flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
-    minFallDistance: -2.0,
+    minFallDistance: -1.8,
     detectPiston: true, // ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)
     rollback: true
   },
