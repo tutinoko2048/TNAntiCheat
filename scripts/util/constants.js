@@ -1,4 +1,4 @@
-export const VERSION = '3.6.0';
+export const VERSION = '3.7.0';
 export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 
 export const PropertyIds = /** @type {const} */ ({
@@ -44,5 +44,5 @@ export const Icons = /** @type {const} */ ({
 
 export const panelItem = {
   nameTag: '§r§f[§aTN-AntiCheat§f] 管理者用パネルを開く',
-  lore: 'TNAC_AdminPanel' // 25文字以内にすること (1.20.20~)
+  lore: 'TNAC_AdminPanel' // 50文字以内にすること (1.20.20~)
 }
