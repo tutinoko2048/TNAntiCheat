@@ -8,7 +8,7 @@ const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
 
 /** @param {import('@minecraft/server').Entity} entity */
 export function entityCheck(entity) {
-  if (entity?.lifetimeState !== EntityLifetimeState.Loaded) return; // スポーンしてすぐしぬと間に合わないから対策
+  if (!entity.isValid()) return; // スポーンしてすぐしぬと間に合わないから対策
   const { typeId, location } = entity;
 
   if (config.entityCheckC.state) {
