@@ -252,11 +252,9 @@ export class Util {
     return JSON.parse(JSON.stringify(obj));
   }
   
-  static getTime(timestamp) {
+  static getTime(timestamp = Date.now()) {
     const offset = config.others.timezoneOffset;
-    const d = timestamp
-      ? new Date(timestamp)
-      : new Date(Date.now() + ((new Date().getTimezoneOffset() + (offset * 60)) * 60 * 1000));
+    const d = new Date(timestamp + ((new Date().getTimezoneOffset() + (offset * 60)) * 60 * 1000));
     const month = ('0' + (d.getMonth()+1)).slice(-2);
     const date = ('0' + d.getDate()).slice(-2);
     const hour = ('0' + d.getHours()).slice(-2);
