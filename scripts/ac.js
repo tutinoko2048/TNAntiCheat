@@ -96,8 +96,8 @@ export class TNAntiCheat {
         const objective = world.scoreboard.getObjective(config.others.tpsUpdateObjective);
         if (!objective) {
           tpsObjectiveNotFoundFlag = true;
-          Util.notify('§c[TPS updater] objective: ${config.others.tpsObjective}§r§c not found.');
-          console.error('[TPS updater] objective: ${config.others.tpsObjective} not found.');
+          Util.notify('§c[TPS updater] objective: ${config.others.tpsUpdateObjective}§r§c not found.');
+          console.error('[TPS updater] objective: ${config.others.tpsUpdateObjective} not found.');
           return;
         }
         objective.setScore(config.others.tpsUpdateName, Math.round(tps));
