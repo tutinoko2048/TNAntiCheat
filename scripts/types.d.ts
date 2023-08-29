@@ -13,7 +13,7 @@ interface DynamicPropertyTypes {
 
 interface EntityComponentTypes {
   'minecraft:inventory': mc.EntityInventoryComponent;
-  'minecraft:equipment_inventory': mc.EntityEquipmentInventoryComponent;
+  'minecraft:equippable': mc.EntityEquippableComponent;
   'minecraft:health': mc.EntityHealthComponent;
   'minecraft:variant': mc.EntityVariantComponent;
   'minecraft:item': mc.EntityItemComponent;

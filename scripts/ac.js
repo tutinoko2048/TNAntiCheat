@@ -92,7 +92,7 @@ export class TNAntiCheat {
       this.#lastTick = now;
     });
     
-    world.afterEvents.blockBreak.subscribe(ev => {
+    world.beforeEvents.playerBreakBlock.subscribe(ev => {
       !modules.nukerBreak(ev) &&
       !modules.instaBreak(ev) &&
       modules.reachC(ev);
@@ -112,7 +112,7 @@ export class TNAntiCheat {
       modules.getBlock(ev);
     });
     
-    world.afterEvents.blockPlace.subscribe(ev => {
+    world.beforeEvents.playerPlaceBlock.subscribe(ev => {
       modules.placeCheckB(ev);
       modules.placeCheckC(ev);
     });

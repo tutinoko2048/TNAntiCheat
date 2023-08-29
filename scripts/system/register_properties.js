@@ -1,4 +1,4 @@
-import { world, DynamicPropertiesDefinition, MinecraftEntityTypes } from '@minecraft/server';
+import { world, DynamicPropertiesDefinition } from '@minecraft/server';
 import { PropertyIds } from '../util/constants';
 
 const def = new DynamicPropertiesDefinition(); // player
@@ -12,6 +12,6 @@ def2.defineString(PropertyIds.ownerId, 30);
 def2.defineString(PropertyIds.unbanQueue, 1000);
 
 world.afterEvents.worldInitialize.subscribe(({ propertyRegistry }) => {
-  propertyRegistry.registerEntityTypeDynamicProperties(def, MinecraftEntityTypes.player);
+  propertyRegistry.registerEntityTypeDynamicProperties(def, 'minecraft:player');
   propertyRegistry.registerWorldDynamicProperties(def2);
 });

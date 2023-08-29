@@ -9,7 +9,7 @@ import { EnchantmentList, EquipmentSlot } from '@minecraft/server';
 /** @typedef {import('@minecraft/server').Player} Player */
 /** @typedef {{ flag: boolean, item?: ItemStack | null }} EnchantCheckResult */
 
-const ArmorSlots = [ EquipmentSlot.head, EquipmentSlot.chest, EquipmentSlot.legs, EquipmentSlot.feet ];
+const ArmorSlots = [ EquipmentSlot.Head, EquipmentSlot.Chest, EquipmentSlot.Legs, EquipmentSlot.Feet ];
 
 /** @param {Player} player */
 export function itemCheck(player) {
@@ -50,7 +50,7 @@ export function itemCheck(player) {
     }
   }
   
-  const equipment = player.getComponent('minecraft:equipment_inventory');
+  const equipment = player.getComponent('minecraft:equippable');
   for (const slotId of ArmorSlots) {
     const item = equipment.getEquipment(slotId);
     if (!item) continue;

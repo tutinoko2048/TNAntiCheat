@@ -1,6 +1,5 @@
-import { system, Player, Vector } from '@minecraft/server';
+import { Player, Vector } from '@minecraft/server';
 import { Util } from '../util/util';
-import { killDroppedItem } from './util';
 import config from '../config.js';
 
 /** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
@@ -31,19 +30,16 @@ export function reachB(ev) { // placement
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
+/** @param {import('@minecraft/server').PlayerBreakBlockBeforeEvent} ev */
 export function reachC(ev) { // destruction
   if (!config.reachC.state) return;
-  const { player, block, brokenBlockPermutation } = ev;
+  const { player, block } = ev;
   if (Util.isCreative(player) || Util.isOP(player)) return;
   
   const distance = Vector.distance(player.getHeadLocation(), block.location);
   if (distance > config.reachC.maxReach) {
+    if (config.reachC.cancel) ev.cancel = true;
     player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)})§r`;
-    system.run(() => {
-      killDroppedItem(block.location, block.dimension);
-      if (config.reachC.cancel) block.setPermutation(brokenBlockPermutation);
-    }); // 1tick delay
   }
 }
 

@@ -160,7 +160,7 @@ export class AdminPanel {
     if (canceled) return;
     
     const targetContainer = player.getComponent('minecraft:inventory').container;
-    const targetEquipments = player.getComponent('minecraft:equipment_inventory');
+    const targetEquipments = player.getComponent('minecraft:equippable');
     const myContainer = this.player.getComponent('minecraft:inventory').container;
     if (selection === 0) {
       typeof info.slot === 'string'
@@ -407,9 +407,9 @@ function coloredEntityCount(typeId, count) {
 
 /** @arg {Player} player  @returns {ItemInformation[]} */
 function getAllEquipments(player) {
-  const equipments = player.getComponent('minecraft:equipment_inventory');
+  const equipments = player.getComponent('minecraft:equippable');
   return Object.values(EquipmentSlot)
-    .filter(slotId => slotId !== EquipmentSlot.mainhand)
+    .filter(slotId => slotId !== EquipmentSlot.Mainhand)
     .map(slotId => ({
       item: equipments.getEquipment(slotId),
       slot: slotId

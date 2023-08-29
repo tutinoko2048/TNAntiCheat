@@ -15,8 +15,8 @@ export function placeCheckA(ev) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockPlaceAfterEvent} ev */
-export function placeCheckB(ev) {
+/** @param {import('@minecraft/server').PlayerPlaceBlockBeforeEvent} ev */
+export async function placeCheckB(ev) {
   const { block, player } = ev;
   if (!config.placeCheckB.state || Util.isOP(player)) return;
   if (
@@ -26,13 +26,14 @@ export function placeCheckB(ev) {
   
   const container = block.getComponent('minecraft:inventory')?.container;
   if (!container) return;
+  
+  /** @type {{ item: import('@minecraft/server').ItemStack, slot: number }[]} */
   const checkedItems = [];
   
   for (let i = 0; i < container.size; i++) {
     const item = container.getItem(i);
     if (isIllegalItem(item?.typeId) || (config.placeCheckB.spawnEgg && isSpawnEgg(item?.typeId))) {
-      checkedItems.push(item);
-      container.setItem(i);
+      checkedItems.push({ item, slot: i });
     }
   }
   
@@ -44,7 +45,7 @@ export function placeCheckB(ev) {
       if (mainHand.typeId === block.typeId) mainHand.setItem();
     });
     
-    let flagMsg = checkedItems.slice(0, 2).map(item => `- ${itemMessageBuilder(item)}`).join('\n');
+    let flagMsg = checkedItems.slice(0, 2).map(entry => `- ${itemMessageBuilder(entry.item)}`).join('\n');
     
     if (config.placeCheckB.flagCount !== -1 && player.placeBCount > config.placeCheckB.flagCount) {
       if (checkedItems.length > 2) flagMsg += `\n§7more ${checkedItems.length - 2} items...`;
@@ -52,21 +53,27 @@ export function placeCheckB(ev) {
     }
     
     if (checkedItems.length > 1) {
-      flagMsg = itemMessageBuilder(checkedItems[0]);
+      flagMsg = itemMessageBuilder(checkedItems[0].item);
       flagMsg += `\n§7more ${checkedItems.length - 1} items...`;
     }
     player.flagQueue = `PlaceCheckB >> §c${player.name}§r §7{${player.placeBCount ?? 1}}§r\n${block.typeId} -> ${flagMsg}§　`;
+
+    await null;
+    for (const entry of checkedItems) { // clear items
+      container.setItem(entry.slot);
+    }
   }
 }
 
-/** @param {import('@minecraft/server').BlockPlaceAfterEvent} ev */
+/** @param {import('@minecraft/server').PlayerPlaceBlockBeforeEvent} ev */
 export async function placeCheckC(ev) {
   const { block, player } = ev;
   if (!config.placeCheckC.state || !config.placeCheckC.detect.includes(block.typeId) || Util.isOP(player)) return;
   if (config.placeCheckC.excludeCreative && Util.isCreative(player)) return;
   
+  ev.cancel = true;
+
   const permutation = block.permutation.clone();
-  player.runCommand(`setblock ${block.x} ${block.y} ${block.z} ${block.typeId}`);
   block.setPermutation(permutation);
   if (config.others.debug) console.warn(`[DEBUG] PlaceCheckC: Reset: ${block.typeId}`);
 }

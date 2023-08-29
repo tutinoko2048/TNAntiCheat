@@ -1,6 +1,4 @@
-import { system } from '@minecraft/server';
 import { Util } from '../util/util';
-import { killDroppedItem } from './util';
 import config from '../config.js';
 
 /** @param {import('@minecraft/server').Player} player */
@@ -13,36 +11,29 @@ export function nukerFlag(player) {
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
+/** @param {import('@minecraft/server').PlayerBreakBlockBeforeEvent} ev */
 export function nukerBreak(ev) {
-  const { brokenBlockPermutation, block, player } = ev;
+  const { player } = ev;
   if (!config.nuker.state || Util.isOP(player)) return;
   
   player.breakCount ??= 0;
   player.breakCount++
   
   if (player.breakCount > config.nuker.limit) {
-    system.run(() => {
-      killDroppedItem(block.location, block.dimension);
-      if (config.nuker.cancel) block.setPermutation(brokenBlockPermutation);
-    }); // 1tick delay
+    if (config.nuker.cancel) ev.cancel = true;
     return true; // illegal destruction -> return true
   }
 }
 
-/** @param {import('@minecraft/server').BlockBreakAfterEvent} ev */
+/** @param {import('@minecraft/server').PlayerBreakBlockBeforeEvent} ev */
 export function instaBreak(ev) {
-  const { block, player, brokenBlockPermutation: permutation } = ev;
+  const { block, player } = ev;
   if (!config.instaBreak.state || Util.isCreative(player) || Util.isOP(player)) return;
-  const blockId = permutation.type.id;
   
-  if (config.instaBreak.detect.includes(blockId)) {
-    system.run(() => {
-      killDroppedItem(block.location, block.dimension);
-      // "place" is deprecated
-      if (config.instaBreak.cancel) block.setPermutation(permutation);
-    }); // 1tick delay
-    Util.flag(player, 'InstaBreak', config.instaBreak.punishment, `InstaBreakの使用を検知しました (§c${blockId}§r) §7[${block.x}, ${block.y}, ${block.z}]`);
+  if (config.instaBreak.detect.includes(block.typeId)) {
+    if (config.instaBreak.cancel) ev.cancel = true;
+    
+    Util.flag(player, 'InstaBreak', config.instaBreak.punishment, `InstaBreakの使用を検知しました (§c${block.typeId}§r) §7[${block.x}, ${block.y}, ${block.z}]`);
     return true;
   }
 }
