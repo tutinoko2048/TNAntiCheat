@@ -1,12 +1,11 @@
 {
   "name": "tn-anticheat",
-  "version": "3.6.0",
+  "version": "3.7.1",
   "description": "Anti-cheat addon with ScriptAPI / For Multiplayer, Realms, Servers / Recommended Japanese",
   "main": "scripts/index.js",
   "typings": "scripts/types.d.ts",
   "scripts": {
-    "lint": "eslint . --ext .js & tsc",
-    "update-types": "npm i @minecraft/server@beta -D --save-exact & npm i @minecraft/server-ui@beta -D --save-exact"
+    "lint": "eslint . --ext .js & tsc"
   },
   "repository": {
     "type": "git",
@@ -19,9 +18,9 @@
   },
   "homepage": "https://github.com/tutinoko2048/TNAntiCheat/blob/main/README.md",
   "devDependencies": {
-    "@minecraft/server": "1.5.0-beta.1.20.20-preview.22",
-    "@minecraft/server-ui": "1.2.0-beta.1.20.20-preview.22",
-    "eslint": "^8.44.0",
+    "@minecraft/server": "1.4.0-beta.1.20.10-stable",
+    "@minecraft/server-ui": "1.2.0-beta.1.20.10-stable",
+    "eslint": "^8.47.0",
     "typescript": "^5.1.6"
   }
 }

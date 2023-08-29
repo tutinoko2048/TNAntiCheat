@@ -4,6 +4,7 @@ import { BaseManager } from './BaseManager';
 import { CommandError } from '../util/CommandError';
 import config from '../config.js';
 import { COMMANDS } from '../commands/index';
+import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from '../util/CommandOrigin';
 
 /** @typedef {import('../types').CommandData} CommandData */
 
@@ -26,27 +27,56 @@ export class CommandManager extends BaseManager {
   }
   
   /**
-   * @arg {import('../types').CommandInput} ev
+   * @arg {import('../types').PlayerCommandInput} ev
    * @arg {boolean} [scriptEvent]
    */
   async handle(ev, scriptEvent) {
     const { message, sender } = ev;
     if (!this.isCommand(message) && !scriptEvent) return;
-    await Util.cancel(ev);
-
+    
     const [ commandName, ...args ] = Util.splitNicely(
       scriptEvent ? message : message.slice(this.prefix.length)
     );
     const command = this.getCommand(commandName);
-    if (!command) return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
+    if (!command) {
+      if (!scriptEvent) { // コマンドが見つからなかったら非表示にだけして他のアドオンにも回す
+        ev.sendToTargets = true;
+        ev.setTargets([]);
+      }
+      return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
+    }
+    
+    await Util.cancel(ev); // コマンドがあったらキャンセル
     if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
     if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません');
     
     try {
-      command.func(sender, args, this);
+      const origin = scriptEvent ? new ScriptEventCommandOrigin(sender) : new PlayerCommandOrigin(sender);
+      command.func(origin, args, this);
     } catch (e) {
       sender.sendMessage(`[CommandManager] §c${e}`);
       if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
+    }
+  }
+  
+  /**
+   * SourceTypeがServerの時動く
+   * @arg {import('../types').ServerCommandInput} ev
+   */
+  async handleFromServer(ev) {
+    const { message } = ev;
+    if (!config.commands.enableConsole) return;
+    
+    const [ commandName, ...args ] = Util.splitNicely(message);
+    const command = this.getCommand(commandName);
+    if (!command) return console.error('[CommandManager] §cError: コマンドが見つかりませんでした');
+    if (command.disableScriptEvent) return console.error('このコマンドはScriptEventからの実行を許可されていません');
+    try {
+      const origin = new ServerCommandOrigin();
+      command.func(origin, args, this);
+    } catch (e) {
+      console.error(`[CommandManager] §c${e}`);
+      if (config.others.debug && e.stack && !(e instanceof CommandError)) console.error(`§c${e.stack}`);
     }
   }
   

@@ -16,7 +16,8 @@ export const description = {
   },
   command: {
     desc: 'コマンド関係の設定',
-    prefix: 'prefix(コマンドの先頭につける文字)'
+    prefix: 'prefix(コマンドの先頭につける文字)',
+    enableConsole: 'サーバーのコンソールからのコマンドの実行を許可する'
   },
   itemList: {
     desc: 'アイテム系のモジュールで使用する禁止アイテムの設定',
@@ -186,6 +187,15 @@ export const description = {
     punishment,
     flagCount,
     maxVelocity: '許容するスピードの最大値',
+    rollback: '検知した時に前いた位置までテレポートする'
+  },
+  flyA: {
+    desc: 'flyを検知 (ベータ)',
+    state,
+    punishment,
+    flagCount,
+    minFallDistance: '許容する落下距離の最小値',
+    detectPiston: 'ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)',
     rollback: '検知した時に前いた位置までテレポートする'
   },
   logger: {

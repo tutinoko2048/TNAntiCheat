@@ -258,7 +258,7 @@ export class AdminPanel {
     const tags = player.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s tags`)
-      .body(tags.length > 0 ? `タグ一覧:\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
+      .body(tags.length > 0 ? `タグ一覧 (${tags.length} tags)\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -267,12 +267,15 @@ export class AdminPanel {
   
   /** @param {Player} player */
   async showScores(player) {
-    const messages = world.scoreboard
-      .getObjectives()
+    const objectives = world.scoreboard.getObjectives();
+    objectives.sort((obj0, obj1) => {
+      return Util.getScore(player, obj1.id) - Util.getScore(player, obj0.id);
+    });
+    const messages = objectives
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${player.name}'s scores`)
-      .body(messages.length > 0 ? `スコア一覧:\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
+      .body(messages.length > 0 ? `スコア一覧 (${objectives.length} objectives)\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -281,7 +284,8 @@ export class AdminPanel {
   
   async showEntities() {
     const count = {}
-    for (const e of world.getDimension('overworld').getEntities()) {
+    const entities = world.getDimension('overworld').getEntities();
+    for (const e of entities) {
       count[e.typeId] ??= 0;
       count[e.typeId]++
     }
@@ -290,7 +294,7 @@ export class AdminPanel {
       .map(([ type, n ]) => `- ${type} : ${coloredEntityCount(type, n)}`);
     const form = new UI.ActionFormData();
     form.title(`Entities`);
-    form.body(messages.length > 0 ? `エンティティ一覧:\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
+    form.body(messages.length > 0 ? `エンティティ一覧 (${entities.length} entities)\n\n${messages.join('\n')}` : 'ワールド内にエンティティが存在しません');
     form.button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
@@ -364,6 +368,35 @@ export class AdminPanel {
       item.getLore()[0] === Util.hideString(panelItem.lore)
     );
   }
+}
+
+  /**
+   * @arg {import('@minecraft/server').Player} player
+   */
+export async function manageUnbanQueue(player) {
+  const queue = Util.getUnbanQueue();
+  queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
+  
+  if (queue.length === 0) return player.sendMessage('§cUnbanQueueに登録されているプレイヤーは居ません§r')
+  
+  const form = new UI.ActionFormData();
+  form.title('UnbanQueue Manager');
+  form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
+  for (const entry of queue) form.button(entry.name);
+  
+  const { canceled, selection } = await Util.showFormToBusy(player, form);
+  if (canceled) return;
+  
+  const entry = queue[selection];
+  if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
+  
+  const res = await confirmForm(player, {
+    body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
+  });
+  if (!res) return await manageUnbanQueue(player);
+  Util.removeUnbanQueue(entry.name);
+  Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
+  Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
 }
 
 function coloredEntityCount(typeId, count) {

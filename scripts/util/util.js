@@ -3,11 +3,13 @@ import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { PropertyIds } from './constants';
 import { Permissions } from './Permissions';
+import unbanQueue from '../unban_queue.js';
 
 const overworld = world.getDimension('overworld');
 
 /** @typedef {import('@minecraft/server').Entity} Entity */
 /** @typedef {import('@minecraft/server').Vector3} Vector3 */
+/** @typedef {{ name: string, source: 'property' | 'file' }} UnbanQueueEntry */
 
 export class Util {
   /**
@@ -63,7 +65,8 @@ export class Util {
    */
   static ban(player, reason, type) {
     if (Util.isOwner(player)) {
-      console.warn('ban failed: cannot ban owner');
+      console.error('ban failed: cannot ban owner');
+      resetCount(player);
       return false;
     }
     player.setDynamicProperty(PropertyIds.ban, true);
@@ -78,7 +81,8 @@ export class Util {
    */
   static kick(player, reason, ban = false) {
     if (Util.isOwner(player)) {
-      console.warn('kick failed: cannot kick owner');
+      console.error('kick failed: cannot kick owner');
+      resetCount(player);
       return false;
     }
     const res = Util.runCommandSafe(
@@ -96,20 +100,36 @@ export class Util {
   
   /** @param {Player} player */
   static disconnect(player) {
-    if (Util.isOwner(player)) return console.warn('disconnect failed: cannot disconnect owner');
+    if (Util.isOwner(player)) {
+      console.error('disconnect failed: cannot disconnect owner');
+      resetCount(player);
+      return;
+    }
     player.triggerEvent('tn:kick');
   }
   
-  /** @param {Player} [target] */
+  /**
+   * @arg {string} message
+   * @arg {Player} [target]
+   */
   static notify(message, target) {
-    const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
+    const result = Util.decorate(message);
     if (target instanceof Player) {
-      target.sendMessage(`[§l§a${name}§r] ${message}`);
+      target.sendMessage(result);
     } else {
       config.others.sendws
-        ? overworld.runCommand(`say "[§l§aTN-AntiCheat§r] ${message}"`)
-        : world.sendMessage(`[§l§a${name}§r] ${message}`);
+        ? overworld.runCommandAsync(`say "${result}"`)
+        : world.sendMessage(result);
     }
+  }
+  
+  /**
+   * @arg {string} message
+   * @returns {string}
+   */
+  static decorate(message) {
+    const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
+    return `[§l§a${name}§r] ${message}`;
   }
   
   /** @param {Player} player */
@@ -118,6 +138,7 @@ export class Util {
       if (player.hasTag(config.permission.ban.tag)) player.removeTag(config.permission.ban.tag);
       player.removeDynamicProperty(PropertyIds.ban);
       player.removeDynamicProperty(PropertyIds.banReason);
+      Util.removeUnbanQueue(player.name);
     } catch {}
   }
   
@@ -231,8 +252,11 @@ export class Util {
     return JSON.parse(JSON.stringify(obj));
   }
   
-  static getTime(now) {
-    const d = now ? new Date(now) : new Date();
+  static getTime(timestamp) {
+    const offset = config.others.timezoneOffset;
+    const d = timestamp
+      ? new Date(timestamp)
+      : new Date(Date.now() + ((new Date().getTimezoneOffset() + (offset * 60)) * 60 * 1000));
     const month = ('0' + (d.getMonth()+1)).slice(-2);
     const date = ('0' + d.getDate()).slice(-2);
     const hour = ('0' + d.getHours()).slice(-2);
@@ -346,4 +370,58 @@ export class Util {
   static async cancel(eventData) {
     eventData.cancel = true;
   }
+  
+  /** @returns {UnbanQueueEntry[]} */
+  static getUnbanQueue() {
+    /** @type {UnbanQueueEntry[]} */
+    const queue = unbanQueue.map(name => ({ name, source: 'file' }));
+    try {
+      /** @type {string[]} */
+      const fetched = JSON.parse(world.getDynamicProperty(PropertyIds.unbanQueue) ?? '[]');
+      for (const name of fetched) {
+        const isInFile = queue.some(entry => entry.name === name);
+        if (!isInFile) queue.push({ name, source: 'property' });
+      }
+    } catch {}
+    
+    return queue;
+  }
+  
+  /**
+   * @arg {UnbanQueueEntry[]} queue
+   * @returns {UnbanQueueEntry[]}
+   */
+  static setUnbanQueue(queue) {
+    // 重複防止 ファイルに保存されているものは除外
+    const _queue = new Set(
+      queue.filter(e => e.source === 'property').map(e => e.name)
+    );
+    world.setDynamicProperty(PropertyIds.unbanQueue, JSON.stringify([..._queue]));
+    return queue;
+  }
+  
+  /**
+   * @arg {string} playerName
+   * @returns {UnbanQueueEntry[]}
+   */
+  static addUnbanQueue(playerName) {
+    const queue = Util.getUnbanQueue();
+    queue.push({ name: playerName, source: 'property' });
+    return Util.setUnbanQueue(queue);
+  }
+  
+  /** 
+   * @arg {string} playerName
+   */
+  static removeUnbanQueue(playerName) {
+    const queue = Util.getUnbanQueue();
+    Util.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
+  }
+}
+
+/** @arg {Player} player */
+function resetCount(player) {
+  player.speedACount = 0;
+  player.flyACount = 0;
+  player.placeBCount = 0;
 }

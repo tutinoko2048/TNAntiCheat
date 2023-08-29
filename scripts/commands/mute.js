@@ -9,7 +9,7 @@ const muteCommand = new Command({
   args: [ '<name: playerName> <value: boolean>' ],
   aliases: [ 'muto', 'myuto' ],
   permission: (player) => Util.isOP(player)
-}, (sender, args) => {
+}, (origin, args) => {
   const [ _playerName, value ] = args;
   if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
   const playerName = Util.parsePlayerName(_playerName);
@@ -24,7 +24,9 @@ const muteCommand = new Command({
   if (!res) err();
   
   player.setDynamicProperty(PropertyIds.mute, muteState);
-  Util.notify(`§7${sender.name} >> §a${player.name} のミュートを ${muteState} に設定しました`);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${player.name} のミュートを ${muteState} に設定しました`));
+  Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, player);
+
 });
 
 function toBoolean(str) {

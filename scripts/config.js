@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 3
+// configVersion: 4
 export default
 {
   permission: {
@@ -28,7 +28,10 @@ export default
     }
   },
   command: {
-    prefix: '!'
+    prefix: '!',
+    
+    /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
+    enableConsole: false
   },
   itemList: {
     ban: [
@@ -63,8 +66,6 @@ export default
   nuker: {
     state: true,
     limit: 8, // 1tickに何ブロックの破壊で検知するか(ラグも考慮)
-    /** @deprecated 代わりに下のcancelを使ってください */
-    //place: true,
     cancel: true, // 壊されたブロックを置き直す
     punishment: "kick"
   },
@@ -87,8 +88,6 @@ export default
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,
     punishment: "kick",
-    /** @deprecated 代わりに下のcancelを使ってください */
-    //place: true,
     cancel: true,
     detect: [
       "minecraft:bedrock",
@@ -239,7 +238,9 @@ export default
       "minecraft:ender_dragon",
       "minecraft:enderman",
       "minecraft:ghast",
-      "minecraft:fireball"
+      "minecraft:fireball",
+      "minecraft:snowball",
+      "minecraft:shulker"
     ]
   },
   reachB: { // ブロック設置の長すぎるリーチを検知
@@ -271,6 +272,14 @@ export default
     maxVelocity: 2.0,
     rollback: true
   },
+  flyA: { // flyを検知 (ベータ)
+    state: true,
+    punishment: "tempkick",
+    flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
+    minFallDistance: -1.8,
+    detectPiston: true, // ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)
+    rollback: true
+  },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
     maxLogs: 50 // 保存するログの数
@@ -280,7 +289,8 @@ export default
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
-    fixBDS: false, // BDSで使う場合はオンにしてください
-    blockCopy: true // 管理者アイテムでブロックをスニーク+タップするとコピーできます
+    fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
+    blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
+    timezoneOffset: +9, // 時刻表示用
   }
 }

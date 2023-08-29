@@ -1,6 +1,7 @@
 import { Util } from '../util/util';
 import { ConfigPanel } from '../modules/ConfigPanel';
 import { Command } from '../util/Command';
+import { CommandError } from '../util/CommandError';
 
 const configCommand = new Command({
   name: 'config',
@@ -8,8 +9,9 @@ const configCommand = new Command({
   args: [ '' ],
   aliases: [ 'con' ],
   permission: (player) => Util.isOP(player),
-}, (sender, _, manager) => {
-    new ConfigPanel(manager.ac, sender, true);
+}, (origin, _, manager) => {
+  if (origin.isPlayerOrigin()) new ConfigPanel(manager.ac, origin.sender, true);
+  else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
 });
 
 export default configCommand;

@@ -1,4 +1,4 @@
-import { world, system, Player } from '@minecraft/server';
+import { world, system, Player, ScriptEventSource } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
 import { Util } from './util/util';
@@ -61,6 +61,7 @@ export class TNAntiCheat {
         modules.nukerFlag(player);
         modules.creative(player); 
         modules.speedA(player);
+        modules.flyA(player);
         
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
@@ -149,10 +150,24 @@ export class TNAntiCheat {
 
     }, entityOption);
     
+    world.afterEvents.pistonActivate.subscribe(ev => {
+      if (!config.flyA.state || !config.flyA.detectPiston) return;
+      if (ev.isExpanding) {
+        const loc = ev.block.location;
+        const nearby = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
+        nearby.forEach(p => p.pistonPushedAt = Date.now());
+      }
+    });
+    
     system.afterEvents.scriptEventReceive.subscribe(ev => {
-      const { id, sourceEntity, message } = ev;
-      if (!(sourceEntity instanceof Player) || id != 'ac:command') return;
-      this.commands.handle({ sender: sourceEntity, message }, true);
+      const { id, sourceEntity, message, sourceType } = ev;
+      if (id !== 'ac:command') return;
+      if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
+        this.commands.handle({ sender: sourceEntity, message }, true);
+        
+      } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
+        this.commands.handleFromServer({ message });
+      }
     }, {
       namespaces: [ 'ac' ]
     });
@@ -196,6 +211,11 @@ export class TNAntiCheat {
     
     DataManager.patch(config, data);
     if (config.others.debug) console.warn('[debug] loaded Config data');
+  }
+  
+  /** @returns {import('./util/util').UnbanQueueEntry[]} */
+  getUnbanQueue() {
+    return Util.getUnbanQueue();
   }
   
   /** @return {typeof config} */
