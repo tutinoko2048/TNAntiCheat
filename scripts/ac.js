@@ -112,7 +112,7 @@ export class TNAntiCheat {
       modules.getBlock(ev);
     });
     
-    world.beforeEvents.playerPlaceBlock.subscribe(ev => {
+    world.afterEvents.playerPlaceBlock.subscribe(ev => {
       modules.placeCheckB(ev);
       modules.placeCheckC(ev);
     });
