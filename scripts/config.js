@@ -292,5 +292,8 @@ export default
     fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
+    tpsUpdateInterval: 20, // スコアボードにTPSを反映する間隔(ticks)
+    tpsUpdateObjective: '', // TPSを出力するスコアのオブジェクト名
+    tpsUpdateName: '' // TPSを出力するスコアの名前
   }
 }

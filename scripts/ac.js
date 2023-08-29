@@ -9,6 +9,7 @@ import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
+let tpsObjectiveNotFoundFlag = false;
 
 export class TNAntiCheat {
   /** @type {number[]} */
@@ -83,8 +84,24 @@ export class TNAntiCheat {
         player.breakCount = 0;
         player.wasGliding = player.isGliding;
       }
+      const tps = this.getTPS();
+      if (!(system.currentTick % calcInterval(tps))) modules.entityCounter();
       
-      if (!(system.currentTick % calcInterval(this.getTPS()))) modules.entityCounter();
+      if (
+        !tpsObjectiveNotFoundFlag &&
+        config.others.tpsUpdateObjective &&
+        config.others.tpsUpdateName &&
+        !(system.currentTick % config.others.tpsUpdateInterval)
+      ) {
+        const objective = world.scoreboard.getObjective(config.others.tpsUpdateObjective);
+        if (!objective) {
+          tpsObjectiveNotFoundFlag = true;
+          Util.notify('§c[TPS updater] objective: ${config.others.tpsObjective}§r§c not found.');
+          console.error('[TPS updater] objective: ${config.others.tpsObjective} not found.');
+          return;
+        }
+        objective.setScore(config.others.tpsUpdateName, Math.round(tps));
+      }
       
       const now = Date.now();
       if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);

@@ -209,6 +209,10 @@ export const description = {
     shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
     debug: 'ログを表示 デバッグ用',
     fixBDS: 'BDSのOP検知のバグ回避用',
-    blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます'
+    blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます',
+    timezoneOffset: 'timezone offset',
+    tpsUpdateInterval: 'スコアボードにTPSを反映する間隔(ticks)',
+    tpsUpdateObjective: 'TPSを出力するスコアのオブジェクト名',
+    tpsUpdateName: 'TPSを出力するスコアの名前'
   }
 }
