@@ -9,7 +9,6 @@ import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
-let tpsObjectiveNotFoundFlag = false;
 
 export class TNAntiCheat {
   /** @type {number[]} */
@@ -84,23 +83,18 @@ export class TNAntiCheat {
         player.breakCount = 0;
         player.wasGliding = player.isGliding;
       }
+      
       const tps = this.getTPS();
       if (!(system.currentTick % calcInterval(tps))) modules.entityCounter();
       
+      const tpsToScore = config.others.tpsToScore;
       if (
-        !tpsObjectiveNotFoundFlag &&
-        config.others.tpsUpdateObjective &&
-        config.others.tpsUpdateName &&
-        !(system.currentTick % config.others.tpsUpdateInterval)
+        tpsToScore.enabled &&
+        !(system.currentTick % tpsToScore.updateInterval)
       ) {
-        const objective = world.scoreboard.getObjective(config.others.tpsUpdateObjective);
-        if (!objective) {
-          tpsObjectiveNotFoundFlag = true;
-          Util.notify('§c[TPS updater] objective: ${config.others.tpsUpdateObjective}§r§c not found.');
-          console.error('[TPS updater] objective: ${config.others.tpsUpdateObjective} not found.');
-          return;
-        }
-        objective.setScore(config.others.tpsUpdateName, Math.round(tps));
+        const objective = world.scoreboard.getObjective(tpsToScore.objective)
+          ?? world.scoreboard.addObjective(tpsToScore.objective, tpsToScore.objective);
+        objective.setScore(tpsToScore.name, Math.round(tps));
       }
       
       const now = Date.now();

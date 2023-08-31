@@ -211,8 +211,10 @@ export const description = {
     fixBDS: 'BDSのOP検知のバグ回避用',
     blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます',
     timezoneOffset: 'timezone offset',
-    tpsUpdateInterval: 'スコアボードにTPSを反映する間隔(ticks)',
-    tpsUpdateObjective: 'TPSを出力するスコアのオブジェクト名',
-    tpsUpdateName: 'TPSを出力するスコアの名前'
+    
+    tpsToScore: 'スコアボードにTPSを出力',
+    'tpsToScore:updateInterval': '更新する間隔(ticks)',
+    'tpsToScore:objective': 'スコアのオブジェクト名',
+    'tpsToScore:name': 'スコアの名前'
   }
 }

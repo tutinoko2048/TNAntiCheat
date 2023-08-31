@@ -28,7 +28,7 @@ export default
     }
   },
   command: {
-    prefix: '!',
+    prefix: "!",
     
     /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
     enableConsole: false
@@ -188,7 +188,7 @@ export default
   },
   entityCheckA: { // いたらkill
     state: true,
-    punishment: 'notify',
+    punishment: "notify",
     detect: [
       "minecraft:command_block_minecart",
       "minecraft:movingBlock",
@@ -201,7 +201,7 @@ export default
   entityCheckB: { // ドロップ状態のアイテムを検知 アイテムはitemList参照
     state: true,
     spawnEgg: true, // スポーンエッグを含めるかどうか
-    punishment: 'notify'
+    punishment: "notify"
   },
   entityCheckC: { // 1tickにスポーンできるエンティティの数
     state: true,
@@ -285,15 +285,19 @@ export default
     maxLogs: 50 // 保存するログの数
   },
   others: {
-    adminPanel: 'minecraft:stick', // 管理者用パネルを呼び出すためのアイテム
+    adminPanel: "minecraft:stick", // 管理者用パネルを呼び出すためのアイテム
     sendws: false, // For discord-mcbe | メッセージをsayで出力します
     shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
     fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
-    tpsUpdateInterval: 20, // スコアボードにTPSを反映する間隔(ticks)
-    tpsUpdateObjective: '', // TPSを出力するスコアのオブジェクト名
-    tpsUpdateName: '' // TPSを出力するスコアの名前
+    
+    tpsToScore: { // スコアボードにTPSを出力
+      enabled: false,
+      updateInterval: 20, // 更新する間隔(ticks)
+      objective: "tps", // スコアのオブジェクト名
+      name: "TPS" // スコアの名前
+    }
   }
 }
