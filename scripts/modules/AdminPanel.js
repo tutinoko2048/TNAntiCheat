@@ -78,16 +78,17 @@ export class AdminPanel {
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`,
       `§7Permission: §f${viewPermission(player)}`,
-      player.joinedAt ? `§7JoinedAt: §f${Util.getTime(player.joinedAt)}` : null
+      player.joinedAt ? `§7JoinedAt: §f${Util.getTime(player.joinedAt)}` : null,
+      `§7isFrozen: ${this.ac.frozenPlayerMap.has(player.id) ? '§atrue§r' : '§cfalse§r'}`
     ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo.body(`${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.showInventory(player);
     if (selection === 1) return await this.managePermission(player);
-    if (selection === 2) return await this.toggleMute(player);
-    if (selection === 3) return await this.kickPlayer(player);
-    if (selection === 4) return await this.banPlayer(player);
+    if (selection === 2) return await this.kickPlayer(player);
+    if (selection === 3) return await this.banPlayer(player);
+    if (selection === 4) return await this.manageAbility(player);
     if (selection === 5) {
       this.player.teleport(player.location, { dimension: player.dimension, rotation: player.getRotation() });
       Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
@@ -98,7 +99,7 @@ export class AdminPanel {
     }
     if (selection === 7) return await this.showTags(player);
     if (selection === 8) return await this.showScores(player);
-    if (selection === 9) return await this.playerList();
+    if (selection === 9) return await this.playerList(); // back
   }
   
   /** @param {Player} player */
@@ -206,21 +207,34 @@ export class AdminPanel {
   }
   
   /** @param {Player} player */
-  async toggleMute(player) {
+  async manageAbility(player) {
     const _mute = player.getDynamicProperty(PropertyIds.mute) ?? false;
+    const _freeze = this.ac.frozenPlayerMap.has(player.id);
     const form = new UI.ModalFormData();
-    form.title('Mute')
-      .toggle('ミュート / Mute', _mute);
+    form.title('Manage Abilities');
+    form.toggle('ミュート / Mute', _mute);
+    form.toggle('フリーズ / Freeze', _freeze);
     const { formValues, canceled } = await form.show(this.player);
     if (canceled) return;
-    const [ mute ] = formValues;
-    if (mute != _mute) {
+    const [ mute, freeze ] = formValues;
+    
+    if (mute !== _mute) {
       const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
       if (!res) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       player.setDynamicProperty(PropertyIds.mute, mute);
       Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
-      
-    } else return await this.playerInfo(player);
+      Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, player);
+    }
+    
+    if (freeze !== _freeze) {
+      const res = Util.runCommandSafe(`inputpermission set @s movement ${freeze ? 'disabled' : 'enabled'}`, player);
+      if (!res) return Util.notify(`§c${player.name} のフリーズに失敗しました`, this.player);
+      if (freeze) this.ac.frozenPlayerMap.set(player.id, player.location);
+        else this.ac.frozenPlayerMap.delete(player.id);
+      Util.notify(`§7${this.player.name} >> §a${player.name} のフリーズを ${freeze} に設定しました`, this.player);
+      Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, player);
+    }
+    return await this.playerInfo(player);
   }
   
   /** @param {Player} player */

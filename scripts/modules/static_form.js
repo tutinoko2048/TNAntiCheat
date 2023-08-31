@@ -6,21 +6,21 @@ export const FORMS = {
   main: new UI.ActionFormData()
     .title('TN-AntiCheat AdminPanel')
     .button('§lプレイヤーリスト / Player List', Icons.playerList) // 0
-    .button('§lエンティティ数を表示 / Show entities', Icons.entities) // 1
+    .button('§lエンティティ数を表示 / Show Entities', Icons.entities) // 1
     .button('§l設定 / Config', Icons.config) // 2
     .button('§lログ / Logs', Icons.logs) // 3
     .button('§lこのアドオンについて / About', Icons.about), // 4
   playerInfo: new UI.ActionFormData()
     .title('PlayerInfo')
-    .button('§lインベントリを表示 / Show inventory', Icons.inventory)
-    .button('§l権限を管理 / Manage permissions', Icons.permission)
-    .button('§lミュートする / Mute', Icons.mute)
+    .button('§lインベントリを表示 / Show Inventory', Icons.inventory)
+    .button('§l権限を管理 / Manage Permissions', Icons.permission)
     .button('§lkickする / Kick', Icons.kick)
     .button('§lbanする / Ban', Icons.ban)
+    .button('§lアビリティを管理 / Manage Abilities', Icons.ability)
     .button('§lテレポート / Teleport', Icons.teleport)
-    .button('§l自分にテレポート / Teleport here', Icons.teleportHere)
-    .button('§lタグ一覧を表示 / Show tags', Icons.tags)
-    .button('§lスコア一覧を表示 / Show scores', Icons.scores)
+    .button('§l自分にテレポート / Teleport Here', Icons.teleportHere)
+    .button('§lタグ一覧を表示 / Show Tags', Icons.tags)
+    .button('§lスコア一覧を表示 / Show Scores', Icons.scores)
     .button('戻る / Return', Icons.returnBtn),
   itemInfo: new UI.ActionFormData()
     .title('ItemInfo')

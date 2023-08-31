@@ -28,6 +28,7 @@ export const Icons = /** @type {const} */ ({
   teleportHere: 'textures/items/ender_eye',
   tags: 'textures/items/name_tag',
   scores: 'textures/items/chalkboard_large',
+  ability: 'textures/ui/icon_potion',
   
   plus: 'textures/ui/color_plus',
   clear: 'textures/ui/icon_trash',
