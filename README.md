@@ -20,7 +20,6 @@ https://discord.gg/XGR8FcCeFc
 まずはアドオンをインポートし、ワールドに適用してください。  
 __このときワールドの設定から `"ベータ API"` と `"Education Edition"` をオンにしておいてください。__  
 初回はワールドを開いた後に `/function start` コマンドを打ってください。これによりアドオンが有効化され、権限を取得できます。  
-(player.jsonが競合している場合は`/scriptevent ac:start`でも可)  
   
 ![start](docs/start.jpeg)
 
@@ -28,7 +27,7 @@ __このときワールドの設定から `"ベータ API"` と `"Education Edit
 Q. アドオン入れたのに何も反応しません  
 A. 上の [使い方](#使い方) の手順に従ってください。ワールドの試験的設定をオンにし忘れてることが多いです。  
 また、アドオン内部のファイルを編集した場合は構文エラーが出ている可能性もあります。
-[BDSの方はこちらも見てください](#BDS)
+[Bedrock ServerまたはRealmで使用する方はこちらもお読みください](#BDS)
 
 Q. 運営だけ検知から除外したいです  
 A. opコマンドを使いましょう。`!op [プレイヤー名]`で指定したプレイヤーにadminの権限を与えることができます。
@@ -150,8 +149,16 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
 検知ログやアンチチートの操作に関するログを表示します。保存するログの最大数はconfigの`logger/maxLogs`で変更できます   
 
 ## BDS
-現在BDSにはop関連の機能に~~バグ~~(そういう仕様のようです)があるため個別に対策する必要があります  
-Configのothersから `fixBDS` をtrueにしてください
+現在Bedrock ServerとRealmにはop関連の機能に~~バグ~~(そういう仕様のようです)があるため個別に対策する必要があります  
+- Bedrock Serverの場合  
+こちらを`server.properties`ファイルに追加してください
+```properties
+op-permission-level=2
+#min=2
+#max=4
+```
+- Realmの場合  
+config.jsを開き、`others` 内にある `fixBDS` をtrueに変更してください
 
 ## Acknowledgements
 - [Scythe-AntiCheat](https://github.com/Scythe-Anticheat/Scythe-AntiCheat)
