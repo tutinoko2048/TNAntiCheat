@@ -4,7 +4,7 @@ import config from './config.js';
 import { Util } from './util/util';
 import * as modules from './modules/index';
 import { CommandManager } from './managers/CommandManager';
-import { AdminPanel } from './modules/AdminPanel';
+import { AdminPanel } from './form/AdminPanel';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
 

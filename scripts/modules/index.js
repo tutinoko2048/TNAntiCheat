@@ -3,10 +3,8 @@ import { Util } from '../util/util';
 import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import  { PropertyIds } from '../util/constants';
-import { AdminPanel } from './AdminPanel';
+import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
-
-/** @typedef {import('@minecraft/server').EntityInventoryComponent} InventoryComponent */
 
 export * from './item_check';
 export * from './spammer';

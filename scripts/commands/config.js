@@ -1,5 +1,5 @@
 import { Util } from '../util/util';
-import { ConfigPanel } from '../modules/ConfigPanel';
+import { ConfigPanel } from '../form/ConfigPanel';
 import { Command } from '../util/Command';
 import { CommandError } from '../util/CommandError';
 

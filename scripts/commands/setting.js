@@ -1,5 +1,5 @@
 import { Util } from '../util/util';
-import { AdminPanel } from '../modules/AdminPanel';
+import { AdminPanel } from '../form/AdminPanel';
 import { Command } from '../util/Command';
 import { CommandError } from '../util/CommandError';
 
