@@ -63,6 +63,7 @@ export class TNAntiCheat {
         modules.speedA(player);
         modules.flyA(player);
         
+        if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.ban(player); // tag check
         
@@ -157,7 +158,7 @@ export class TNAntiCheat {
     
     world.afterEvents.entityHitEntity.subscribe(ev => {
       modules.reachA(ev);
-      modules.autoClicker(ev);
+      modules.autoClickerAttack(ev);
 
     }, entityOption);
     

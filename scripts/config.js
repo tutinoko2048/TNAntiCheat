@@ -257,7 +257,7 @@ export default
   },
   autoClicker: { // れんつを検知 (ベータ)
     state: false,
-    maxCPS: 22,
+    maxCPS: 25,
     punishment: "notify"
   },
   creative: { // クリエイティブになったら検知

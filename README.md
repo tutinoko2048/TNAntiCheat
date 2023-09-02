@@ -161,6 +161,7 @@ op-permission-level=2
 config.jsを開き、`others` 内にある `fixBDS` をtrueに変更してください
 
 ## Acknowledgements
+- [Paradox_AntiCheat](https://github.com/Pete9xi/Paradox_AntiCheat) autoclicker detection
 - [Scythe-AntiCheat](https://github.com/Scythe-Anticheat/Scythe-AntiCheat)
 - [timer.js](https://github.com/Lapis256/timer.js)
 - [gametest-utility-library/toJson](https://github.com/Lapis256/gametest-utility-library)

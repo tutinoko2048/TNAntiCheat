@@ -4,6 +4,7 @@ import { Permissions } from '../util/Permissions';
 import config from '../config.js';
 import  { PropertyIds } from '../util/constants';
 import { AdminPanel } from './AdminPanel';
+import { getCPS } from './combat';
 
 /** @typedef {import('@minecraft/server').EntityInventoryComponent} InventoryComponent */
 
@@ -125,7 +126,7 @@ export function debugView(p, ac) {
   const rot = p.getRotation();
   const vel = p.getVelocity();
   const mainHand = p.getComponent('minecraft:inventory').container.getItem(p.selectedSlot)?.typeId;
-  const cps = p.cps && Util.median(p.cps);
+  const cps = getCPS(p);
   
   p.onScreenDisplay.setActionBar([
     `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}`,

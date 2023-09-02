@@ -39,7 +39,6 @@ declare module '@minecraft/server' {
 
   interface Entity {
     // data
-    lastHitAt?: number;
     threwTridentAt?: number;
     pistonPushedAt?: number;
     dimensionSwitchedAt?: number;
@@ -57,7 +56,8 @@ declare module '@minecraft/server' {
     placeBCount?: number;
     
     breakCount?: number;
-    cps?: number[];
+    clicks?: number[];
+
     autoClickerFlag?: string;
     reachAFlag?: string;
     reachBFlag?: string;

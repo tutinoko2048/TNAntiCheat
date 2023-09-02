@@ -43,23 +43,41 @@ export function reachC(ev) { // destruction
   }
 }
 
-/** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
-export function autoClicker(ev) {
-  const { damagingEntity: attacker, hitEntity } = ev;
-  if (!config.autoClicker.state || !hitEntity || !(attacker instanceof Player) || Util.isOP(attacker)) return;
-  attacker.cps ??= [];
-  
-  const time = Date.now() - attacker.lastHitAt;
-  if (attacker.lastHitAt && 1 < time) {
-    const cps = 1000 / time;
-    if (cps === Infinity) return;
-    if (attacker.cps.length > 5) attacker.cps.shift();
-    attacker.cps.push(cps);
-    const avg = Util.median(attacker.cps);
-    if (attacker.cps.length > 3 && avg > config.autoClicker.maxCPS) {
-      attacker.autoClickerFlag = `高いCPSを検知しました §7(${avg.toFixed(1)}clicks/s)§r`;
-      attacker.cps = [];
-    }
+/**
+ * @param {Player} player
+ * @returns {number}
+ */
+export function getCPS(player) {
+  player.clicks ??= [];
+  const now = Date.now();
+
+  // timestamp: [old...new]
+  while (player.clicks.length > 0 && now - player.clicks[0] >= 1000) {
+    player.clicks.shift();
   }
-  attacker.lastHitAt = Date.now();
+  return player.clicks.length;
 }
+
+/** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
+export function autoClickerAttack(ev) {
+  if (!config.autoClicker.state) return;
+  const { damagingEntity: attacker } = ev;
+  if (!(attacker instanceof Player) || Util.isOP(attacker)) return;
+
+  // Autoclicker detection from Paradox Anticheat, thanks!
+  const now = Date.now();
+  while (attacker.clicks.length > 0 && now - attacker.clicks[0] >= 1000) {
+    attacker.clicks.shift();
+  }
+  attacker.clicks.push(now);
+}
+
+/** @param {Player} player */
+export function autoClickerCheck(player) {
+  const cps = getCPS(player);
+  if (cps >= config.autoClicker.maxCPS) {
+    player.autoClickerFlag = `高いCPSを検知しました §7(${cps}clicks/s)§r`;
+    player.clicks.length = 0;
+  }
+}
+
