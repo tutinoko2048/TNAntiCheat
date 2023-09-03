@@ -160,27 +160,49 @@ export class AdminPanel {
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     
-    const targetContainer = player.getComponent('minecraft:inventory').container;
-    const targetEquipments = player.getComponent('minecraft:equippable');
-    const myContainer = this.player.getComponent('minecraft:inventory').container;
     if (selection === 0) {
-      typeof info.slot === 'string'
-        ? targetEquipments.setEquipment(info.slot)
-        : targetContainer.setItem(info.slot);
-      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を削除しました`, this.player);
+      typeof info.slot === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slot)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slot);
+      Util.notify(`[${player.name}] ${info.item.typeId} §7(slot: ${info.slot})§r を削除しました`, this.player);
     }
-    if (selection === 1) {
-      myContainer.addItem(info.item);
-      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を複製しました`, this.player);
+    if (selection === 1) return await this.transferItem(player, info);
+    if (selection === 2) return await this.showInventory(player); // back
+  }
+
+  /**
+   * 
+   * @param {Player} player 
+   * @param {ItemInformation} info 
+   */
+  async transferItem(player, info) {
+    const players = world.getPlayers();
+    players.sort((a, b) => a.name.localeCompare(b.name));
+    players.sort(p => p.id === this.player.id ? -1 : 1); // 自分の名前を1番上に
+    const form = new UI.ModalFormData();
+    form.title(`Transfer Item [${info.item.typeId}]`);
+    form.dropdown('転送先 / Target', players.map(p => p.name), 0);
+    form.toggle('アイテムを複製 / Duplicate item', false);
+    const { canceled, formValues } = await form.show(this.player);
+    if (canceled) return this.showInventory(player);
+
+    const targetIndex = /** @type {number} */ (formValues[0]);
+    const duplicate = /** @type {boolean} */ (formValues[1]);
+    const target = players[targetIndex];
+    
+    const { container: targetContainer } = target.getComponent('minecraft:inventory');
+    targetContainer.addItem(info.item);
+
+    if (!duplicate) {
+      typeof info.slot === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slot)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slot);
     }
-    if (selection === 2) {
-      myContainer.addItem(info.item);
-      typeof info.slot === 'string'
-        ? targetEquipments.setEquipment(info.slot)
-        : targetContainer.setItem(info.slot);
-      Util.notify(`${player.name} の ${info.item.typeId} §7(slot: ${info.slot})§r を移動しました`, this.player);
-    }
-    if (selection === 3) return await this.showInventory(player);
+
+    Util.notify(
+      `[${player.name}§r >> ${target.name}§r] ${info.item.typeId} §7(${info.slot})§r を${duplicate ? '複製' : '転送'}しました`,
+      this.player
+    );
   }
   
   /** @param {Player} player */

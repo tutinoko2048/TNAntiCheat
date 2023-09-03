@@ -25,8 +25,7 @@ export const FORMS = {
   itemInfo: new UI.ActionFormData()
     .title('ItemInfo')
     .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', Icons.clear)
-    .button('§l複製 / Duplicate\n§r§8アイテムを複製して受け取ります', Icons.duplicate)
-    .button('§l移動 / Move\n§r§8アイテムを自分のインベントリに移動させます', Icons.move)
+    .button('§l転送 / Transfer\n§r§8アイテムを転送します', Icons.transfer)
     .button('戻る / Return', Icons.returnBtn),
   about: new UI.ActionFormData()
     .title('About')

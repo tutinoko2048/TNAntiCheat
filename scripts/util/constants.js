@@ -33,7 +33,7 @@ export const Icons = /** @type {const} */ ({
   plus: 'textures/ui/color_plus',
   clear: 'textures/ui/icon_trash',
   duplicate: 'textures/ui/copy',
-  move: 'textures/ui/icon_import',
+  transfer: 'textures/ui/icon_import',
   edit: 'textures/ui/editIcon',
   reload: 'textures/ui/refresh_light',
   reset: 'textures/ui/refresh',
