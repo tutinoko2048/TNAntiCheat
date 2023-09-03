@@ -4,14 +4,14 @@ import { Util } from '../util/util';
 import config from '../config.js';
 import { PropertyIds, Icons, panelItem } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
-import { Permissions } from '../util/Permissions';
+import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editNameTag } from './ItemEditor';
 
 /** @typedef {{ item: ItemStack, slot: EquipmentSlot | number }} ItemInformation */
-/** @typedef {EditItemAction[keyof EditItemAction]} EditItemActions */
 
+/** @enum {'NameTag'} */
 const EditItemAction = /** @type {const} */ ({
   NameTag: 'NameTag',
 });
@@ -53,8 +53,8 @@ export class AdminPanel {
   }
   
   async playerList() {
-    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'builder') ? '§6[Builder]' : null;
-    const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, 'builder') ? Icons.builder : Icons.member;
+    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'Builder') ? '§6[Builder]' : null;
+    const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, 'Builder') ? Icons.builder : Icons.member;
     // @ts-ignore
     const players = world.getAllPlayers().sort((a,b) => a.name - b.name);
     const form = new UI.ActionFormData();
@@ -75,7 +75,7 @@ export class AdminPanel {
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
     const { currentValue, effectiveMax } = player.getComponent('minecraft:health');
-    const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'builder') ? '§ebuilder§f' : 'member';
+    const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'Builder') ? '§ebuilder§f' : 'member';
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
@@ -214,7 +214,7 @@ export class AdminPanel {
    * 
    * @param {Player} player 
    * @param {ItemInformation} info 
-   * @param {EditItemActions} action 
+   * @param {EditItemAction} action 
    */
   async editItem(player, info, action) {
     let isChanged;
@@ -230,8 +230,8 @@ export class AdminPanel {
 
   /** @param {Player} player */
   async managePermission(player) {
-    const _builder = Permissions.has(player, 'builder');
-    const _admin = Permissions.has(player, 'admin');
+    const _builder = Permissions.has(player, PermissionType.Builder);
+    const _admin = Permissions.has(player, PermissionType.Admin);
     const form = new UI.ModalFormData();
     form.title('Manage Permissions')
       .toggle('§l§eBuilder§r - クリエイティブを許可します', _builder)
@@ -240,12 +240,12 @@ export class AdminPanel {
     if (canceled) return;
     const [ builder, admin ] = /** @type {boolean[]} */ (formValues);
     if (builder != _builder) {
-      Permissions.set(player, 'builder', builder);
+      Permissions.set(player, PermissionType.Builder, builder);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:builder を ${builder ? '§a':'§c'}${builder}§e に設定しました`);
       Util.writeLog({ type: 'panel.permission', message: `§epermission:builder を §f${builder} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
     if (admin != _admin) {
-      Permissions.set(player, 'admin', admin);
+      Permissions.set(player, PermissionType.Admin, admin);
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
       Util.writeLog({ type: 'panel.permission', message: `§epermission:admin を §f${admin} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }

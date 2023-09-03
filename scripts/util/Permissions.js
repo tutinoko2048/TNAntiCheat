@@ -1,13 +1,12 @@
 import config from '../config.js';
 import { encode } from './secret';
 
-export const PERMISSIONS = /** @type {const} */ ({
-  admin: 'admin',
-  builder: 'builder',
-  ban: 'ban'
+/** @enum {'Admin' | 'Builder' | 'Ban'} */
+export const PermissionType = /** @type {const} */ ({
+  Admin: 'Admin',
+  Builder: 'Builder',
+  Ban: 'Ban'
 });
-
-/** @typedef {PERMISSIONS[keyof PERMISSIONS]} PermissionType */
 
 export class Permissions {
   /**
@@ -70,6 +69,6 @@ export class Permissions {
   }
   
   static list() {
-    return Object.values(PERMISSIONS);
+    return Object.values(PermissionType);
   }
 }

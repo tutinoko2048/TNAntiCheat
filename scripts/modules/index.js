@@ -1,6 +1,6 @@
 import { world, system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
-import { Permissions } from '../util/Permissions';
+import { PermissionType, Permissions } from '../util/Permissions';
 import config from '../config.js';
 import  { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
@@ -92,7 +92,7 @@ export function namespoof(player) {
 
 /** @param {Player} player */
 export function creative(player) {
-  if (!config.creative.state || Util.isOP(player) || Permissions.has(player, 'builder')) return;
+  if (!config.creative.state || Util.isOP(player) || Permissions.has(player, PermissionType.Builder)) return;
   if (Util.isCreative(player)) {
     player.runCommand(`gamemode ${config.creative.defaultGamemode} @s`);
     Util.flag(player, 'Creative', config.creative.punishment, 'クリエイティブは許可されていません');

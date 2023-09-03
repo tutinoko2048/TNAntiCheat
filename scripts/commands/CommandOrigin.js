@@ -3,13 +3,12 @@ import { world } from '@minecraft/server';
 
 /** @typedef {import('@minecraft/server').Player} Player */
 
+/** @enum {'Player' | 'ScriptEvent' | 'Server'} */
 export const CommandOriginType = /** @type {const} */ ({
   Player: 'Player',
   ScriptEvent: 'ScriptEvent',
   Server: 'Server'
 });
-
-/** @typedef {CommandOriginType[keyof CommandOriginType]} CommandOriginTypes */
 
 export class CommandOrigin {
   constructor() {}
@@ -29,7 +28,7 @@ export class CommandOrigin {
     return this instanceof ServerCommandOrigin;
   }
   
-  /** @type {CommandOriginTypes} */
+  /** @type {CommandOriginType} */
   get type() {
     if (this.isPlayerOrigin()) return CommandOriginType.Player;
     if (this.isScriptEventOrigin()) return CommandOriginType.ScriptEvent;

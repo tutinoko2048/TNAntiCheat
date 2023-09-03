@@ -2,7 +2,7 @@ import { world, system, Player, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { PropertyIds } from './constants';
-import { Permissions } from './Permissions';
+import { PermissionType, Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
 
 const overworld = world.getDimension('overworld');
@@ -144,7 +144,7 @@ export class Util {
   
   /** @param {Player} player */
   static isBanned(player) {
-    return Permissions.has(player, 'ban') || player.getDynamicProperty(PropertyIds.ban);
+    return Permissions.has(player, PermissionType.Ban) || player.getDynamicProperty(PropertyIds.ban);
   }
   
   /** @param {Player} player */
@@ -152,7 +152,7 @@ export class Util {
     return (
       player?.typeId === 'minecraft:player' &&
       (player.isOp() || config.others.fixBDS) &&
-      Permissions.has(player, 'admin')
+      Permissions.has(player, PermissionType.Admin)
     );
   }
   

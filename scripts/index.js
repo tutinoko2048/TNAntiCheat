@@ -2,7 +2,7 @@ import { world, system, Player } from '@minecraft/server';
 import { TNAntiCheat } from './ac';
 import { events } from './lib/events/index.js';
 import { PropertyIds } from './util/constants';
-import { Permissions } from './util/Permissions';
+import { PermissionType, Permissions } from './util/Permissions';
 import './system/dog.js';
 import './system/register_properties.js';
 
@@ -29,7 +29,7 @@ system.afterEvents.scriptEventReceive.subscribe(ev => {
 /** @param {Player} player */
 function start(player) {
   if (world.getDynamicProperty(PropertyIds.ownerId)) return player.sendMessage('TNAC is already registered!');
-  Permissions.add(player, 'admin');
+  Permissions.add(player, PermissionType.Admin);
   world.setDynamicProperty(PropertyIds.ownerId, player.id);
   
   ac.enable();
