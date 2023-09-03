@@ -1,17 +1,20 @@
 import { world } from '@minecraft/server';
 import { Util } from '../util/util'
-import { BaseManager } from './BaseManager';
 import { CommandError } from '../util/CommandError';
 import config from '../config.js';
 import { COMMANDS } from '../commands/index';
 import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from '../util/CommandOrigin';
 
 /** @typedef {import('../types').CommandData} CommandData */
+/** @typedef {import('../ac').TNAntiCheat} TNAntiCheat */
 
-export class CommandManager extends BaseManager {
-  /** @param {import('../ac').TNAntiCheat} ac */
+export class CommandManager {
+  /** @type {TNAntiCheat} */
+  #ac;
+
+  /** @param {TNAntiCheat} ac */
   constructor(ac) {
-    super(ac);
+    this.#ac = ac;
     
     if (config.others.debug) console.warn('[CommandManager] initialized');
 
@@ -19,6 +22,11 @@ export class CommandManager extends BaseManager {
     this.registeredCommands = new Map();
     
     this.load();
+  }
+
+  /** @type {TNAntiCheat} */
+  get ac() {
+    return this.#ac;
   }
   
   /** @type {string} */
@@ -105,7 +113,7 @@ export class CommandManager extends BaseManager {
     }
     
     const wait = COMMANDS.map(async name => {
-      return import(`../commands/${name}`)
+      return import(`../commands/data/${name}`)
         .then(file => this.create(file.default))
         .catch(e => showError(`[CommandManager] §cError: failed to load command: ${name}\n${e}\n${e.stack}`));
     });

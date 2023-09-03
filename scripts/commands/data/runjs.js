@@ -1,14 +1,14 @@
 /* eslint no-unused-vars: 0 */
 
-import { Util } from '../util/util';
+import { Util } from '../../util/util';
 import * as mc from '@minecraft/server';
 const { world, system } = mc;
-import toJson from '../lib/toJson';
-import { Permissions } from '../util/Permissions';
-import config from '../config.js';
-import unbanQueue from '../unban_queue.js';
-import { DataManager } from '../util/DataManager';
-import { Command } from '../util/Command';
+import toJson from '../../lib/toJson';
+import { Permissions } from '../../util/Permissions';
+import config from '../../config.js';
+import unbanQueue from '../../unban_queue.js';
+import { DataManager } from '../../util/DataManager';
+import { Command } from '../../util/Command';
 
 const runjsCommand = new Command({
   name: 'runjs',

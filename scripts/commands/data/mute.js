@@ -1,7 +1,7 @@
-import { Util } from '../util/util';
-import { CommandError } from '../util/CommandError';
-import { PropertyIds } from '../util/constants';
-import { Command } from '../util/Command';
+import { Util } from '../../util/util';
+import { CommandError } from '../../util/CommandError';
+import { PropertyIds } from '../../util/constants';
+import { Command } from '../../util/Command';
 
 const muteCommand = new Command({
   name: 'mute',

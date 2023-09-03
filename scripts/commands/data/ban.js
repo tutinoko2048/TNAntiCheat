@@ -1,8 +1,8 @@
-import { Util } from '../util/util';
-import { CommandError } from '../util/CommandError';
-import { Command } from '../util/Command';
+import { Util } from '../../util/util';
+import { CommandError } from '../../util/CommandError';
+import { Command } from '../../util/Command';
 
-const banCommand =  new Command({
+const banCommand = new Command({
   name: 'ban',
   description: 'プレイヤーをBanします',
   args: [ '<name: playerName> [reason: string] [expects: boolean]' ],

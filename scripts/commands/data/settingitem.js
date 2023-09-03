@@ -1,7 +1,7 @@
-import { Util } from '../util/util';
-import { AdminPanel } from '../form/AdminPanel';
-import { Command } from '../util/Command';
-import { CommandError } from '../util/CommandError';
+import { Util } from '../../util/util';
+import { AdminPanel } from '../../form/AdminPanel';
+import { Command } from '../../util/Command';
+import { CommandError } from '../../util/CommandError';
 
 const itemCommand = new Command({
   name: 'settingitem',

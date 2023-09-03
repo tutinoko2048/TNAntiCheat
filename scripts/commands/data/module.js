@@ -1,6 +1,6 @@
-import { Util } from '../util/util';
-import { Command } from '../util/Command';
-import config from '../config.js';
+import { Util } from '../../util/util';
+import { Command } from '../../util/Command';
+import config from '../../config.js';
 
 const moduleCommand = new Command({
   name: 'module',

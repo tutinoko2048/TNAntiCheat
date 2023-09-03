@@ -1,6 +1,6 @@
-import { Util } from '../util/util';
-import { CommandError } from '../util/CommandError';
-import { Command } from '../util/Command';
+import { Util } from '../../util/util';
+import { CommandError } from '../../util/CommandError';
+import { Command } from '../../util/Command';
 
 const kickCommand = new Command({
   name: 'kick',

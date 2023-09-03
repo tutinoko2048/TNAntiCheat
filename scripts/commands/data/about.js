@@ -1,5 +1,5 @@
-import { VERSION, DISCORD_URL } from '../util/constants';
-import { Command } from '../util/Command';
+import { VERSION, DISCORD_URL } from '../../util/constants';
+import { Command } from '../../util/Command';
 
 const aboutCommand = new Command({
   name: 'about',

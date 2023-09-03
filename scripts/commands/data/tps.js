@@ -1,4 +1,4 @@
-import { Command } from '../util/Command';
+import { Command } from '../../util/Command';
 
 const tpsCommand = new Command({
   name: 'tps',

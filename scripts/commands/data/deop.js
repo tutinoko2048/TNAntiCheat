@@ -1,7 +1,7 @@
-import { Util } from '../util/util';
-import { Permissions } from '../util/Permissions';
-import { CommandError } from '../util/CommandError';
-import { Command } from '../util/Command';
+import { Util } from '../../util/util';
+import { Permissions } from '../../util/Permissions';
+import { CommandError } from '../../util/CommandError';
+import { Command } from '../../util/Command';
 
 const deopCommand = new Command({
   name: 'deop',

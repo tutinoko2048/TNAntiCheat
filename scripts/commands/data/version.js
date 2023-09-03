@@ -1,5 +1,5 @@
-import { VERSION } from '../util/constants';
-import { Command } from '../util/Command';
+import { VERSION } from '../../util/constants';
+import { Command } from '../../util/Command';
 
 const versionCommand = new Command({
   name: 'version',
