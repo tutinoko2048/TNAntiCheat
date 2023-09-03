@@ -15,7 +15,6 @@ const tempkickCommand = new Command({
   
   const player = Util.getPlayerByName(playerName, expect === 'true');
   if (!player) throw new CommandError(`プレイヤー: ${playerName} が見つかりませんでした`);
-  if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をkickすることはできません');
   origin.broadcast(Util.decorate(`§7${origin.name} >> §rプレイヤー: §c${player.name}§r をtempkickしました(再参加できます)\n§7Reason: §r${reason}`));
   Util.writeLog({ type: 'command.tempkick', message: `Tempkicked by ${origin.name}\nReason: ${reason}` }, player);
   Util.disconnect(player);

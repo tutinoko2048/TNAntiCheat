@@ -113,7 +113,7 @@ export class CommandManager {
     }
     
     const wait = COMMANDS.map(async name => {
-      return import(`../commands/data/${name}`)
+      return import(`./data/${name}`)
         .then(file => this.create(file.default))
         .catch(e => showError(`[CommandManager] §cError: failed to load command: ${name}\n${e}\n${e.stack}`));
     });
