@@ -1,8 +1,8 @@
 import config from '../../config.js';
 import { Util } from '../../util/util';
 import { Permissions } from '../../util/Permissions';
-import { CommandError } from '../../util/CommandError';
-import { Command } from '../../util/Command';
+import { CommandError } from '../CommandError.js';
+import { Command } from '../Command.js';
 
 const opCommand = new Command({
   name: 'op',

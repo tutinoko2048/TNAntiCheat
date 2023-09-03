@@ -8,7 +8,7 @@ import { Permissions } from '../../util/Permissions';
 import config from '../../config.js';
 import unbanQueue from '../../unban_queue.js';
 import { DataManager } from '../../util/DataManager';
-import { Command } from '../../util/Command';
+import { Command } from '../Command';
 
 const runjsCommand = new Command({
   name: 'runjs',

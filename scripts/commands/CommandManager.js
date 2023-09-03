@@ -1,9 +1,9 @@
 import { world } from '@minecraft/server';
 import { Util } from '../util/util'
-import { CommandError } from '../util/CommandError';
+import { CommandError } from './CommandError';
 import config from '../config.js';
-import { COMMANDS } from '../commands/index';
-import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from '../util/CommandOrigin';
+import { COMMANDS } from './index';
+import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './CommandOrigin';
 
 /** @typedef {import('../types').CommandData} CommandData */
 /** @typedef {import('../ac').TNAntiCheat} TNAntiCheat */
@@ -123,7 +123,7 @@ export class CommandManager {
       console.warn(`[CommandManager] Registered ${data.filter(Boolean).length}/${COMMANDS.length} commands`);
   }
   
-  /** @param {import('../util/Command').Command} command */
+  /** @param {import('./Command').Command} command */
   create(command) {
     this.registeredCommands.set(command.data.name, command.data);
     return command;

@@ -1,6 +1,6 @@
 import { Util } from '../../util/util';
-import { CommandError } from '../../util/CommandError';
-import { Command } from '../../util/Command';
+import { CommandError } from '../CommandError';
+import { Command } from '../Command';
 
 const freezeCommand =  new Command({
   name: 'freeze',

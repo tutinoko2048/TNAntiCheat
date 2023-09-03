@@ -1,7 +1,7 @@
 import { Util } from '../../util/util';
-import { CommandError } from '../../util/CommandError';
+import { CommandError } from '../CommandError';
 import { Permissions } from '../../util/Permissions';
-import { Command } from '../../util/Command';
+import { Command } from '../Command';
 
 const permissionCommand = new Command({
   name: 'permission',

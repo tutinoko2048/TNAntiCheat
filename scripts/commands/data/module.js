@@ -1,5 +1,5 @@
 import { Util } from '../../util/util';
-import { Command } from '../../util/Command';
+import { Command } from '../Command';
 import config from '../../config.js';
 
 const moduleCommand = new Command({

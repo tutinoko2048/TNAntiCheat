@@ -1,7 +1,7 @@
 import { Util } from '../../util/util';
 import { ConfigPanel } from '../../form/ConfigPanel';
-import { Command } from '../../util/Command';
-import { CommandError } from '../../util/CommandError';
+import { Command } from '../Command';
+import { CommandError } from '../CommandError';
 
 const configCommand = new Command({
   name: 'config',

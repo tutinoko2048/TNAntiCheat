@@ -1,6 +1,6 @@
 import * as mc from '@minecraft/server';
 import { PropertyIds } from './util/constants';
-import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './util/CommandOrigin';
+import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './commands/CommandOrigin';
 
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
@@ -95,7 +95,7 @@ export interface ServerCommandInput {
 export type CommandCallback = (
   origin: PlayerCommandOrigin | ScriptEventCommandOrigin | ServerCommandOrigin,
   args: string[],
-  manager: import('./managers/CommandManager').CommandManager
+  manager: import('./commands/CommandManager').CommandManager
 ) => void;
 
 export interface CommandData {

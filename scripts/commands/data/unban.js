@@ -1,6 +1,6 @@
 import { Util } from '../../util/util';
-import { Command } from '../../util/Command';
-import { CommandError } from '../../util/CommandError';
+import { Command } from '../Command';
+import { CommandError } from '../CommandError';
 import { manageUnbanQueue } from '../../form/AdminPanel';
 
 const unbanCommand = new Command({

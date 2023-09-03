@@ -1,6 +1,6 @@
 import { DISCORD_URL } from '../../util/constants';
-import { CommandError } from '../../util/CommandError';
-import { Command } from '../../util/Command';
+import { CommandError } from '../CommandError';
+import { Command } from '../Command';
 
 const helpCommand = new Command({
   name: 'help',
