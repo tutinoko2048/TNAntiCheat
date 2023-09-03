@@ -1,6 +1,5 @@
 import { ActionFormData } from '@minecraft/server-ui';
 
-
 export class ActionForm {
   constructor() {
     /**
@@ -41,7 +40,7 @@ export class ActionForm {
   /**
    * @param {string} text 
    * @param {string} [iconPath] 
-   * @param {any} [id] 
+   * @param {string|number} [id] 
    * @returns {this}
    */
   button(text, iconPath, id) {

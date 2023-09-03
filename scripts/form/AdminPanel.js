@@ -7,8 +7,14 @@ import { FORMS, confirmForm } from './static_form';
 import { Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
+import { editNameTag } from './ItemEditor';
 
 /** @typedef {{ item: ItemStack, slot: EquipmentSlot | number }} ItemInformation */
+/** @typedef {EditItemAction[keyof EditItemAction]} EditItemActions */
+
+const EditItemAction = /** @type {const} */ ({
+  NameTag: 'NameTag',
+});
 
 export class AdminPanel {
   /**
@@ -107,20 +113,22 @@ export class AdminPanel {
     /** @type {ItemInformation[]} */
     const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
    
-    const form = new UI.ActionFormData();
-    form.button('§l§1更新 / Reload', Icons.reload);
+    const form = new ActionForm();
+    form.button('§l§1更新 / Reload', Icons.reload, 'reload');
     if (itemList.length === 0) form.body('何も持っていないようです\n ');
-    itemList.forEach(info => form.button(`§0${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§8slot: ${info.slot}, amount: ${info.item.amount}`));
+    itemList.forEach((info, index) =>
+      form.button(`§0${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§8slot: ${info.slot}, amount: ${info.item.amount}`, null, index)
+    );
     form.title(`${player.name}'s inventory`)
-      .button('§l§c全て削除 / Clear all', Icons.clear)
-      .button('§l§cエンダーチェストをクリア / Clear enderchest', Icons.enderchest)
-      .button('戻る / Return', Icons.returnBtn);
+      .button('§l§c全て削除 / Clear all', Icons.clear, 'clear')
+      .button('§l§cエンダーチェストをクリア / Clear enderchest', Icons.enderchest, 'ender')
+      .button('戻る / Return', Icons.returnBtn, 'back');
     
-    const { selection, canceled } = await form.show(this.player);
+    const { canceled, button } = await form.show(this.player);
     if (canceled) return;
     
-    if (selection === 0) return this.showInventory(player);   
-    if (selection === itemList.length + 1) {
+    if (button.id === 'reload') return this.showInventory(player);
+    if (button.id === 'clear') {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
         yes: '§c削除する',
@@ -131,7 +139,7 @@ export class AdminPanel {
         Util.notify(`${player.name} の全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === itemList.length + 2) {
+    } else if (button.id === 'ender') {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
         yes: '§c削除する',
@@ -142,11 +150,11 @@ export class AdminPanel {
         Util.notify(`${player.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
       } else return await this.showInventory(player);
       
-    } else if (selection === itemList.length + 3) {
+    } else if (button.id === 'back') {
       return await this.playerInfo(player);
       
     } else {
-      return await this.itemInfo(player, itemList[selection - 1]);
+      return await this.itemInfo(player, itemList[button.id]);
     }
   }
   
@@ -166,7 +174,8 @@ export class AdminPanel {
       Util.notify(`[${player.name}] ${info.item.typeId} §7(slot: ${info.slot})§r を削除しました`, this.player);
     }
     if (selection === 1) return await this.transferItem(player, info);
-    if (selection === 2) return await this.showInventory(player); // back
+    if (selection === 2) return await this.editItem(player, info, EditItemAction.NameTag);
+    if (selection === 3) return await this.showInventory(player); // back
   }
 
   /**
@@ -200,7 +209,25 @@ export class AdminPanel {
       this.player
     );
   }
-  
+
+  /**
+   * 
+   * @param {Player} player 
+   * @param {ItemInformation} info 
+   * @param {EditItemActions} action 
+   */
+  async editItem(player, info, action) {
+    let isChanged;
+    if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, info.item);
+
+    if (isChanged) {
+      typeof info.slot === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slot, info.item)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slot, info.item);
+    }
+    return await this.itemInfo(player, info);
+  }
+
   /** @param {Player} player */
   async managePermission(player) {
     const _builder = Permissions.has(player, 'builder');

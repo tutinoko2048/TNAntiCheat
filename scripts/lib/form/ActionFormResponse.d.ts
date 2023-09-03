@@ -3,7 +3,7 @@ import type { ActionFormResponse as BaseActionFormResponse } from '@minecraft/se
 export interface ActionFormButton {
   readonly text: string;
   readonly iconPath?: string;
-  readonly id?: any;
+  readonly id?: string | number;
 }
 
 export interface ActionFormResponse extends BaseActionFormResponse {

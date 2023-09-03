@@ -26,6 +26,7 @@ export const FORMS = {
     .title('ItemInfo')
     .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', Icons.clear)
     .button('§l転送 / Transfer\n§r§8アイテムを転送します', Icons.transfer)
+    .button('§l名前を編集 / Edit NameTag')
     .button('戻る / Return', Icons.returnBtn),
   about: new UI.ActionFormData()
     .title('About')
@@ -68,4 +69,20 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
   const { selection, canceled } = await form.show(player);
   if (canceled) return defaultValue;
   return selection === 1;
+}
+
+/**
+ * 
+ * @param {import('@minecraft/server').Player} player 
+ * @param {{ label: string, placeholder: string, title?: string, defaultValue?: string }} options
+ * @returns {Promise<{ canceled: boolean, value: string }>}
+ */
+export async function textInput(player, options) {
+  const form = new UI.ModalFormData();
+  if ('title' in options) form.title(options.title);
+  form.textField(options.label, options.placeholder, options.defaultValue);
+  const { canceled, formValues } = await form.show(player);
+  if (canceled) return { canceled: true, value: undefined }
+  const value = /** @type {string} */ (formValues[0]);
+  return { canceled: false, value }
 }
