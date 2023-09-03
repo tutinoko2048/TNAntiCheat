@@ -104,6 +104,7 @@ export class AdminPanel {
   
   /** @param {Player} player */
   async showInventory(player) {
+    /** @type {ItemInformation[]} */
     const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
    
     const form = new UI.ActionFormData();
@@ -118,10 +119,8 @@ export class AdminPanel {
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     
-    if (selection === 0) {
-      return this.showInventory(player);
-    
-    } else if (selection === itemList.length + 1) {
+    if (selection === 0) return this.showInventory(player);   
+    if (selection === itemList.length + 1) {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
         yes: '§c削除する',
@@ -171,7 +170,6 @@ export class AdminPanel {
   }
 
   /**
-   * 
    * @param {Player} player 
    * @param {ItemInformation} info 
    */
@@ -179,6 +177,7 @@ export class AdminPanel {
     const players = world.getPlayers();
     players.sort((a, b) => a.name.localeCompare(b.name));
     players.sort(p => p.id === this.player.id ? -1 : 1); // 自分の名前を1番上に
+
     const form = new UI.ModalFormData();
     form.title(`Transfer Item [${info.item.typeId}]`);
     form.dropdown('転送先 / Target', players.map(p => p.name), 0);
@@ -189,10 +188,7 @@ export class AdminPanel {
     const targetIndex = /** @type {number} */ (formValues[0]);
     const duplicate = /** @type {boolean} */ (formValues[1]);
     const target = players[targetIndex];
-    
-    const { container: targetContainer } = target.getComponent('minecraft:inventory');
-    targetContainer.addItem(info.item);
-
+    target.getComponent('minecraft:inventory').container.addItem(info.item);
     if (!duplicate) {
       typeof info.slot === 'number'
         ? player.getComponent('minecraft:inventory').container.setItem(info.slot)
