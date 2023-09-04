@@ -10,22 +10,23 @@ const muteCommand = new Command({
   aliases: [ 'muto', 'myuto' ],
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
-  const [ _playerName, value ] = args;
-  if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
-  const playerName = Util.parsePlayerName(_playerName);
+  const [ _targetName, value ] = args;
+  if (!_targetName) throw new CommandError('プレイヤー名を入力してください');
+  const targetName = Util.parsePlayerName(_targetName);
   
-  const player = Util.getPlayerByName(playerName);
-  if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
+  const target = Util.getPlayerByName(targetName);
+  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
   const muteState = toBoolean(value);
   
-  const err = () => { throw new CommandError(`${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
+  const err = () => { throw new CommandError(`${target.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
   
-  const res = Util.runCommandSafe(`ability @s mute ${muteState}`, player);
+  const res = Util.runCommandSafe(`ability @s mute ${muteState}`, target);
   if (!res) err();
   
-  player.setDynamicProperty(PropertyIds.mute, muteState);
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${player.name} のミュートを ${muteState} に設定しました`));
-  Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, player);
+  target.setDynamicProperty(PropertyIds.mute, muteState);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のミュートを ${muteState} に設定しました`));
+  Util.notify('§o§eあなたはミュートされています', target);
+  Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, target);
 
 });
 

@@ -274,7 +274,8 @@ export class AdminPanel {
       const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
       if (!res) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       player.setDynamicProperty(PropertyIds.mute, mute);
-      Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`, this.player);
+      Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`);
+      Util.notify('§o§eあなたはミュートされています', player);
       Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, player);
     }
     
@@ -283,7 +284,8 @@ export class AdminPanel {
       if (!res) return Util.notify(`§c${player.name} のフリーズに失敗しました`, this.player);
       if (freeze) this.ac.frozenPlayerMap.set(player.id, player.location);
         else this.ac.frozenPlayerMap.delete(player.id);
-      Util.notify(`§7${this.player.name} >> §a${player.name} のフリーズを ${freeze} に設定しました`, this.player);
+      Util.notify(`§7${this.player.name} >> §a${player.name} のフリーズを ${freeze} に設定しました`);
+      Util.notify('§o§eあなたはフリーズされています', player);
       Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, player);
     }
     return await this.playerInfo(player);

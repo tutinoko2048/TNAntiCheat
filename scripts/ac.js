@@ -70,7 +70,10 @@ export class TNAntiCheat {
         modules.debugView(player, this);
         
         try {
-          if (this.frozenPlayerMap.has(player.id)) player.teleport(this.frozenPlayerMap.get(player.id));
+          if (this.frozenPlayerMap.has(player.id)) {
+            player.teleport(this.frozenPlayerMap.get(player.id));
+            player.addEffect('weakness', 20*1);
+          }
         } catch (e) {
           if (config.others.debug) console.error(e, e.stack);
         }
@@ -84,7 +87,7 @@ export class TNAntiCheat {
         player.breakCount = 0;
         player.wasGliding = player.isGliding;
       }
-      
+
       const tps = this.getTPS();
       if (!(system.currentTick % calcInterval(tps))) modules.entityCounter();
       
@@ -108,6 +111,7 @@ export class TNAntiCheat {
       !modules.nukerBreak(ev) &&
       !modules.instaBreak(ev) &&
       modules.reachC(ev);
+      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
     });
     
     world.beforeEvents.chatSend.subscribe(ev => this.#handleChat(ev));
@@ -122,6 +126,7 @@ export class TNAntiCheat {
       modules.placeCheckD(ev);
       
       modules.getBlock(ev);
+      if (this.frozenPlayerMap.has(ev.source.id)) ev.cancel = true;
     });
     
     world.afterEvents.playerPlaceBlock.subscribe(ev => {
@@ -140,7 +145,9 @@ export class TNAntiCheat {
         const target = source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
         if (target?.entity instanceof Player) new AdminPanel(this, source).playerInfo(target.entity); // show playerInfo
         else new AdminPanel(this, source).show(); // show AdminPanel
+        return;
       }
+      if (this.frozenPlayerMap.has(source.id)) ev.cancel = true;
     });
     
     world.afterEvents.playerSpawn.subscribe(ev => {
