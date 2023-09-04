@@ -53,13 +53,13 @@ export class AdminPanel {
   }
   
   async playerList() {
-    const viewPermission = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, 'Builder') ? '§6[Builder]' : null;
-    const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, 'Builder') ? Icons.builder : Icons.member;
+    const perm = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, PermissionType.Builder) ? '§6[Builder]' : null;
+    const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, PermissionType.Builder) ? Icons.builder : Icons.member;
     // @ts-ignore
     const players = world.getAllPlayers().sort((a,b) => a.name - b.name);
     const form = new UI.ActionFormData();
     for (const p of players) form.button(
-      viewPermission(p) ? `${viewPermission(p)}§8 ${p.name}` : p.name,
+      perm(p) ? `${perm(p)}§8 ${p.name}` : p.name,
       icon(p)
     );
     form.body(`§7Players: §f${players.length}`)
@@ -75,7 +75,7 @@ export class AdminPanel {
   async playerInfo(player) {
     const { x, y, z } = Util.vectorNicely(player.location);
     const { currentValue, effectiveMax } = player.getComponent('minecraft:health');
-    const viewPermission = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, 'Builder') ? '§ebuilder§f' : 'member';
+    const perm = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, PermissionType.Builder) ? '§ebuilder§f' : 'member';
     const info = [
       `§7Name: §f${player.name}`,
       `§7Dimension: §f${player.dimension.id}`,
@@ -83,7 +83,7 @@ export class AdminPanel {
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Gamemode: §f${Util.getGamemode(player)}`,
       `§7ID: §f${player.id}`,
-      `§7Permission: §f${viewPermission(player)}`,
+      `§7Permission: §f${perm(player)}`,
       player.joinedAt ? `§7JoinedAt: §f${Util.getTime(player.joinedAt)}` : null,
       `§7isFrozen: ${this.ac.frozenPlayerMap.has(player.id) ? '§atrue§r' : '§cfalse§r'}`
     ].filter(Boolean).join('\n');

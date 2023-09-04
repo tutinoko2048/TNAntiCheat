@@ -1,16 +1,21 @@
 import config from '../config.js';
 import { encode } from './secret';
 
-/** @enum {'Admin' | 'Builder' | 'Ban'} */
+/** @typedef {import('@minecraft/server').Player} Player */
+
+/**
+ * Do not edit this! This is used in op tag and as key in config.
+ * @enum {'admin' | 'builder' | 'ban'} 
+ */
 export const PermissionType = /** @type {const} */ ({
-  Admin: 'Admin',
-  Builder: 'Builder',
-  Ban: 'Ban'
+  Admin: 'admin',
+  Builder: 'builder',
+  Ban: 'ban'
 });
 
 export class Permissions {
   /**
-   * @param {import('@minecraft/server').Player} player
+   * @param {Player} player
    * @param {PermissionType} permission
    */
   static add(player, permission) {
@@ -19,7 +24,7 @@ export class Permissions {
   }
   
   /**
-   * @param {import('@minecraft/server').Player} player
+   * @param {Player} player
    * @param {PermissionType} permission
    */
   static remove(player, permission) {
@@ -28,7 +33,7 @@ export class Permissions {
   }
   
   /**
-   * @param {import('@minecraft/server').Player} player 
+   * @param {Player} player 
    * @param {PermissionType} permission 
    * @returns {boolean}
    */
@@ -40,7 +45,7 @@ export class Permissions {
   }
   
   /**
-   * @param {import('@minecraft/server').Player} player 
+   * @param {Player} player 
    * @param {PermissionType} permission 
    * @param {boolean} value 
    */
@@ -50,7 +55,7 @@ export class Permissions {
   }
   
   /**
-   * @param {import('@minecraft/server').Player} player 
+   * @param {Player} player 
    * @param {PermissionType} permission 
    * @returns {string}
    */
@@ -68,6 +73,9 @@ export class Permissions {
     return this.list().some(p => p === permission);
   }
   
+  /**
+   * @returns {PermissionType[]}
+   */
   static list() {
     return Object.values(PermissionType);
   }
