@@ -183,7 +183,7 @@ export class Util {
   }
   
   static safeString(str, length) {
-    return str.length > length ? `${str.slice(0,length)}...` : str;
+    return str.length > length ? `${str.slice(0, length)}...` : str;
   }
   
   /**
@@ -282,7 +282,7 @@ export class Util {
    * @returns {Promise<Awaited<ReturnType<Form["show"]>>>}
    */
   static showFormToBusy(player, form) {
-    player.sendMessage(`§7[AdminPanel] チャットを閉じると表示されます`);
+    player.sendMessage(`§7[Form] チャットを閉じると表示されます`);
     return new Promise(res => {
       system.run(async function run() {
         const response = await /** @type {ReturnType<Form['show']>} */ (form.show(player));

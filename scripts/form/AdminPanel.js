@@ -9,7 +9,7 @@ import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editNameTag } from './ItemEditor';
 
-/** @typedef {{ item: ItemStack, slot: EquipmentSlot | number }} ItemInformation */
+/** @typedef {{ item: ItemStack, slotId: EquipmentSlot | number }} ItemInformation */
 
 /** @enum {'NameTag'} */
 const EditItemAction = /** @type {const} */ ({
@@ -105,7 +105,8 @@ export class AdminPanel {
     }
     if (selection === 7) return await this.showTags(player);
     if (selection === 8) return await this.showScores(player);
-    if (selection === 9) return await this.playerList(); // back
+    
+    return await this.playerList(); // back
   }
   
   /** @param {Player} player */
@@ -117,7 +118,7 @@ export class AdminPanel {
     form.button('§l§1更新 / Reload', Icons.reload, 'reload');
     if (itemList.length === 0) form.body('何も持っていないようです\n ');
     itemList.forEach((info, index) =>
-      form.button(`§0${info.item.typeId}${typeof info.slot === 'string' ? ' ':''}\n§8slot: ${info.slot}, amount: ${info.item.amount}`, null, index)
+      form.button(`§0${Util.safeString(info.item.typeId, 30)}${typeof info.slotId === 'string' ? ' ':''}\n§8slot: ${info.slotId}, amount: ${info.item.amount}`, null, index)
     );
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', Icons.clear, 'clear')
@@ -131,8 +132,7 @@ export class AdminPanel {
     if (button.id === 'clear') {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
-        yes: '§c削除する',
-        no: '§lキャンセル'
+        yes: '§c削除する', no: '§lキャンセル'
       });
       if (res) {
         player.runCommand('clear @s');
@@ -142,8 +142,7 @@ export class AdminPanel {
     } else if (button.id === 'ender') {
       const res = await confirmForm(this.player, {
         body: `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
-        yes: '§c削除する',
-        no: '§lキャンセル'
+        yes: '§c削除する', no: '§lキャンセル'
       });
       if (res) {
         player.runCommand('function util/clear_ec');
@@ -163,15 +162,22 @@ export class AdminPanel {
    * @param {ItemInformation} info 
    */
   async itemInfo(player, info) {
-    const form = FORMS.itemInfo.body(`§7owner: §r${player.name}\n§7item: §r${info.item.typeId}\n§7slot: §r${info.slot}\n§7amount: §r${info.item.amount}\n§7nameTag: §r${info.item.nameTag ?? '-'}\n `);
+    const form = FORMS.itemInfo.body([
+      `§7owner: §r${player.name}`,
+      `§7item: §r${info.item.typeId}`,
+      `§7slot: §r${info.slotId}${typeof info.slotId === 'string' ? ' ' : ''}`,
+      `§7amount: §r${info.item.amount}`,
+      `§7nameTag: §r${info.item.nameTag ?? '§7-'}`,
+      `§r`
+    ].join('§r\n'));
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     
     if (selection === 0) {
-      typeof info.slot === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slot)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slot);
-      Util.notify(`[${player.name}] ${info.item.typeId} §7(slot: ${info.slot})§r を削除しました`, this.player);
+      typeof info.slotId === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slotId);
+      Util.notify(`[${player.name}] ${info.item.typeId} §7(slot: ${info.slotId})§r を削除しました`, this.player);
     }
     if (selection === 1) return await this.transferItem(player, info);
     if (selection === 2) return await this.editItem(player, info, EditItemAction.NameTag);
@@ -199,13 +205,13 @@ export class AdminPanel {
     const target = players[targetIndex];
     target.getComponent('minecraft:inventory').container.addItem(info.item);
     if (!duplicate) {
-      typeof info.slot === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slot)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slot);
+      typeof info.slotId === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slotId);
     }
 
     Util.notify(
-      `[${player.name}§r >> ${target.name}§r] ${info.item.typeId} §7(${info.slot})§r を${duplicate ? '複製' : '転送'}しました`,
+      `[${player.name}§r >> ${target.name}§r] ${info.item.typeId} §7(slot: ${info.slotId})§r を${duplicate ? '複製' : '転送'}しました`,
       this.player
     );
   }
@@ -221,9 +227,9 @@ export class AdminPanel {
     if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, info.item);
 
     if (isChanged) {
-      typeof info.slot === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slot, info.item)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slot, info.item);
+      typeof info.slotId === 'number'
+        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId, info.item)
+        : player.getComponent('minecraft:equippable').setEquipment(info.slotId, info.item);
     }
     return await this.itemInfo(player, info);
   }
@@ -249,6 +255,7 @@ export class AdminPanel {
       Util.notify(`§7${this.player.name} >> §e${player.name} の permission:admin を ${admin ? '§a':'§c'}${admin}§e に設定しました`);
       Util.writeLog({ type: 'panel.permission', message: `§epermission:admin を §f${admin} §eに設定しました§r\nExecuted by ${this.player.name}` }, player);
     }
+    return await this.playerInfo(player);
   }
   
   /** @param {Player} player */
@@ -471,7 +478,7 @@ function getAllEquipments(player) {
     .filter(slotId => slotId !== EquipmentSlot.Mainhand)
     .map(slotId => ({
       item: equipments.getEquipment(slotId),
-      slot: slotId
+      slotId
     }));
 }
 
@@ -480,6 +487,6 @@ function getAllItems(player) {
   const { container } = player.getComponent('minecraft:inventory');
   return Array(container.size).fill(null).map((_,i) => ({
     item: container.getItem(i),
-    slot: i
+    slotId: i
   }));
 }
