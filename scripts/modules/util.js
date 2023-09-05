@@ -49,5 +49,5 @@ export function killDroppedItem(loc, dimension) {
     maxDistance: 1.5,
     type: 'minecraft:item'
   });
-  for (const i of items) i.kill();
+  for (const i of items) i.remove();
 }

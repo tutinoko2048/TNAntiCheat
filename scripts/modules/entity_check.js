@@ -14,17 +14,17 @@ export function entityCheck(entity) {
   if (config.entityCheckC.state) {
     if (typeId == 'minecraft:arrow') {
       world.arrowSpawnCount++
-      if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) return entity.kill();
+      if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) return entity.remove();
       
     } else if (typeId == 'minecraft:command_block_minecart') {
       world.cmdSpawnCount++
-      if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.kill();
+      if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.remove();
     }
   }
   
   if (config.entityCheckA.state && config.entityCheckA.detect.includes(typeId)) {
     const loc = Util.vectorNicely(location);
-    entity.kill();
+    entity.remove();
     if (config.entityCheckA.punishment != 'none') queueNotify('entityCheck', { typeId, ...loc });
     if (despawnable.includes(typeId)) try { entity.triggerEvent('tn:despawn') } catch {}
     
@@ -32,7 +32,7 @@ export function entityCheck(entity) {
     const item = entity.getComponent('minecraft:item')?.itemStack;
     if (isIllegalItem(item?.typeId) || (config.entityCheckB.spawnEgg && isSpawnEgg(item?.typeId))) {
       const loc = Util.vectorNicely(location);
-      entity.kill();
+      entity.remove();
       if (config.entityCheckB.punishment != 'none') queueNotify('entityCheck', { typeId, item: item.typeId, ...loc });
     }
     
@@ -88,5 +88,5 @@ export function entityCounter() {
 }
 
 function killEntity(typeId) {
-  for (const e of overworld.getEntities({ type: typeId })) e.kill();
+  for (const e of overworld.getEntities({ type: typeId })) e.remove();
 }
