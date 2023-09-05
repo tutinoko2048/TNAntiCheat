@@ -27,11 +27,20 @@ interface ItemComponentTypes {
   'minecraft:enchantments': mc.ItemEnchantsComponent;
 }
 
+interface EntityCheckEntry {
+  typeId: string;
+  item?: string;
+  x: number;
+  y: number;
+  z: number;
+  count?: number;
+}
+
 declare module '@minecraft/server' {
   interface World {
     arrowSpawnCount?: number;
     cmdSpawnCount?: number;
-    entityCheck?: any;
+    entityCheck?: Record<string, EntityCheckEntry>;
     logs?: ActionLog[];
     
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];

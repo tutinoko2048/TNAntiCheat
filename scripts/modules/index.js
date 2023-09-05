@@ -2,7 +2,7 @@ import { world, system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { PermissionType, Permissions } from '../util/Permissions';
 import config from '../config.js';
-import  { PropertyIds } from '../util/constants';
+import { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
 

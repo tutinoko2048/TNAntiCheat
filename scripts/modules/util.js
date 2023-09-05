@@ -30,13 +30,14 @@ export function isIllegalItem(id = '') {
   return config.itemList.ban.includes(id) || config.itemList.kick.includes(id)  || config.itemList.notify.includes(id) 
 }
 
-export function queueNotify(type, obj) {
-  const key = Object.values(obj).join('-');
-  if (key in world[type]) {
-    world[type][key].count ??= 1;
-    return world[type][key].count++
+/** @param {import('../types').EntityCheckEntry} data */
+export function entityCheckLog(data) {
+  const key = Object.values(data).join('-');
+  if (key in world.entityCheck) {
+    world.entityCheck[key].count ??= 1;
+    return world.entityCheck[key].count++
   }
-  world[type][key] = obj;
+  world.entityCheck[key] = data;
 }
 
 /**
