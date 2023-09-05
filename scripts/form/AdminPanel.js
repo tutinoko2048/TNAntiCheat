@@ -9,7 +9,7 @@ import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editNameTag } from './ItemEditor';
 
-/** @typedef {{ item: ItemStack, slotId: EquipmentSlot | number }} ItemInformation */
+/** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
 /** @enum {'NameTag'} */
 const EditItemAction = /** @type {const} */ ({
@@ -109,22 +109,25 @@ export class AdminPanel {
     return await this.playerList(); // back
   }
   
-  /** @param {Player} player */
-  async showInventory(player) {
+  /**
+   * @param {Player} player
+   * @param {string} [message]
+   */
+  async showInventory(player, message) {
     /** @type {ItemInformation[]} */
-    const itemList = [...getAllItems(player), ...getAllEquipments(player)].filter(info => !!info.item);
+    const slotList = getAllSlots(player).filter(info => !!info.slot?.typeId);
    
     const form = new ActionForm();
     form.button('§l§1更新 / Reload', Icons.reload, 'reload');
-    if (itemList.length === 0) form.body('何も持っていないようです\n ');
-    itemList.forEach((info, index) =>
-      form.button(`§0${Util.safeString(info.item.typeId, 30)}${typeof info.slotId === 'string' ? ' ':''}\n§8slot: ${info.slotId}, amount: ${info.item.amount}`, null, index)
+    if (slotList.length === 0) form.body('何も持っていないようです\n ');
+    slotList.forEach((info, index) =>
+      form.button(`§0${Util.safeString(info.slot.typeId, 30)}${typeof info.slotId === 'string' ? ' ':''}\n§8slot: ${info.slotId}, amount: ${info.slot.amount}`, null, index)
     );
     form.title(`${player.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', Icons.clear, 'clear')
       .button('§l§cエンダーチェストをクリア / Clear enderchest', Icons.enderchest, 'ender')
       .button('戻る / Return', Icons.returnBtn, 'back');
-    
+    if (message) form.body(message);
     const { canceled, button } = await form.show(this.player);
     if (canceled) return;
     
@@ -153,7 +156,10 @@ export class AdminPanel {
       return await this.playerInfo(player);
       
     } else {
-      return await this.itemInfo(player, itemList[button.id]);
+      /** @type {ItemInformation} */
+      const info = slotList[button.id];
+      if (!info.slot.getItem()) return await this.showInventory(player, '§cError: アイテムが移動されています');
+      return await this.itemInfo(player, info);
     }
   }
   
@@ -162,22 +168,24 @@ export class AdminPanel {
    * @param {ItemInformation} info 
    */
   async itemInfo(player, info) {
+    const item = info.slot.getItem(); // cache item
     const form = FORMS.itemInfo.body([
       `§7owner: §r${player.name}`,
-      `§7item: §r${info.item.typeId}`,
-      `§7slot: §r${info.slotId}${typeof info.slotId === 'string' ? ' ' : ''}`,
-      `§7amount: §r${info.item.amount}`,
-      `§7nameTag: §r${info.item.nameTag ?? '§7-'}`,
+      `§7item: §r${item.typeId}`,
+      `§7slot: §r${info.slotId}${typeof info.slotId === 'number' ? '' : ' '}`,
+      `§7amount: §r${item.amount}`,
+      `§7nameTag: §r${item.nameTag ?? '§7-'}`,
       `§r`
     ].join('§r\n'));
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     
-    if (selection === 0) {
-      typeof info.slotId === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slotId);
-      Util.notify(`[${player.name}] ${info.item.typeId} §7(slot: ${info.slotId})§r を削除しました`, this.player);
+    // form開いてる間に移動された時の対策
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
+
+    if (selection === 0) { // delete item
+      info.slot.setItem();
+      Util.notify(`[${player.name}] ${item.typeId} §7(slot: ${info.slotId})§r を削除しました`, this.player);
     }
     if (selection === 1) return await this.transferItem(player, info);
     if (selection === 2) return await this.editItem(player, info, EditItemAction.NameTag);
@@ -189,48 +197,46 @@ export class AdminPanel {
    * @param {ItemInformation} info 
    */
   async transferItem(player, info) {
+    const item = info.slot.getItem();
     const players = world.getPlayers();
     players.sort((a, b) => a.name.localeCompare(b.name));
     players.sort(p => p.id === this.player.id ? -1 : 1); // 自分の名前を1番上に
 
     const form = new UI.ModalFormData();
-    form.title(`Transfer Item [${info.item.typeId}]`);
+    form.title(`Transfer Item [${item.typeId}]`);
     form.dropdown('転送先 / Target', players.map(p => p.name), 0);
     form.toggle('アイテムを複製 / Duplicate item', false);
     const { canceled, formValues } = await form.show(this.player);
-    if (canceled) return this.showInventory(player);
+    if (canceled) return await this.showInventory(player);
+
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
 
     const targetIndex = /** @type {number} */ (formValues[0]);
     const duplicate = /** @type {boolean} */ (formValues[1]);
     const target = players[targetIndex];
-    target.getComponent('minecraft:inventory').container.addItem(info.item);
-    if (!duplicate) {
-      typeof info.slotId === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slotId);
-    }
+    target.getComponent('minecraft:inventory').container.addItem(item);
+
+    if (!duplicate) info.slot.setItem();
 
     Util.notify(
-      `[${player.name}§r >> ${target.name}§r] ${info.item.typeId} §7(slot: ${info.slotId})§r を${duplicate ? '複製' : '転送'}しました`,
+      `[${player.name}§r >> ${target.name}§r] ${item.typeId} §7(slot: ${info.slotId})§r を${duplicate ? '複製' : '転送'}しました`,
       this.player
     );
   }
 
   /**
-   * 
    * @param {Player} player 
    * @param {ItemInformation} info 
    * @param {EditItemAction} action 
    */
   async editItem(player, info, action) {
+    const item = info.slot.getItem();
     let isChanged;
-    if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, info.item);
+    if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, item);
 
-    if (isChanged) {
-      typeof info.slotId === 'number'
-        ? player.getComponent('minecraft:inventory').container.setItem(info.slotId, info.item)
-        : player.getComponent('minecraft:equippable').setEquipment(info.slotId, info.item);
-    }
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
+
+    if (isChanged) info.slot.setItem(item);
     return await this.itemInfo(player, info);
   }
 
@@ -295,8 +301,7 @@ export class AdminPanel {
   async kickPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にkickしますか？`,
-      yes: '§ckickする',
-      no: '§lキャンセル'
+      yes: '§ckickする', no: '§lキャンセル'
     });
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
@@ -310,8 +315,7 @@ export class AdminPanel {
   async banPlayer(player) {
     const res = await confirmForm(this.player, {
       body: `§l§c${player.name} §rを本当にbanしますか？`,
-      yes: '§cbanする',
-      no: '§lキャンセル'
+      yes: '§cbanする', no: '§lキャンセル'
     });
     if (res) {
       if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
@@ -336,9 +340,7 @@ export class AdminPanel {
   /** @param {Player} player */
   async showScores(player) {
     const objectives = world.scoreboard.getObjectives();
-    objectives.sort((obj0, obj1) => {
-      return Util.getScore(player, obj1.id) - Util.getScore(player, obj0.id);
-    });
+    objectives.sort((obj0, obj1) => Util.getScore(player, obj1.id) - Util.getScore(player, obj0.id));
     const messages = objectives
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
@@ -438,9 +440,7 @@ export class AdminPanel {
   }
 }
 
-  /**
-   * @arg {import('@minecraft/server').Player} player
-   */
+/** @arg {Player} player */
 export async function manageUnbanQueue(player) {
   const queue = Util.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
@@ -473,22 +473,21 @@ function coloredEntityCount(typeId, count) {
   return `${color}${count}§r`;
 }
 
-/** @arg {Player} player  @returns {ItemInformation[]} */
-function getAllEquipments(player) {
-  const equipments = player.getComponent('minecraft:equippable');
-  return Object.values(EquipmentSlot)
-    .filter(slotId => slotId !== EquipmentSlot.Mainhand)
-    .map(slotId => ({
-      item: equipments.getEquipment(slotId),
-      slotId
-    }));
-}
-
-/** @arg {Player} player  @returns {ItemInformation[]} */
-function getAllItems(player) {
+/**
+ * @arg {Player} player
+ * @returns {ItemInformation[]}
+ */
+function getAllSlots(player) {
   const { container } = player.getComponent('minecraft:inventory');
-  return Array(container.size).fill(null).map((_,i) => ({
-    item: container.getItem(i),
-    slotId: i
-  }));
+  const equipment = player.getComponent('minecraft:equippable');
+  /** @type {ItemInformation[]} */
+  const slots = [];
+  for (let i = 0; i < container.size; i++) {
+    slots.push({ slot: container.getSlot(i), slotId: i });
+  }
+  for (const slotId of Object.values(EquipmentSlot)) {
+    if (slotId === EquipmentSlot.Mainhand) continue;
+    slots.push({ slot: equipment.getEquipmentSlot(slotId), slotId });
+  }
+  return slots;
 }
