@@ -1,7 +1,7 @@
 import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { isIllegalItem, isSpawnEgg, queueNotify } from './util';
+import { isIllegalItem, isSpawnEgg, entityCheckLog } from './util';
 const overworld = world.getDimension('overworld');
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
@@ -14,26 +14,26 @@ export function entityCheck(entity) {
   if (config.entityCheckC.state) {
     if (typeId == 'minecraft:arrow') {
       world.arrowSpawnCount++
-      if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) return entity.kill();
+      if (world.arrowSpawnCount > config.entityCheckC.maxArrowSpawns) return entity.remove();
       
     } else if (typeId == 'minecraft:command_block_minecart') {
       world.cmdSpawnCount++
-      if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.kill();
+      if (world.cmdSpawnCount > config.entityCheckC.maxCmdMinecartSpawns) return entity.remove();
     }
   }
   
   if (config.entityCheckA.state && config.entityCheckA.detect.includes(typeId)) {
     const loc = Util.vectorNicely(location);
-    entity.kill();
-    if (config.entityCheckA.punishment != 'none') queueNotify('entityCheck', { typeId, ...loc });
+    entity.remove();
+    if (config.entityCheckA.punishment != 'none') entityCheckLog({ typeId, ...loc });
     if (despawnable.includes(typeId)) try { entity.triggerEvent('tn:despawn') } catch {}
     
   } else if (config.entityCheckB.state && typeId === 'minecraft:item') {
     const item = entity.getComponent('minecraft:item')?.itemStack;
     if (isIllegalItem(item?.typeId) || (config.entityCheckB.spawnEgg && isSpawnEgg(item?.typeId))) {
       const loc = Util.vectorNicely(location);
-      entity.kill();
-      if (config.entityCheckB.punishment != 'none') queueNotify('entityCheck', { typeId, item: item.typeId, ...loc });
+      entity.remove();
+      if (config.entityCheckB.punishment != 'none') entityCheckLog({ typeId, item: item.typeId, ...loc });
     }
     
   } else if (config.entityCheckD.state && config.entityCheckD.detect.includes(typeId)) {
@@ -58,13 +58,13 @@ function entityCheckD(container) {
   }
 }
 
-/** @type {Object<string, number>} */
+/** @type {Record<string, number>} */
 const countCooltime = {};
 
 export function entityCounter() {
   if (!config.entityCounter.state) return;
   
-  /** @type {Object<string, number>} */
+  /** @type {Record<string, number>} */
   const entities = {};
   
   const excludes = Object.keys(config.entityCounter.detect).filter(id => config[id] === -1);
@@ -88,5 +88,5 @@ export function entityCounter() {
 }
 
 function killEntity(typeId) {
-  for (const e of overworld.getEntities({ type: typeId })) e.kill();
+  for (const e of overworld.getEntities({ type: typeId })) e.remove();
 }

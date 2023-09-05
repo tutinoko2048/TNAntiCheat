@@ -65,7 +65,7 @@ export class TNAntiCheat {
         
         if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
         if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
-        if (!(system.currentTick % 100)) modules.ban(player); // tag check
+        if (!(system.currentTick % 100)) modules.banCheck(player); // tag check
         
         modules.debugView(player, this);
         
@@ -206,9 +206,9 @@ export class TNAntiCheat {
   #handleJoin(player) {
     player.joinedAt = Date.now();
     modules.namespoof(player);
-    const banned = modules.ban(player);
+    const banned = modules.banCheck(player);
     if (banned) return;
-    modules.banByXuid();
+    modules.xuidBanCheck();
     
     if (player.getDynamicProperty(PropertyIds.mute)) {
       const res = Util.runCommandSafe('ability @s mute true', player);

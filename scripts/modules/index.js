@@ -2,7 +2,7 @@ import { world, system, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import { PermissionType, Permissions } from '../util/Permissions';
 import config from '../config.js';
-import  { PropertyIds } from '../util/constants';
+import { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
 
@@ -14,11 +14,11 @@ export * from './combat';
 export * from './break_check';
 export * from './movement';
 
-  /**
-   * @param {Player} player
-   * @returns {boolean} banしたかどうか
-   */
-export function ban(player) {
+/**
+ * @param {Player} player
+ * @returns {boolean} banしたかどうか
+ */
+export function banCheck(player) {
   const unbanQueue = Util.getUnbanQueue();
   
   if (Util.isBanned(player)) { // ban by DP, tag, name, id
@@ -35,7 +35,7 @@ export function ban(player) {
   }
 }
 
-export function banByXuid() {
+export function xuidBanCheck() {
   const overworld = world.getDimension('overworld');
   for (const xuid of config.permission.ban.xuids) { // ban by xuid
     const res = Util.runCommandSafe(`kick "${xuid}" §lKicked by TN-AntiCheat§r\nReason: §aBanned by XUID`, overworld);
