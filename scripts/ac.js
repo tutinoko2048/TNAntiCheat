@@ -72,7 +72,7 @@ export class TNAntiCheat {
         try {
           if (this.frozenPlayerMap.has(player.id)) {
             player.teleport(this.frozenPlayerMap.get(player.id));
-            player.addEffect('weakness', 20*1);
+            player.addEffect('weakness', 20*1, { amplifier: 255, showParticles: false });
           }
         } catch (e) {
           if (config.others.debug) console.error(e, e.stack);
