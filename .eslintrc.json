@@ -14,7 +14,8 @@
       "arrow-spacing": "warn",
       "space-before-blocks": "warn",
       "keyword-spacing": "warn",
-      "no-irregular-whitespace": "off"
+      "no-irregular-whitespace": "off",
+      "no-class-assign": "off"
     },
     "parserOptions": {
       "ecmaVersion": 13,

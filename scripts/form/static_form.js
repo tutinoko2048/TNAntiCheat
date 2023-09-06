@@ -27,6 +27,7 @@ export const FORMS = {
     .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', Icons.clear)
     .button('§l転送 / Transfer\n§r§8アイテムを転送します', Icons.transfer)
     .button('§l名前を編集 / Edit NameTag')
+    .button('§l説明文を編集 / Edit Lore')
     .button('戻る / Return', Icons.returnBtn),
   about: new UI.ActionFormData()
     .title('About')
@@ -74,15 +75,18 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
 /**
  * 
  * @param {import('@minecraft/server').Player} player 
- * @param {{ label: string, placeholder: string, title?: string, defaultValue?: string }} options
- * @returns {Promise<{ canceled: boolean, value: string }>}
+ * @param {{ label: string, placeholder: string, title?: string, defaultValue?: string, allowDelete?: boolean }} options
+ * @returns {Promise<{ canceled: boolean, value: string, deleteValue?: boolean }>}
  */
 export async function textInput(player, options) {
   const form = new UI.ModalFormData();
   if ('title' in options) form.title(options.title);
   form.textField(options.label, options.placeholder, options.defaultValue);
+  if (options.allowDelete) form.toggle('値を削除する / Delete value');
   const { canceled, formValues } = await form.show(player);
   if (canceled) return { canceled: true, value: undefined }
   const value = /** @type {string} */ (formValues[0]);
-  return { canceled: false, value }
+  const deleteValue = /** @type {boolean} */ (formValues[1]);
+
+  return { canceled: false, value, deleteValue }
 }

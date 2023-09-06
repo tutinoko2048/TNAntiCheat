@@ -7,13 +7,14 @@ import { FORMS, confirmForm } from './static_form';
 import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
-import { editNameTag } from './ItemEditor';
+import { editLore, editNameTag } from './ItemEditor';
 
 /** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
-/** @enum {'NameTag'} */
+/** @enum {'NameTag' | 'Lore'} */
 const EditItemAction = /** @type {const} */ ({
   NameTag: 'NameTag',
+  Lore: 'Lore'
 });
 
 export class AdminPanel {
@@ -189,7 +190,8 @@ export class AdminPanel {
     }
     if (selection === 1) return await this.transferItem(player, info);
     if (selection === 2) return await this.editItem(player, info, EditItemAction.NameTag);
-    if (selection === 3) return await this.showInventory(player); // back
+    if (selection === 3) return await this.editItem(player, info, EditItemAction.Lore);
+    if (selection === 4) return await this.showInventory(player); // back
   }
 
   /**
@@ -233,6 +235,7 @@ export class AdminPanel {
     const item = info.slot.getItem();
     let isChanged;
     if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, item);
+    if (action === EditItemAction.Lore) isChanged = await editLore(player, item);
 
     if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
 
