@@ -227,20 +227,20 @@ export class AdminPanel {
   }
 
   /**
-   * @param {Player} player 
+   * @param {Player} target 
    * @param {ItemInformation} info 
    * @param {EditItemAction} action 
    */
-  async editItem(player, info, action) {
+  async editItem(target, info, action) {
     const item = info.slot.getItem();
     let isChanged;
-    if (action === EditItemAction.NameTag) isChanged = await editNameTag(player, item);
-    if (action === EditItemAction.Lore) isChanged = await editLore(player, item);
+    if (action === EditItemAction.NameTag) isChanged = await editNameTag(this.player, item);
+    if (action === EditItemAction.Lore) isChanged = await editLore(this.player, item);
 
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(target, '§cError: アイテムが移動されています');
 
     if (isChanged) info.slot.setItem(item);
-    return await this.itemInfo(player, info);
+    return await this.itemInfo(target, info);
   }
 
   /** @param {Player} player */

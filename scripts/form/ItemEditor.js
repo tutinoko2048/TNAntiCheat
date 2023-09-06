@@ -1,4 +1,4 @@
-import { ActionForm } from '../lib/form';
+import { ActionForm } from '../lib/form/index';
 import { Icons } from '../util/constants';
 import { Util } from '../util/util';
 import { textInput } from './static_form';
