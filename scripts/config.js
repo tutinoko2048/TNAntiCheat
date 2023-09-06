@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 4
+// configVersion: 5
 export default
 {
   permission: {
