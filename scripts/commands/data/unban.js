@@ -19,7 +19,7 @@ const unbanCommand = new Command({
     Util.writeLog({ type: 'unban.add', playerName, message: `source: command\nExecuted by ${origin.name}` });
   } else {
     if (origin.isPlayerOrigin()) {
-      manageUnbanQueue(origin.sender).catch(e => console.error(e, e.stack));
+      manageUnbanQueue(origin.sender, true).catch(e => console.error(e, e.stack));
     }
     if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
   }

@@ -440,8 +440,11 @@ export class AdminPanel {
   }
 }
 
-/** @arg {Player} player */
-export async function manageUnbanQueue(player) {
+/**
+ * @arg {Player} player
+ * @arg {boolean} [fromChat]
+ */
+export async function manageUnbanQueue(player, fromChat) {
   const queue = Util.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
   
@@ -452,7 +455,7 @@ export async function manageUnbanQueue(player) {
   form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
   for (const entry of queue) form.button(entry.name);
   
-  const { canceled, selection } = await Util.showFormToBusy(player, form);
+  const { canceled, selection } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
   if (canceled) return;
   
   const entry = queue[selection];
