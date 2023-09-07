@@ -5,6 +5,7 @@ import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } fr
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
   [PropertyIds.banReason]: string;
+  [PropertyIds.banExpireAt]: string;
   [PropertyIds.configData]: string;
   [PropertyIds.mute]: boolean;
   [PropertyIds.ownerId]: string;
@@ -124,4 +125,13 @@ export interface ActionLog {
   'type': string;
   punishment?: string;
   message?: string;
+}
+
+export interface BanOptions {
+  /** 保存されて今後表示されるbanの理由 */
+  reason?: string;
+  /** banする期間(ms) */
+  expireAt?: number;
+  /** kick時に表示するメッセージ(理由) */
+  message: string;
 }

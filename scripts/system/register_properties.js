@@ -4,6 +4,7 @@ import { PropertyIds } from '../util/constants';
 const def = new DynamicPropertiesDefinition(); // player
 def.defineBoolean(PropertyIds.ban);
 def.defineString(PropertyIds.banReason, 50);
+def.defineString(PropertyIds.banExpireAt, 15);
 def.defineBoolean(PropertyIds.mute);
 
 const def2 = new DynamicPropertiesDefinition(); // world
