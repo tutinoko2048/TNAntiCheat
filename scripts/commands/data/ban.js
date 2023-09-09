@@ -5,15 +5,15 @@ import { Command } from '../Command';
 const banCommand = new Command({
   name: 'ban',
   description: 'プレイヤーをBanします',
-  args: [ '<name: playerName> [reason: string] [expects: boolean]' ],
+  args: [ '<name: playerName> [reason: string]' ],
   aliases: [],
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
-  const [ _playerName, reason, expect ] = args;
+  const [ _playerName, reason ] = args;
   if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
   const playerName = Util.parsePlayerName(_playerName);
   
-  const player = Util.getPlayerByName(playerName, expect === 'true');
+  const player = Util.getPlayerByName(playerName);
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をbanすることはできません');
   Util.ban(player, `Reason: ${reason ?? '-'}`, reason ?? '(from command)');

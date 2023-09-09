@@ -5,7 +5,7 @@ import { Command } from '../Command';
 const freezeCommand =  new Command({
   name: 'freeze',
   description: 'プレイヤーを移動できなく(フリーズ状態に)します',
-  args: [ '<name: playerName> <value: boolean>' ],
+  args: [ '<name: playerName> [value: boolean]' ],
   aliases: [],
   permission: (player) => Util.isOP(player)
 }, (origin, args, handler) => {
@@ -15,7 +15,7 @@ const freezeCommand =  new Command({
   
   const target = Util.getPlayerByName(targetName);
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
-  const freezeState = toBoolean(value);
+  const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
 
   const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'disabled' : 'enabled'}`, target);
   if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
@@ -24,7 +24,7 @@ const freezeCommand =  new Command({
   else handler.ac.frozenPlayerMap.delete(target.id);
 
   origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のフリーズを ${freezeState} に設定しました`));
-  Util.notify('§o§eあなたはフリーズされています', target);
+  if (freezeState) Util.notify('§o§eあなたはフリーズされています', target);
   Util.writeLog({ type: 'command.freeze', message: `FreezeState: ${freezeState}\nExecuted by ${origin.name}` }, target);
 });
 

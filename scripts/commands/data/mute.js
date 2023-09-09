@@ -16,7 +16,7 @@ const muteCommand = new Command({
   
   const target = Util.getPlayerByName(targetName);
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
-  const muteState = toBoolean(value);
+  const muteState = value ? toBoolean(value) : !target.getDynamicProperty(PropertyIds.mute);
   
   const err = () => { throw new CommandError(`${target.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
   
@@ -25,7 +25,7 @@ const muteCommand = new Command({
   
   target.setDynamicProperty(PropertyIds.mute, muteState);
   origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のミュートを ${muteState} に設定しました`));
-  Util.notify('§o§eあなたはミュートされています', target);
+  if (muteState) Util.notify('§o§eあなたはミュートされています', target);
   Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, target);
 
 });

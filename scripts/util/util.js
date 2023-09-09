@@ -277,13 +277,11 @@ export class Util {
   
   /**
    * @param {string} playerName
-   * @param {boolean} [expect=false]
-   * @returns {Player}
+   * @returns {Player|undefined}
    */
-  static getPlayerByName(playerName, expect = false) {
+  static getPlayerByName(playerName) {
     const [ player ] = world.getPlayers({ name: playerName });
-    if (player || !expect) return player;
-    return world.getAllPlayers().find(p => p.name.includes(playerName) || p.name.toLowerCase().includes(playerName.toLowerCase()));
+    return player ?? world.getPlayers().find(p => p.name.toLowerCase() === playerName.toLowerCase());
   }
   
   /**
