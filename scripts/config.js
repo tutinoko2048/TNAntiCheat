@@ -257,8 +257,9 @@ export default
   },
   autoClicker: { // れんつを検知 (ベータ)
     state: false,
+    punishment: "notify",
     maxCPS: 25,
-    punishment: "notify"
+    flagCount: 30 // この回数以上検知されるとFlag (-1で無制限)
   },
   creative: { // クリエイティブになったら検知
     state: true,
@@ -268,14 +269,14 @@ export default
   speedA: { // 速すぎる移動を検知 (ベータ)
     state: true,
     punishment: "tempkick",
-    flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
+    flagCount: 20, // この回数以上検知されるとFlag (-1で無制限)
     maxVelocity: 2.0,
     rollback: true
   },
   flyA: { // flyを検知 (ベータ)
     state: true,
     punishment: "tempkick",
-    flagCount: 20, // 20回以上検知されるとFlag (-1で無制限)
+    flagCount: 20, // この回数以上検知されるとFlag (-1で無制限)
     minFallDistance: -1.8,
     detectPiston: true, // ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)
     rollback: true

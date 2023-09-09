@@ -61,10 +61,6 @@ export function flag(player) { // don't run every tick not to spam
     Util.flag(player, 'Reach/C', config.reachC.punishment, player.reachCFlag);
     player.reachCFlag = null;
   }
-  if (player.autoClickerFlag) {
-    Util.flag(player, 'AutoClicker', config.autoClicker.punishment, player.autoClickerFlag);
-    player.autoClickerFlag = null;
-  }
   if (player.flagQueue) {
     Util.notify(player.flagQueue);
     player.flagQueue = null;

@@ -76,7 +76,19 @@ export function autoClickerAttack(ev) {
 export function autoClickerCheck(player) {
   const cps = getCPS(player);
   if (cps >= config.autoClicker.maxCPS) {
-    player.autoClickerFlag = `高いCPSを検知しました §7(${cps}clicks/s)§r`;
+    player.autoClickerCount ??= 0;
+    player.autoClickerCount++;
+
+    //player.autoClickerFlag = `高いCPSを検知しました §7(${cps}clicks/s)§r`;
+    if (config.autoClicker.flagCount === -1 || player.autoClickerCount <= config.autoClicker.flagCount) {
+      player.flagQueue = `AutoClicker >> §c${player.name}§r §7[${player.autoClickerCount}] (cps: ${cps})§r§　`;
+    }
+    if (config.autoClicker.flagCount !== -1 && player.autoClickerCount > config.autoClicker.flagCount) {
+      Util.flag(
+        player, 'AutoClicker', config.autoClicker.punishment,
+        `高いCPSを検知しました §7(count: ${player.autoClickerCount}, cps: ${cps})§r`
+      );
+    }
     player.clicks.length = 0;
   }
 }

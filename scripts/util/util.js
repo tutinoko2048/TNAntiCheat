@@ -352,4 +352,5 @@ function resetCount(player) {
   player.speedACount = 0;
   player.flyACount = 0;
   player.placeBCount = 0;
+  player.autoClickerCount = 0;
 }

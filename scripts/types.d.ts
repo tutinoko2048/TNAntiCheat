@@ -5,7 +5,7 @@ import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } fr
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
   [PropertyIds.banReason]: string;
-  //[PropertyIds.banExpireAt]: string;
+  //[PropertyIds.banExpireAt]: number;
   [PropertyIds.configData]: string;
   [PropertyIds.mute]: boolean;
   [PropertyIds.ownerId]: string;
@@ -59,25 +59,23 @@ declare module '@minecraft/server' {
     lastMsg?: string;
     lastMsgSentAt?: number;
     isMoved?: boolean;
-    
-    // punishment counts
-    speedACount?: number;
-    flyACount?: number;
-    placeBCount?: number;
-    
-    breakCount?: number;
     clicks?: number[];
-
-    autoClickerFlag?: string;
-    reachAFlag?: string;
-    reachBFlag?: string;
-    reachCFlag?: string;
-    flagQueue?: string;
-    
+    breakCount?: number;
     /** 前のtickで飛んでたかどうか */
     wasGliding?: boolean;
     /** エリトラの使用をやめた時刻 */
     stopGlideAt?: number;
+
+    // punishment counts
+    speedACount?: number;
+    flyACount?: number;
+    placeBCount?: number;
+    autoClickerCount?: number;
+
+    reachAFlag?: string;
+    reachBFlag?: string;
+    reachCFlag?: string;
+    flagQueue?: string;
     
     getComponent<K extends keyof EntityComponentTypes>(componentId: K): EntityComponentTypes[K];
 
