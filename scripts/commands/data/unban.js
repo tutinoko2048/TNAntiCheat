@@ -2,6 +2,7 @@ import { Util } from '../../util/util';
 import { Command } from '../Command';
 import { CommandError } from '../CommandError';
 import { manageUnbanQueue } from '../../form/AdminPanel';
+import { BanManager } from '../../util/BanManager';
 
 const unbanCommand = new Command({
   name: 'unban',
@@ -14,7 +15,7 @@ const unbanCommand = new Command({
   
   if (_playerName) {
     const playerName = Util.parsePlayerName(_playerName);
-    Util.addUnbanQueue(playerName);
+    BanManager.addUnbanQueue(playerName);
     origin.broadcast(Util.decorate(`§7${origin.name} >> §rプレイヤー: §c${playerName}§r をunbanのリストに追加しました`));
     Util.writeLog({ type: 'unban.add', playerName, message: `source: command\nExecuted by ${origin.name}` });
   } else {

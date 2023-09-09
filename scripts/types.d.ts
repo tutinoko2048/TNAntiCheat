@@ -135,3 +135,8 @@ export interface BanOptions {
   /** kick時に表示するメッセージ(理由) */
   message: string;
 }
+
+export interface UnbanQueueEntry {
+  name: string;
+  source: 'property' | 'file';
+}

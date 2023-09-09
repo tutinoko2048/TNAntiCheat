@@ -5,6 +5,7 @@ import config from '../config.js';
 import { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
+import { BanManager } from '../util/BanManager';
 
 export * from './item_check';
 export * from './spammer';
@@ -19,11 +20,11 @@ export * from './movement';
  * @returns {boolean} banしたかどうか
  */
 export function banCheck(player) {
-  const unbanQueue = Util.getUnbanQueue();
+  const unbanQueue = BanManager.getUnbanQueue();
   
-  if (Util.isBanned(player)) { // ban by DP, tag, name, id
+  if (BanManager.isBanned(player)) { // ban by DP, tag, name, id
     if (unbanQueue.some(entry => entry.name === player.name)) {
-      Util.unban(player);
+      BanManager.unban(player);
       Util.notify(`§aUnbanned: ${player.name}`);
       return;
     }

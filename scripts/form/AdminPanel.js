@@ -8,6 +8,7 @@ import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editLore, editNameTag } from './ItemEditor';
+import { BanManager } from '../util/BanManager';
 
 /** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
@@ -448,7 +449,7 @@ export class AdminPanel {
  * @arg {boolean} [fromChat]
  */
 export async function manageUnbanQueue(player, fromChat) {
-  const queue = Util.getUnbanQueue();
+  const queue = BanManager.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
   
   if (queue.length === 0) return player.sendMessage('§cUnbanQueueに登録されているプレイヤーは居ません§r')
@@ -468,7 +469,7 @@ export async function manageUnbanQueue(player, fromChat) {
     body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
   });
   if (!res) return await manageUnbanQueue(player);
-  Util.removeUnbanQueue(entry.name);
+  BanManager.removeUnbanQueue(entry.name);
   Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
   Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
 }

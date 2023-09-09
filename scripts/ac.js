@@ -7,6 +7,7 @@ import { CommandManager } from './commands/CommandManager';
 import { AdminPanel } from './form/AdminPanel';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
+import { BanManager } from './util/BanManager';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -232,9 +233,9 @@ export class TNAntiCheat {
     if (config.others.debug) console.warn('[debug] loaded Config data');
   }
   
-  /** @returns {import('./util/util').UnbanQueueEntry[]} */
+  /** @returns {import('./types').UnbanQueueEntry[]} */
   getUnbanQueue() {
-    return Util.getUnbanQueue();
+    return BanManager.getUnbanQueue();
   }
   
   /** @return {typeof config} */
