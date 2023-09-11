@@ -78,7 +78,7 @@ export class ScriptEventCommandOrigin extends PlayerCommandOrigin {}
 // scripteventのsourceTypeがServerの場合
 export class ServerCommandOrigin extends CommandOrigin {
   constructor() {
-    super()
+    super();
   }
   
   /** @type {string} */

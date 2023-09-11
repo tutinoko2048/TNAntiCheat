@@ -1,6 +1,5 @@
 import * as mc from '@minecraft/server';
 import { PropertyIds } from './util/constants';
-import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './commands/CommandOrigin';
 
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
@@ -45,6 +44,7 @@ declare module '@minecraft/server' {
     logs?: ActionLog[];
     
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
+    setDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T, value: DynamicPropertyTypes[T]): void;
   }
 
   interface Entity {
@@ -80,6 +80,7 @@ declare module '@minecraft/server' {
     getComponent<K extends keyof EntityComponentTypes>(componentId: K): EntityComponentTypes[K];
 
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
+    setDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T, value: DynamicPropertyTypes[T]): void;
   }
 
   interface Block {
@@ -89,31 +90,6 @@ declare module '@minecraft/server' {
   interface ItemStack {
     getComponent<K extends keyof ItemComponentTypes>(componentId: K): ItemComponentTypes[K];
   }
-}
-
-export interface PlayerCommandInput extends Partial<mc.ChatSendBeforeEvent> {
-  sender: mc.Player;
-  message: string;
-}
-
-export interface ServerCommandInput {
-  message: string;
-}
-
-export type CommandCallback = (
-  origin: PlayerCommandOrigin | ScriptEventCommandOrigin | ServerCommandOrigin,
-  args: string[],
-  manager: import('./commands/CommandManager').CommandManager
-) => void;
-
-export interface CommandData {
-  name: string;
-  description: string;
-  args?: string[];
-  permission?: (player: mc.Player) => boolean;
-  func?: CommandCallback;
-  disableScriptEvent?: boolean;
-  aliases?: string[];
 }
 
 export interface ActionLog {

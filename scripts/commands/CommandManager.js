@@ -5,7 +5,7 @@ import config from '../config.js';
 import { COMMANDS } from './index';
 import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './CommandOrigin';
 
-/** @typedef {import('../types').CommandData} CommandData */
+/** @typedef {import('./types').CommandData} CommandData */
 /** @typedef {import('../ac').TNAntiCheat} TNAntiCheat */
 
 export class CommandManager {
@@ -35,7 +35,7 @@ export class CommandManager {
   }
   
   /**
-   * @arg {import('../types').PlayerCommandInput} ev
+   * @arg {import('./types').PlayerCommandInput} ev
    * @arg {boolean} [scriptEvent]
    */
   async handle(ev, scriptEvent) {
@@ -69,7 +69,7 @@ export class CommandManager {
   
   /**
    * SourceTypeがServerの時動く
-   * @arg {import('../types').ServerCommandInput} ev
+   * @arg {import('./types').ServerCommandInput} ev
    */
   async handleFromServer(ev) {
     const { message } = ev;
