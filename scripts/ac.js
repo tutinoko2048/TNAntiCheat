@@ -109,9 +109,12 @@ export class TNAntiCheat {
     });
     
     world.beforeEvents.playerBreakBlock.subscribe(ev => {
-      !modules.nukerBreak(ev) &&
-      !modules.instaBreak(ev) &&
-      modules.reachC(ev);
+      const safe = (
+        !modules.nukerBreak(ev) &&
+        !modules.instaBreak(ev) &&
+        !modules.reachC(ev)
+      );
+      if (safe && Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) ev.cancel = true;
       if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
     });
     

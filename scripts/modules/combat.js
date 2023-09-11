@@ -40,6 +40,7 @@ export function reachC(ev) { // destruction
   if (distance > config.reachC.maxReach) {
     if (config.reachC.cancel) ev.cancel = true;
     player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)})§r`;
+    return true;
   }
 }
 
