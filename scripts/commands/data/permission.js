@@ -14,36 +14,36 @@ const permissionCommand = new Command({
   aliases: [ 'permissions', 'perm', 'perms' ],
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
-  const [ subcmd, type, _playerName ] = args;
-  const playerName = Util.parsePlayerName(_playerName);
+  const [ subcmd, type, _targetName ] = args;
+  const targetName = Util.parsePlayerName(_targetName);
   if (subcmd === 'list') {
     origin.send(`§aPermissions:§r\n${Permissions.list().map(p => `- ${p}`).join('\n')}`);
     
   } else if (subcmd === 'add') {
-    if (origin.isServerOrigin() && !playerName) throw new CommandError('対象のプレイヤーを指定してください');
+    if (origin.isServerOrigin() && !targetName) throw new CommandError('対象のプレイヤーを指定してください');
     
     const sender = origin.isPlayerOrigin() ? origin.sender : null;
-    const player = playerName ? Util.getPlayerByName(playerName) : sender;
+    const target = targetName ? Util.getPlayerByName(targetName) : sender;
     
-    if (!player) throw new CommandError(`プレイヤー "${playerName}" は見つかりませんでした`);
+    if (!target) throw new CommandError(`プレイヤー "${targetName}" は見つかりませんでした`);
     if (!Permissions.isValid(type)) throw new CommandError(`権限 "${type}" は有効な値ではありません\n§f- !permission add <builder|admin> [name: playerName]`);
-    if (Permissions.has(player, type)) throw new CommandError(`${player.name} は既に権限を持っています`);
-    Permissions.add(player, type);
-    origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} に permission:${type} を付与しました`));
-    Util.writeLog({ type: 'command.permission', message: `permission:${type}を付与しました\nExecuted by ${origin.name}` }, player);
+    if (Permissions.has(target, type)) throw new CommandError(`${target.name} は既に権限を持っています`);
+    Permissions.add(target, type);
+    origin.broadcast(Util.decorate(`§7${origin.name} >> §e${target.name} に permission:${type} を付与しました`));
+    Util.writeLog({ type: 'command.permission', message: `permission:${type}を付与しました\nExecuted by ${origin.name}` }, target);
     
   } else if (subcmd === 'remove') {
-    if (origin.isServerOrigin() && !playerName) throw new CommandError('対象のプレイヤーを指定してください');
+    if (origin.isServerOrigin() && !targetName) throw new CommandError('対象のプレイヤーを指定してください');
     
     const sender = origin.isPlayerOrigin() ? origin.sender : null;
-    const player = playerName ? Util.getPlayerByName(playerName) : sender;
+    const target = targetName ? Util.getPlayerByName(targetName) : sender;
     
-    if (!player) throw new CommandError(`プレイヤー "${playerName}" は見つかりませんでした`);
+    if (!target) throw new CommandError(`プレイヤー "${targetName}" は見つかりませんでした`);
     if (!Permissions.isValid(type)) throw new CommandError(`権限 "${type}" は有効な値ではありません\n§f- !permission remove <builder|admin> [name: playerName]`);
-    if (!Permissions.has(player, type)) throw new CommandError(`${player.name} は権限を持っていません`);
-    Permissions.remove(player, type);
-    origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} から permission:${type} を剥奪しました`));
-    Util.writeLog({ type: 'command.permission', message: `permission:${type}を剥奪しました\nExecuted by ${origin.name}` }, player);
+    if (!Permissions.has(target, type)) throw new CommandError(`${target.name} は権限を持っていません`);
+    Permissions.remove(target, type);
+    origin.broadcast(Util.decorate(`§7${origin.name} >> §e${target.name} から permission:${type} を剥奪しました`));
+    Util.writeLog({ type: 'command.permission', message: `permission:${type}を剥奪しました\nExecuted by ${origin.name}` }, target);
     
   } else {
     throw new CommandError(`サブコマンド "${subcmd ?? ''}" は有効な値ではありません\n§f- !permission <list|add|remove>`);

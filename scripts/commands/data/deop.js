@@ -10,17 +10,17 @@ const deopCommand = new Command({
   aliases: [],
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
-  const playerName = Util.parsePlayerName(args[0]);
-  if (!playerName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
+  const targetName = Util.parsePlayerName(args[0]);
+  if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
   
   const sender = origin.isPlayerOrigin() ? origin.sender : null;
-  const player = playerName ? Util.getPlayerByName(playerName) : sender;
+  const target = targetName ? Util.getPlayerByName(targetName) : sender;
   
-  if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-  if (!Util.isOP(player)) throw new CommandError(`${player.name} は権限を持っていません`);
-  Permissions.remove(player, PermissionType.Admin);
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} の管理者権限を削除しました`));
-  Util.writeLog({ type: 'command.deop', message: `Executed by ${origin.name}` }, player);
+  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
+  if (!Util.isOP(target)) throw new CommandError(`${target.name} は権限を持っていません`);
+  Permissions.remove(target, PermissionType.Admin);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${target.name} の管理者権限を削除しました`));
+  Util.writeLog({ type: 'command.deop', message: `Executed by ${origin.name}` }, target);
 });
 
 export default deopCommand;

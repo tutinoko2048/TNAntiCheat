@@ -11,7 +11,7 @@ const tempkickCommand = new Command({
 }, (origin, args) => {
   const [ _playerName, reason = '-' ] = args;
   if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
-  const playerName = Util.parsePlayerName(_playerName);
+  const playerName = Util.parsePlayerName(_playerName, origin.isPlayerOrigin() && origin.sender);
   
   const player = Util.getPlayerByName(playerName);
   if (!player) throw new CommandError(`プレイヤー: ${playerName} が見つかりませんでした`);

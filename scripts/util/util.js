@@ -174,8 +174,13 @@ export class Util {
     return noquote ? split.map(x => x.replace(/^"(.*)"$/g, '$1')) : split;
   }
   
-  static parsePlayerName(str) {
+  /**
+   * @param {string} str
+   * @param {Player} [source]
+   */
+  static parsePlayerName(str, source) {
     if (!str) return;
+    if (str === '@s' && source instanceof Player) return source.name;
     if (str.startsWith('@')) str = str.slice(1);
     return str.replace(/"(.*)"/, '$1');
   }

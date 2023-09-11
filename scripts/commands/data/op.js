@@ -11,18 +11,18 @@ const opCommand = new Command({
   aliases: [ 'operator' ],
   permission: (player) => player.isOp() || (config.others.fixBDS && Permissions.has(player, PermissionType.Admin))
 }, (origin, args) => {
-  const playerName = Util.parsePlayerName(args[0]);
-  if (origin.isServerOrigin() && !playerName) throw new CommandError('対象のプレイヤーを指定してください');
+  const targetName = Util.parsePlayerName(args[0]);
+  if (origin.isServerOrigin() && !targetName) throw new CommandError('対象のプレイヤーを指定してください');
   
   const sender = origin.isPlayerOrigin() ? origin.sender : null;
-  const player = playerName ? Util.getPlayerByName(playerName) : sender;
+  const target = targetName ? Util.getPlayerByName(targetName) : sender;
   
-  if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-  if (!player.isOp() && !config.others.fixBDS) throw new CommandError(`プレイヤー ${player.name} の権限が不足しています`);
-  if (Util.isOP(player)) throw new CommandError(`${player.name} は既に権限を持っています`);
-  Permissions.add(player, PermissionType.Admin);
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${player.name} に管理者権限を与えました`));
-  Util.writeLog({ type: 'command.op', message: `Executed by ${origin.name}` }, player);
+  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
+  if (!target.isOp() && !config.others.fixBDS) throw new CommandError(`プレイヤー ${target.name} の権限が不足しています`);
+  if (Util.isOP(target)) throw new CommandError(`${target.name} は既に権限を持っています`);
+  Permissions.add(target, PermissionType.Admin);
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${target.name} に管理者権限を与えました`));
+  Util.writeLog({ type: 'command.op', message: `Executed by ${origin.name}` }, target);
 });
 
 export default opCommand;

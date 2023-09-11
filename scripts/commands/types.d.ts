@@ -1,5 +1,5 @@
 import { ChatSendBeforeEvent, Player } from '@minecraft/server';
-import { ServerCommandOrigin } from './CommandOrigin';
+import { PlayerCommandOrigin, ScriptEventCommandOrigin, ServerCommandOrigin } from './CommandOrigin';
 
 export interface CommandData {
   name: string;

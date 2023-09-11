@@ -6,15 +6,17 @@ import { Command } from '../Command';
 const muteCommand = new Command({
   name: 'mute',
   description: 'プレイヤーをミュートします',
-  args: [ '<name: playerName> <value: boolean>' ],
+  args: [ '[name: playerName] [value: boolean]' ],
   aliases: [ 'muto', 'myuto' ],
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
   const [ _targetName, value ] = args;
   if (!_targetName) throw new CommandError('プレイヤー名を入力してください');
-  const targetName = Util.parsePlayerName(_targetName);
-  
-  const target = Util.getPlayerByName(targetName);
+  const targetName = Util.parsePlayerName(_targetName, origin.isPlayerOrigin() && origin.sender);
+  if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
+
+  const sender = origin.isPlayerOrigin() ? origin.sender : null;
+  const target = targetName ? Util.getPlayerByName(targetName) : sender;
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
   const muteState = value ? toBoolean(value) : !target.getDynamicProperty(PropertyIds.mute);
   

@@ -5,15 +5,17 @@ import { Command } from '../Command';
 const freezeCommand =  new Command({
   name: 'freeze',
   description: 'プレイヤーを移動できなく(フリーズ状態に)します',
-  args: [ '<name: playerName> [value: boolean]' ],
+  args: [ '[name: playerName] [value: boolean]' ],
   aliases: [],
   permission: (player) => Util.isOP(player)
 }, (origin, args, handler) => {
   const [ _targetName, value ] = args;
   if (!_targetName) throw new CommandError('プレイヤー名を入力してください');
-  const targetName = Util.parsePlayerName(_targetName);
+  const targetName = Util.parsePlayerName(_targetName, origin.isPlayerOrigin() && origin.sender);
+  if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
   
-  const target = Util.getPlayerByName(targetName);
+  const sender = origin.isPlayerOrigin() ? origin.sender : null;
+  const target = targetName ? Util.getPlayerByName(targetName) : sender;
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
   const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
 
