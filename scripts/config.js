@@ -60,7 +60,11 @@ export default
       "minecraft:respawn_anchor",
       "minecraft:tnt",
       "minecraft:bedrock",
-      "minecraft:barrier"
+      "minecraft:barrier",
+      "minecraft:unknown",
+      "minecraft:info_update",
+      "minecraft:info_update2",
+      "minecraft:reserved6"
     ]
   },
   nuker: {
