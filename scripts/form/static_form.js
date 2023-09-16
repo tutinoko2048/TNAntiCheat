@@ -85,7 +85,8 @@ export async function textInput(player, options) {
   if (options.allowDelete) form.toggle('値を削除する / Delete value');
   const { canceled, formValues } = await form.show(player);
   if (canceled) return { canceled: true, value: undefined }
-  const value = /** @type {string} */ (formValues[0]);
+  const _value = /** @type {string} */ (formValues[0]);
+  const value = _value.replace(/\\n/g, '\n');
   const deleteValue = /** @type {boolean} */ (formValues[1]);
 
   return { canceled: false, value, deleteValue }
