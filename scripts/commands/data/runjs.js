@@ -1,14 +1,14 @@
 /* eslint no-unused-vars: 0 */
 
+import { Command } from '../Command';
 import { Util } from '../../util/util';
 import * as mc from '@minecraft/server';
 const { world, system } = mc;
-import toJson from '../../lib/toJson';
 import { Permissions } from '../../util/Permissions';
 import config from '../../config.js';
 import unbanQueue from '../../unban_queue.js';
 import { DataManager } from '../../util/DataManager';
-import { Command } from '../Command';
+import { format } from '../../lib/formatter/main';
 
 const runjsCommand = new Command({
   name: 'runjs',
@@ -25,7 +25,7 @@ const runjsCommand = new Command({
 function inspect(...args) {
   const message = args.map(v => {
     switch (typeof v) {
-      case 'object': return toJson(v);
+      case 'object': return format(v, { hideFunction: false });
       default: return String(v);
     }
   }).join(' ');

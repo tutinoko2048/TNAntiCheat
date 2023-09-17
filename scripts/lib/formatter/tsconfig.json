@@ -1,0 +1,14 @@
+{
+  "include": [ "./*.ts" ],
+  "exclude": [],
+  "compilerOptions": {
+    "module": "es2022",
+    "target": "es2022",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "outDir": "./",
+    "declaration": true
+  }
+}
