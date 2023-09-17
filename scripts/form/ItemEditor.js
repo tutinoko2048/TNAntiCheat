@@ -34,7 +34,7 @@ export async function editLore(player, item) {
 
   const form = new ActionForm();
   form.title(`Edit Lore [${item.typeId}]`);
-  for (const index in lores) form.button(`${index}\n"${Util.safeString(lores[index], 28)}"`);
+  for (const index in lores) form.button(`${index}\n"${Util.safeString(lores[index], 28)}\r"`);
   if (lores.length < 20) form.button('値を追加 / Add value', Icons.plus, 'add');
 
   const { canceled, selection, button } = await form.show(player);

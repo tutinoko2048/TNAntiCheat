@@ -7,7 +7,7 @@ const tpsCommand = new Command({
   aliases: [ 'ping' ],
 }, (origin, _, manager) => {
   const tps = manager.ac.getTPS();
-  origin.send(`Current TPS: ${getColor(tps)}${tps.toFixed(1)}/20`);
+  origin.send(`Current TPS: ${getColor(tps)}${tps.toFixed(1)}/20.0`);
 });
 
 function getColor(tps) {
