@@ -29,7 +29,7 @@ export class Util {
    * @param {boolean} [notifyCreative]
    */
   static flag(player, type, punishment, message, notifyCreative) {
-    if (notifyCreative && Util.isCreative(player)) punishment = PunishmentType.Notify;
+    if (notifyCreative && Util.isCreative(player)) punishment = PunishmentType.notify;
     const reasons = [
       `§7Type: §c${type}§r`,
       `§7Punishment: §c${punishment}§r`,
@@ -38,19 +38,19 @@ export class Util {
     
     let shouldNotify = true;
     switch (punishment) {
-      case PunishmentType.Ban:
+      case PunishmentType.ban:
         Util.ban(player, message, type);
         break;
-      case PunishmentType.Kick:
+      case PunishmentType.kick:
         Util.kick(player, reasons.join('\n'));
         break;
-      case PunishmentType.Tempkick:
+      case PunishmentType.tempkick:
         Util.disconnect(player);
         break;
-      case PunishmentType.Notify:
+      case PunishmentType.notify:
         reasons.splice(1, 1); // punishmentの行削除(見やすくするため)
         break;
-      case PunishmentType.None:
+      case PunishmentType.none:
         shouldNotify = false;
         break;
       default:

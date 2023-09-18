@@ -11,6 +11,7 @@ export function safeItemName(name) {
   return Util.safeString(name.replace(/\n/g, ''), 25);
 }
 
+/** @returns {import('../util/util').PunishmentType} */
 export function getItemPunishment(id) {
   if (config.itemList.ban.includes(id)) return 'ban';
   if (config.itemList.kick.includes(id)) return 'kick';
