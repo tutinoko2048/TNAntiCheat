@@ -16,7 +16,7 @@ const banCommand = new Command({
   const player = Util.getPlayerByName(playerName);
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をbanすることはできません');
-  Util.ban(player, `Reason: ${reason ?? '-'}`, reason ?? '(from command)');
+  Util.ban(player, `${reason ?? '-'}`, reason ?? '(from command)');
   
   origin.broadcast(Util.decorate(`§7${origin.name} >> §fプレイヤー: §c${player.name}§r をbanしました\n§7Reason: §r${reason ?? '-'}`));
   Util.writeLog({ type: 'command.ban', message: `Banned by ${origin.name}\nReason: ${reason ?? '-'}` }, player);

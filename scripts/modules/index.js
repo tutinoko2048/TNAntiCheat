@@ -32,7 +32,7 @@ export function banCheck(player) {
     const reason = player.getDynamicProperty(PropertyIds.banReason);
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
     Util.writeLog({ type: 'disconnect.ban', message: `接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}` }, player);
-    return Util.kick(player, reason ?? '-', true);
+    return Util.kick(player, `§7Reason: §r${reason ?? 'banned'}`, true);
   }
 }
 
