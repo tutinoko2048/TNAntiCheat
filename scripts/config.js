@@ -259,9 +259,9 @@ export default /** @type {import('./types').IConfig} */ ({
     cancel: true, // ブロックの破壊をキャンセル
   },
   autoClicker: { // れんつを検知 (ベータ)
-    state: false,
+    state: true,
     punishment: "notify",
-    maxCPS: 25,
+    maxCPS: 23,
     flagCount: 30 // この回数以上検知されるとFlag (-1で無制限)
   },
   creative: { // クリエイティブになったら検知

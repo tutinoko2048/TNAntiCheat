@@ -115,12 +115,34 @@ export interface UnbanQueueEntry {
   source: 'property' | 'file';
 }
 
-export interface IConfig {
-  [moduleName: string]: IModule;
-}
-
-export interface IModule {
+interface IModule {
   [key: string]: any;
   state?: boolean;
   punishment?: import('./util/util').PunishmentType;
+}
+
+interface IEntityCounterModule extends IModule {
+  detect: Record<string, number>
+}
+
+interface ICreativeModule extends IModule {
+  defaultGamemode: mc.GameMode;
+}
+
+interface IItemListModule {
+  ban: string[];
+  kick: string[];
+  notify: string[];
+}
+
+interface IItemCheckDModule extends IModule {
+  mode: 'hand' | 'inventory';
+}
+
+export interface IConfig {
+  [moduleName: string]: IModule;
+  itemList: IItemListModule;
+  itemCheckD: IItemCheckDModule;
+  entityCounter: IEntityCounterModule;
+  creative: ICreativeModule;
 }
