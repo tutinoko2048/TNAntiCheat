@@ -114,3 +114,13 @@ export interface UnbanQueueEntry {
   name: string;
   source: 'property' | 'file';
 }
+
+export interface IConfig {
+  [moduleName: string]: IModule;
+}
+
+export interface IModule {
+  [key: string]: any;
+  state?: boolean;
+  punishment?: import('./util/util').PunishmentType;
+}

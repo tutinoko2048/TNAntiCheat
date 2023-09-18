@@ -67,7 +67,7 @@ export function entityCounter() {
   /** @type {Record<string, number>} */
   const entities = {};
   
-  const excludes = Object.keys(config.entityCounter.detect).filter(id => config[id] === -1);
+  const excludes = Object.keys(config.entityCounter.detect).filter(id => config.entityCounter.detect[id] === -1);
   for (const entity of overworld.getEntities({ excludeTypes: [ 'minecraft:player', ...excludes ] })) {
     entities[entity.typeId] ??= 0;
     entities[entity.typeId]++;

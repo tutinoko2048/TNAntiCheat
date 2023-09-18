@@ -3,8 +3,7 @@
 */
 
 // configVersion: 5
-export default
-{
+export default /** @type {import('./types').IConfig} */ ({
   permission: {
     admin: { // 全ての検知から除外される権限
       encrypt: true, // タグを難読化して不正に権限を取られにくくする
@@ -91,7 +90,7 @@ export default
   },
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,
-    punishment: "kick",
+    punishment: "ban",
     cancel: true,
     detect: [
       "minecraft:bedrock",
@@ -305,4 +304,4 @@ export default
       name: "TPS" // スコアの名前
     }
   }
-}
+});

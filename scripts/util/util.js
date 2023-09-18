@@ -7,6 +7,15 @@ import { BanManager } from './BanManager.js';
 
 const overworld = world.getDimension('overworld');
 
+/** @enum {'ban'|'kick'|'tempkick'|'notify'|'none'} */
+export const PunishmentType = /** @type {const} */ ({
+  ban: 'ban',
+  kick: 'kick',
+  tempkick: 'tempkick',
+  notify: 'notify',
+  none: 'none'
+});
+
 /** @typedef {import('@minecraft/server').Entity} Entity */
 /** @typedef {import('@minecraft/server').Vector3} Vector3 */
 
@@ -15,12 +24,12 @@ export class Util {
    *
    * @param {Player} player
    * @param {string} type
-   * @param {string} punishment
+   * @param {PunishmentType} punishment
    * @param {string} message
    * @param {boolean} [notifyCreative]
    */
   static flag(player, type, punishment, message, notifyCreative) {
-    if (notifyCreative && Util.isCreative(player)) punishment = 'notify';
+    if (notifyCreative && Util.isCreative(player)) punishment = PunishmentType.Notify;
     const reasons = [
       `§7Type: §c${type}§r`,
       `§7Punishment: §c${punishment}§r`,
@@ -29,19 +38,19 @@ export class Util {
     
     let shouldNotify = true;
     switch (punishment) {
-      case 'ban':
+      case PunishmentType.Ban:
         Util.ban(player, message, type);
         break;
-      case 'kick':
+      case PunishmentType.Kick:
         Util.kick(player, reasons.join('\n'));
         break;
-      case 'tempkick':
+      case PunishmentType.Tempkick:
         Util.disconnect(player);
         break;
-      case 'notify':
+      case PunishmentType.Notify:
         reasons.splice(1, 1); // punishmentの行削除(見やすくするため)
         break;
-      case 'none':
+      case PunishmentType.None:
         shouldNotify = false;
         break;
       default:
