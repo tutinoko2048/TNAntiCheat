@@ -90,7 +90,7 @@ export default /** @type {import('./types').IConfig} */ ({
   },
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,
-    punishment: "ban",
+    punishment: "kick",
     cancel: true,
     detect: [
       "minecraft:bedrock",
