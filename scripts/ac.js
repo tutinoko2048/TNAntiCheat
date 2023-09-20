@@ -1,3 +1,5 @@
+import './system/dog.js';
+import './system/register_properties.js';
 import { world, system, Player, ScriptEventSource } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
@@ -8,6 +10,8 @@ import { AdminPanel } from './form/AdminPanel';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { updateConfig } from './util/update_config';
 import { BanManager } from './util/BanManager';
+import { events } from './lib/events/index.js';
+import { PermissionType, Permissions } from './util/Permissions';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -30,9 +34,33 @@ export class TNAntiCheat {
     
     /** @type {Map<string, import('@minecraft/server').Vector3>} */
     this.frozenPlayerMap = new Map();
+    
+    // load system
+    events.worldLoad.subscribe(() => {
+      if (world.getDynamicProperty(PropertyIds.ownerId)) {
+        try {
+          this.#enable();
+        } catch (e) { console.error(e, e.stack) }
+      } else {
+        world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
+      }
+    });
+    system.afterEvents.scriptEventReceive.subscribe(({ id, sourceEntity }) => {
+      if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
+      this.#register(sourceEntity);
+    }, { namespaces: [ 'ac' ] });
   }
   
-  enable() {
+  /** @param {Player} player */
+  #register(player) {
+    if (world.getDynamicProperty(PropertyIds.ownerId)) return player.sendMessage('TNAC is already registered!');
+    Permissions.add(player, PermissionType.Admin);
+    world.setDynamicProperty(PropertyIds.ownerId, player.id);
+    this.#enable();
+    player.sendMessage('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
+  }
+  
+  #enable() {
     if (this.#isEnabled) throw new Error('TN-AntiCheat has already enabled');
     this.#isEnabled = true;
     
