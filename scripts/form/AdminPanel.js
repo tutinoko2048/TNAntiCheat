@@ -176,7 +176,7 @@ export class AdminPanel {
       `§7item: §r${item.typeId}`,
       `§7slot: §r${info.slotId}${typeof info.slotId === 'number' ? '' : ' '}`,
       `§7amount: §r${item.amount}`,
-      `§7nameTag: §r${item.nameTag ?? '§7-'}`,
+      `§7nameTag: §r${item.nameTag?.replace(/\n/g, '\\n') ?? '§7-'}`,
       `§r`
     ].join('§r\n'));
     const { selection, canceled } = await form.show(this.player);
@@ -282,20 +282,20 @@ export class AdminPanel {
     
     if (mute !== _mute) {
       const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
-      if (!res) return Util.notify(`§c${player.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
+      if (!res) return Util.notify(`§c${player.name}§r§c のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       player.setDynamicProperty(PropertyIds.mute, mute);
-      Util.notify(`§7${this.player.name} >> §a${player.name} のミュートを ${mute} に設定しました`);
-      Util.notify('§o§eあなたはミュートされています', player);
+      Util.notify(`§7${this.player.name}§r§7 >> ${player.name} のミュートを ${mute} に設定しました`);
+      if (mute) Util.notify('§o§eあなたはミュートされています', player);
       Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, player);
     }
     
     if (freeze !== _freeze) {
       const res = Util.runCommandSafe(`inputpermission set @s movement ${freeze ? 'disabled' : 'enabled'}`, player);
-      if (!res) return Util.notify(`§c${player.name} のフリーズに失敗しました`, this.player);
+      if (!res) return Util.notify(`§c${player.name}§r§c のフリーズに失敗しました`, this.player);
       if (freeze) this.ac.frozenPlayerMap.set(player.id, player.location);
         else this.ac.frozenPlayerMap.delete(player.id);
-      Util.notify(`§7${this.player.name} >> §a${player.name} のフリーズを ${freeze} に設定しました`);
-      Util.notify('§o§eあなたはフリーズされています', player);
+      Util.notify(`§7${this.player.name}§r§7 >> ${player.name} のフリーズを ${freeze} に設定しました`);
+      if (freeze) Util.notify('§o§eあなたはフリーズされています', player);
       Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, player);
     }
     return await this.playerInfo(player);
