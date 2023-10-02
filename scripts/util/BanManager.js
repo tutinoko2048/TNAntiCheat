@@ -44,8 +44,8 @@ export class BanManager {
   /** @param {Player} player */
   static unban(player) {
     player.removeTag(config.permission.ban.tag);
-    player.removeDynamicProperty(PropertyIds.ban);
-    player.removeDynamicProperty(PropertyIds.banReason);
+    player.setDynamicProperty(PropertyIds.ban);
+    player.setDynamicProperty(PropertyIds.banReason);
     BanManager.removeUnbanQueue(player.name);
   }
 
