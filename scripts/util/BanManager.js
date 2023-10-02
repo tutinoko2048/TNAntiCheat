@@ -33,11 +33,11 @@ export class BanManager {
     if (options.reason) {
       player.setDynamicProperty(PropertyIds.banReason, options.reason);
     }
-    /*
+    
     if (options.expireAt !== undefined) {
       player.setDynamicProperty(PropertyIds.banExpireAt, options.expireAt);
     }
-    */
+    
     return BanManager.kick(player, options.message ?? options.reason, true);
   }
 
@@ -46,6 +46,7 @@ export class BanManager {
     player.removeTag(config.permission.ban.tag);
     player.setDynamicProperty(PropertyIds.ban);
     player.setDynamicProperty(PropertyIds.banReason);
+    player.setDynamicProperty(PropertyIds.banExpireAt);
     BanManager.removeUnbanQueue(player.name);
   }
 

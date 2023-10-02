@@ -4,6 +4,7 @@ import config from '../config.js';
 import { PropertyIds } from './constants';
 import { PermissionType, Permissions } from './Permissions';
 import { BanManager } from './BanManager.js';
+import { Duration } from '../lib/duration/main.js';
 
 const overworld = world.getDimension('overworld');
 
@@ -244,15 +245,22 @@ export class Util {
     return JSON.parse(JSON.stringify(obj));
   }
   
-  static getTime(timestamp = Date.now()) {
+  /**
+   * 
+   * @param {number} timestamp 
+   * @param {boolean} [long] include years
+   * @returns {string}
+   */
+  static getTime(timestamp = Date.now(), long = false) {
     const offset = config.others.timezoneOffset;
     const d = new Date(timestamp + ((new Date().getTimezoneOffset() + (offset * 60)) * 60 * 1000));
+    const year = d.getFullYear();
     const month = ('0' + (d.getMonth()+1)).slice(-2);
     const date = ('0' + d.getDate()).slice(-2);
     const hour = ('0' + d.getHours()).slice(-2);
     const minute = ('0' + d.getMinutes()).slice(-2);
     const second = ('0' + d.getSeconds()).slice(-2);
-    return `${month}/${date} ${hour}:${minute}:${second}`;
+    return `${long ? `${year}/` : ''}${month}/${date} ${hour}:${minute}:${second}`;
   }
   
   static parseMS(ms) {
@@ -357,6 +365,11 @@ export class Util {
    */
   static async cancel(eventData) {
     eventData.cancel = true;
+  }
+
+  /** @param {number} duration */
+  static formatDuration(duration) {
+    return Duration.format(duration, true, [ 'y', 'w', 'd', 'h', 'm' ]);
   }
 }
 /** @arg {Player} player */

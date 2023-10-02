@@ -4,7 +4,7 @@ export const DISCORD_URL = 'discord.gg/XGR8FcCeFc';
 export const PropertyIds = /** @type {const} */ ({
   ban: 'tn:isBanned',
   banReason: 'tn:banReason',
-  //banExpireAt: 'tn:banExpireAt',
+  banExpireAt: 'tn:banExpireAt',
   configData: 'tn:configData',
   mute: 'tn:isMuted',
   ownerId: 'tn:ownerId', // ここ変えると再登録できる

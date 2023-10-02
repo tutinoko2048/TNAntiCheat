@@ -4,7 +4,7 @@ import { PropertyIds } from './util/constants';
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
   [PropertyIds.banReason]: string;
-  //[PropertyIds.banExpireAt]: number;
+  [PropertyIds.banExpireAt]: number;
   [PropertyIds.configData]: string;
   [PropertyIds.mute]: boolean;
   [PropertyIds.ownerId]: string;
@@ -105,7 +105,7 @@ export interface BanOptions {
   /** 保存されて今後表示されるbanの理由 */
   reason?: string;
   /** banする期間(ms) */
-  //expireAt?: number;
+  expireAt?: number;
   /** kick時に表示するメッセージ(理由) */
   message: string;
 }

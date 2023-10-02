@@ -23,16 +23,28 @@ export function banCheck(player) {
   const unbanQueue = BanManager.getUnbanQueue();
   
   if (BanManager.isBanned(player)) { // ban by DP, tag, name, id
-    if (unbanQueue.some(entry => entry.name === player.name)) {
+    const expireAt = player.getDynamicProperty(PropertyIds.banExpireAt);
+    if (
+      unbanQueue.some(entry => entry.name === player.name) ||
+      expireAt && expireAt - Date.now() < 0
+    ) {
       BanManager.unban(player);
       Util.notify(`§aUnbanned: ${player.name}`);
       return;
     }
     
     const reason = player.getDynamicProperty(PropertyIds.banReason);
-    Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}`);
-    Util.writeLog({ type: 'disconnect.ban', message: `接続を拒否しました\n§7Reason:§r ${reason ?? 'banned'}` }, player);
-    return Util.kick(player, `§7Reason: §r${reason ?? 'banned'}`, true);
+    const message = [
+      `§7Reason:§r ${reason ?? 'banned'}`,
+      expireAt ? `§7ExpireAt:§7 ${Util.getTime(expireAt, true)}` : null
+    ].filter(Boolean).join('\n');
+
+    Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n${message}`);
+    Util.writeLog({
+      type: 'disconnect.ban',
+      message: `接続を拒否しました\n${message}`
+    }, player);
+    return Util.kick(player, message, true);
   }
 }
 
