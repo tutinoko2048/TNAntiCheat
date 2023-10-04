@@ -10,7 +10,6 @@ const freezeCommand =  new Command({
   permission: (player) => Util.isOP(player)
 }, (origin, args, handler) => {
   const [ _targetName, value ] = args;
-  if (!_targetName) throw new CommandError('プレイヤー名を入力してください');
   const targetName = Util.parsePlayerName(_targetName, origin.isPlayerOrigin() && origin.sender);
   if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
   
