@@ -1,7 +1,5 @@
 import config from '../config.js';
-import { world } from '@minecraft/server';
-
-/** @typedef {import('@minecraft/server').Player} Player */
+import { world, Player } from '@minecraft/server';
 
 /** @enum {'Player' | 'ScriptEvent' | 'Server'} */
 export const CommandOriginType = /** @type {const} */ ({

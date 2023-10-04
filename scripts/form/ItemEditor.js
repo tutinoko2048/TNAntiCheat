@@ -1,10 +1,8 @@
+import { Player, ItemStack } from '@minecraft/server';
 import { ActionForm } from '../lib/form/index';
 import { Icons } from '../util/constants';
 import { Util } from '../util/util';
 import { textInput } from './static_form';
-
-/** @typedef {import('@minecraft/server').Player} Player */
-/** @typedef {import('@minecraft/server').ItemStack} ItemStack */
 
 /**
  * @param {Player} player 

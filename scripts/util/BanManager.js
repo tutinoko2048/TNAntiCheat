@@ -1,10 +1,9 @@
-import { world } from '@minecraft/server';
+import { world, Player } from '@minecraft/server';
 import { PropertyIds } from './constants'
 import config from '../config';
 import { PermissionType, Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
 
-/** @typedef {import('@minecraft/server').Player} Player */
 /** @typedef {import('../types').UnbanQueueEntry} UnbanQueueEntry */
 
 const overworld = world.getDimension('overworld');

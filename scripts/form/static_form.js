@@ -1,4 +1,4 @@
-import { GameMode } from '@minecraft/server';
+import { GameMode, Player } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Icons, VERSION, DISCORD_URL } from '../util/constants';
 
@@ -60,7 +60,7 @@ export const DROPDOWNS = {
 }
 
 // returns yes -> true, no -> false
-/** @param {import('@minecraft/server').Player} player */
+/** @param {Player} player */
 export async function confirmForm(player, { title = '確認', body, yes = 'OK', no = '§lキャンセル', defaultValue = false }) {
   const form = new UI.MessageFormData();
   form.title(title)
@@ -74,7 +74,7 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
 
 /**
  * 
- * @param {import('@minecraft/server').Player} player 
+ * @param {Player} player 
  * @param {{ label: string, placeholder: string, title?: string, defaultValue?: string, allowDelete?: boolean }} options
  * @returns {Promise<{ canceled: boolean, value: string, deleteValue?: boolean }>}
  */

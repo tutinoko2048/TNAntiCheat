@@ -1,8 +1,6 @@
-import { world, GameMode, EntityRidingComponent } from '@minecraft/server';
+import { world, GameMode, EntityRidingComponent, Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
-
-/** @typedef {import('@minecraft/server').Player} Player */
 
 const excluded = [ GameMode.creative, GameMode.spectator ];
 
@@ -76,7 +74,7 @@ export function speedA(player) {
   player.lastVelocity = velocity; // 平均のせいで2回連続で検知されるのを防ぐ
 }
 
-/** @arg {import('@minecraft/server').Player} player */
+/** @arg {Player} player */
 export function checkMoving(player) {
   if (!player.lastLocation) {
     player.isMoved = true;

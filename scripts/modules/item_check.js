@@ -3,10 +3,8 @@
 import { Util } from '../util/util';
 import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
-import { EnchantmentList, EquipmentSlot } from '@minecraft/server';
+import { EnchantmentList, EquipmentSlot, ItemStack, Player } from '@minecraft/server';
 
-/** @typedef {import('@minecraft/server').ItemStack} ItemStack */
-/** @typedef {import('@minecraft/server').Player} Player */
 /** @typedef {{ flag: boolean, item?: ItemStack | null }} EnchantCheckResult */
 
 const ArmorSlots = [ EquipmentSlot.Head, EquipmentSlot.Chest, EquipmentSlot.Legs, EquipmentSlot.Feet ];
