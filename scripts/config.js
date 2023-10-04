@@ -39,8 +39,6 @@ export default /** @type {import('./types').IConfig} */ ({
       "minecraft:moving_block"
     ],
     kick: [
-      "minecraft:beehive",
-      "minecraft:bee_nest",
       "minecraft:lava",
       "minecraft:water",
       "minecraft:flowing_lava",
@@ -49,6 +47,8 @@ export default /** @type {import('./types').IConfig} */ ({
       "minecraft:invisible_bedrock"
     ],
     notify: [
+      "minecraft:beehive",
+      "minecraft:bee_nest",
       "minecraft:lava_bucket",
       "minecraft:axolotl_bucket",
       "minecraft:cod_bucket",
