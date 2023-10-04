@@ -1,6 +1,5 @@
 import { Util } from '../../util/util';
 import { Command } from '../Command';
-import { CommandError } from '../CommandError';
 import { manageUnbanQueue } from '../../form/AdminPanel';
 import { BanManager } from '../../util/BanManager';
 
