@@ -38,7 +38,7 @@ const statusCommand = new Command({
     `§7Permission: §f${perm(target)}`,
     `§7Location: §f${x}, ${y}, ${z} (${target.dimension.id})`,
     `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
-    `§7GameMode: §f${Util.getGamemode(target)}`,
+    `§7GameMode: §f${Util.getGameMode(target)}`,
     `§7SpawnPoint: §f${spawnLoc.x} ${spawnLoc.y} ${spawnLoc.z} (${spawnPoint.dimension.id})`,
     mainHand ? `§7MainHand: §f${mainHand}` : null,
     offHand ? `§7OffHand: §f${offHand}` : null,

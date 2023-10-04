@@ -55,7 +55,7 @@ export function speedA(player) {
     !player.isOnGround ||
     player.getEffect('speed') ||
     player.hasComponent(EntityRidingComponent.componentId) ||
-    excluded.includes(Util.getGamemode(player)) ||
+    excluded.includes(Util.getGameMode(player)) ||
     (config.speedA.excludeTag && player.hasTag(config.speedA.excludeTag))
   ) return;
       

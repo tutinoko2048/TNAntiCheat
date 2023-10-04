@@ -88,7 +88,7 @@ export async function placeCheckD(ev) {
   const { source, itemStack: item, block } = ev;
   const loc = block.location;
   if (!config.placeCheckD.state || !(source instanceof Player) || Util.isOP(source)) return;
-  const gameMode = Util.getGamemode(source);
+  const gameMode = Util.getGameMode(source);
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
   const { container } = source.getComponent('minecraft:inventory');
 

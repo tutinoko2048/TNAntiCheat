@@ -213,7 +213,7 @@ export class Util {
    * @param {Player} player
    * @returns {GameMode|undefined}
    */
-  static getGamemode(player) {
+  static getGameMode(player) {
     for (const gamemodeName in GameMode) {
       if (world.getPlayers({ name: player.name, gameMode: GameMode[gamemodeName] }).length > 0) {
         return GameMode[gamemodeName];
@@ -223,22 +223,22 @@ export class Util {
   
   /** @param {Player} player */
   static isSurvival(player) {
-    return this.getGamemode(player) === GameMode.survival;
+    return this.getGameMode(player) === GameMode.survival;
   }
   
   /** @param {Player} player */
   static isCreative(player) {
-    return this.getGamemode(player) === GameMode.creative;
+    return this.getGameMode(player) === GameMode.creative;
   }
   
   /** @param {Player} player */
   static isAdventure(player) {
-    return this.getGamemode(player) === GameMode.adventure;
+    return this.getGameMode(player) === GameMode.adventure;
   }
   
   /** @param {Player} player */
   static isSpectator(player) {
-    return this.getGamemode(player) === GameMode.spectator;
+    return this.getGameMode(player) === GameMode.spectator;
   }
   
   static cloneObject(obj) {
