@@ -110,7 +110,7 @@ export default /** @type {import('./types').IConfig} */ ({
   },
   itemCheckA: { // 持っていたら検知 アイテムはitemList参照
     state: true,
-    notifyCreative: true // クリエの人は削除だけしてbanやkickはしない
+    notifyCreative: true, // クリエの人は削除だけしてbanやkickはしない
   },
   itemCheckB: { // スポーンエッグを持っていたら検知
     state: true,
@@ -273,8 +273,9 @@ export default /** @type {import('./types').IConfig} */ ({
     state: true,
     punishment: "tempkick",
     flagCount: 20, // この回数以上検知されるとFlag (-1で無制限)
-    maxVelocity: 2.0,
-    rollback: true
+    maxVelocity: 2.2,
+    rollback: true,
+    excludeTag: "" // 検知から除外するタグ
   },
   flyA: { // flyを検知 (ベータ)
     state: true,
@@ -282,7 +283,8 @@ export default /** @type {import('./types').IConfig} */ ({
     flagCount: 20, // この回数以上検知されるとFlag (-1で無制限)
     minFallDistance: -1.8,
     detectPiston: true, // ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)
-    rollback: true
+    rollback: true,
+    excludeTag: "" // 検知から除外するタグ
   },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する

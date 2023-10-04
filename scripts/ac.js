@@ -169,7 +169,6 @@ export class TNAntiCheat {
     world.beforeEvents.itemUse.subscribe(async ev => {
       const { itemStack, source } = ev;
       if (
-        source instanceof Player &&
         Util.isOP(source) &&
         AdminPanel.isPanelItem(itemStack)
       ) {
@@ -251,15 +250,13 @@ export class TNAntiCheat {
   /** configをDPから読み込む */
   #loadConfig() {
     updateConfig(); // アプデ時のデータ移行処理
-    
+
     const data = DataManager.fetch();
-    
     const res = deleteDupe(data, config);
     if (res.length > 0) {
       DataManager.save(data);
       if (config.others.debug)  console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
     }
-    
     DataManager.patch(config, data);
     if (config.others.debug) console.warn('[debug] loaded Config data');
   }
