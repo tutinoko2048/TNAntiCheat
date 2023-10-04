@@ -5,7 +5,7 @@
       "node": true,
       "es2021": true
     },
-    "ignorePatterns": ["scripts/lib/timer.js", "scripts/lib/toJson.js", "scripts/util/secret.js"],
+    "ignorePatterns": [ "scripts/lib/toJson.js", "scripts/util/secret.js"],
     "globals": {},
     "rules": {
       "no-unused-vars": "warn",

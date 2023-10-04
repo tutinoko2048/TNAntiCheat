@@ -22,7 +22,10 @@ const unbanCommand = new Command({
     if (origin.isPlayerOrigin()) {
       manageUnbanQueue(origin.sender, true).catch(e => console.error(e, e.stack));
     }
-    if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
+    if (origin.isServerOrigin()) {
+      const names = BanManager.getUnbanQueue().map(entry => `- ${entry.name}`);
+      origin.send(`UnbanQueue List (${names.length})\n${names.join('\n')}`)
+    }
   }
 });
 

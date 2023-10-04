@@ -16,5 +16,6 @@ export const COMMANDS = [
   'module',
   'config',
   'freeze',
+  'status',
   //'runjs', // for debug
 ]

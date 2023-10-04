@@ -18,6 +18,7 @@ const runjsCommand = new Command({
   permission: (player) => Util.isOP(player)
 }, (origin, args) => {
   const self = origin.isPlayerOrigin() ? origin.sender : null;
+  const print = (...args) => origin.send(inspect(...args));
   
   eval(args.join(' '));
 });
@@ -29,7 +30,7 @@ function inspect(...args) {
       default: return String(v);
     }
   }).join(' ');
-  world.sendMessage(message);
+  return message;
 }
 
 export default runjsCommand;
