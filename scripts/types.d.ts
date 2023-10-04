@@ -119,30 +119,74 @@ interface IModule {
   [key: string]: any;
   state?: boolean;
   punishment?: import('./util/util').PunishmentType;
+  flagCount?: number;
 }
 
-interface IEntityCounterModule extends IModule {
+interface EntityCounterModule extends IModule {
   detect: Record<string, number>
 }
 
-interface ICreativeModule extends IModule {
+interface CreativeModule extends IModule {
   defaultGamemode: mc.GameMode;
 }
 
-interface IItemListModule {
+interface ItemListModule {
   ban: string[];
   kick: string[];
   notify: string[];
 }
 
-interface IItemCheckDModule extends IModule {
+interface ItemCheckDModule extends IModule {
   mode: 'hand' | 'inventory';
+}
+
+interface OthersModule {
+  [key: string]: any;
+  tpsToScore: {
+    enabled: boolean;
+    updateInterval: number;
+    objective: string;
+    name: string;
+  }
 }
 
 export interface IConfig {
   [moduleName: string]: IModule;
-  itemList: IItemListModule;
-  itemCheckD: IItemCheckDModule;
-  entityCounter: IEntityCounterModule;
-  creative: ICreativeModule;
+  command: {
+    prefix: string;
+    enableConsole: boolean;
+  };
+  itemList: ItemListModule;
+  nuker: IModule;
+  namespoof: IModule;
+  spammerA: IModule;
+  spammerB: IModule;
+  spammerC: IModule;
+  instaBreak: IModule;
+  itemCheckA: IModule;
+  itemCheckB: IModule;
+  itemCheckC: IModule;
+  itemCheckD: ItemCheckDModule;
+  itemCheckE: IModule;
+  placeCheckA: IModule;
+  placeCheckB: IModule;
+  placeCheckC: IModule;
+  placeCheckD: IModule;
+  entityCheckA: IModule;
+  entityCheckB: IModule;
+  entityCheckC: IModule;
+  entityCheckD: IModule;
+  entityCounter: EntityCounterModule;
+  reachA: IModule;
+  reachB: IModule;
+  reachC: IModule;
+  autoClicker: IModule;
+  creative: CreativeModule;
+  speedA: IModule;
+  flyA: IModule;
+  logger: {
+    console: boolean;
+    maxLogs: number;
+  };
+  others: OthersModule;
 }
