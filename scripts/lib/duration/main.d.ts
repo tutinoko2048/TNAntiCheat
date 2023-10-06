@@ -54,7 +54,7 @@ export declare namespace Duration {
     export type List = keyof typeof durations;
     export function toMS(text: string): number;
     export function parse(ms?: number, pass?: List[]): Partial<Record<List, number>>;
-    export function format(ms: number, compact: boolean, pass: List[]): string;
+    export function format(ms: number, compact: boolean, pass?: List[]): string;
     export function format(ms: number, template: string): string;
     export {};
 }

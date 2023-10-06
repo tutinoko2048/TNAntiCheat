@@ -24,19 +24,20 @@ export function banCheck(player) {
   
   if (BanManager.isBanned(player)) { // ban by DP, tag, name, id
     const expireAt = player.getDynamicProperty(PropertyIds.banExpireAt);
+    const isInQueue = unbanQueue.some(entry => entry.name === player.name);
     if (
-      unbanQueue.some(entry => entry.name === player.name) ||
+      isInQueue ||
       expireAt && expireAt - Date.now() < 0
     ) {
       BanManager.unban(player);
-      Util.notify(`§aUnbanned: ${player.name}`);
+      Util.notify(`§aUnbanned${isInQueue ? '' : '§7(expired)§a'}: ${player.name}`);
       return;
     }
     
     const reason = player.getDynamicProperty(PropertyIds.banReason);
     const message = [
       `§7Reason:§r ${reason ?? 'banned'}`,
-      expireAt ? `§7ExpireAt:§7 ${Util.getTime(expireAt, true)}` : null
+      expireAt ? `§7ExpireAt: §f${Util.getTime(expireAt, true)}` : null
     ].filter(Boolean).join('\n');
 
     Util.notify(`§l§c${player.name}§r >> 接続を拒否しました\n${message}`);
