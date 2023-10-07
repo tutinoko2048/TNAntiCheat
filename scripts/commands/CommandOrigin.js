@@ -8,6 +8,7 @@ export const CommandOriginType = /** @type {const} */ ({
   Server: 'Server'
 });
 
+/** @abstract */
 export class CommandOrigin {
   constructor() {}
   
@@ -26,12 +27,12 @@ export class CommandOrigin {
     return this instanceof ServerCommandOrigin;
   }
   
-  /** @type {CommandOriginType} */
+  /**
+   * @abstract
+   * @type {CommandOriginType}
+   */
   get type() {
-    if (this.isPlayerOrigin()) return CommandOriginType.Player;
-    if (this.isScriptEventOrigin()) return CommandOriginType.ScriptEvent;
-    if (this.isServerOrigin()) return CommandOriginType.Server;
-    throw Error('invalid command origin type');
+    throw Error('should be implemented in subclass.');
   }
   
   /** @arg {string} message */
@@ -53,16 +54,15 @@ export class PlayerCommandOrigin extends CommandOrigin {
     super();
     this.#sender = sender;
   }
+
+  /** @type {CommandOriginType} */
+  get type() { return CommandOriginType.Player }
   
   /** @type {string} */
-  get name() {
-    return this.sender.name;
-  }
+  get name() { return this.sender.name }
   
   /** @type {Player} */
-  get sender() {
-    return this.#sender;
-  }
+  get sender() { return this.#sender }
   
   /** @arg {string|import('@minecraft/server').RawMessage} message */
   send(message) {
@@ -71,18 +71,20 @@ export class PlayerCommandOrigin extends CommandOrigin {
 }
 
 // scripteventコマンドからの場合
-export class ScriptEventCommandOrigin extends PlayerCommandOrigin {}
+export class ScriptEventCommandOrigin extends PlayerCommandOrigin {
+
+  /** @type {CommandOriginType} */
+  get type() { return CommandOriginType.ScriptEvent }
+}
 
 // scripteventのsourceTypeがServerの場合
 export class ServerCommandOrigin extends CommandOrigin {
-  constructor() {
-    super();
-  }
-  
+
+  /** @type {CommandOriginType} */
+  get type() { return CommandOriginType.Server }
+
   /** @type {string} */
-  get name() {
-    return 'Server';
-  }
+  get name() { return 'Server' }
   
   /** @arg {string} message */
   send(message) {
