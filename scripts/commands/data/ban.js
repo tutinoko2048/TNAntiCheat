@@ -29,16 +29,16 @@ const banCommand = new Command({
       expireAtMessage = `\n§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`;
     }
   }
-  let message = (
-    `§7${origin.name} >> §fプレイヤー: §c${player.name}§r をbanしました\n` +
-    `§7Reason: §r${reason ?? '-'}`
-  );
-
-  BanManager.ban(player, { reason, message: '-', expireAt });
-  origin.broadcast(Util.decorate(`${message}${expireAtMessage ?? ''}`));
+  const message = [
+    `§7Reason: §r${reason ?? '-'}`,
+    expireAtMessage
+  ].filter(Boolean).join('\n');
+  
+  BanManager.ban(player, { message, expireAt });
+  origin.broadcast(Util.decorate(`§7${origin.name} >> §c${player.name}§r をbanしました\n${message}`));
   Util.writeLog({
     type: 'command.ban',
-    message: `Banned by ${origin.name}\nReason: ${reason ?? '-'}${expireAtMessage ?? ''}`
+    message: `Banned by ${origin.name}\n${message}`
   }, player);
 });
 

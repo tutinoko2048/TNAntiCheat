@@ -99,7 +99,7 @@ export namespace Duration {
       .map(v => [v.short, v.duration])) as Partial<Record<List, number>>;
   }
 
-  export function format(ms: number, compact: boolean, pass: List[]): string;
+  export function format(ms: number, compact: boolean, pass?: List[]): string;
   export function format(ms: number, template: string): string;
   export function format(ms = 0, template: string | boolean = '', pass: List[] = []): string {
     if (typeof template === 'string' && template)

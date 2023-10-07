@@ -1,5 +1,4 @@
 import './system/dog.js';
-import './system/register_properties.js';
 import { world, system, Player, ScriptEventSource } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';

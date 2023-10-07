@@ -369,7 +369,7 @@ export class Util {
 
   /** @param {number} duration */
   static formatDuration(duration) {
-    return Duration.format(duration, true, [ 'y', 'w', 'd', 'h', 'm' ]);
+    return Duration.format(duration, false);
   }
 }
 /** @arg {Player} player */

@@ -1,10 +1,15 @@
-import { EquipmentSlot } from "@minecraft/server";
-import { PermissionType, Permissions } from "../../util/Permissions";
-import { PropertyIds } from "../../util/constants";
-import { Util } from "../../util/util";
-import { Command } from "../Command";
-import { CommandError } from "../CommandError";
-import { getCPS } from "../../modules";
+import { world, EquipmentSlot } from '@minecraft/server';
+import { PermissionType, Permissions } from '../../util/Permissions';
+import { PropertyIds } from '../../util/constants';
+import { Util } from '../../util/util';
+import { Command } from '../Command';
+import { CommandError } from '../CommandError';
+import { getCPS } from '../../modules/combat';
+
+/**
+ * @typedef {import('@minecraft/server').DimensionLocation} DimensionLocation
+ * @typedef {import('@minecraft/server').Vector3} Vector3
+ */
 
 const statusCommand = new Command({
   name: 'status',
@@ -27,19 +32,20 @@ const statusCommand = new Command({
   const mainHand = equippable.getEquipment(EquipmentSlot.Mainhand)?.typeId;
   const offHand = equippable.getEquipment(EquipmentSlot.Offhand)?.typeId;
   const cps = getCPS(target);
-  const spawnPoint = target.getSpawnPoint();
+  const spawnPoint = target.getSpawnPoint() ?? world.getDefaultSpawnLocation();
   const spawnLoc = Util.vectorNicely(spawnPoint);
 
-  const perm = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, PermissionType.Builder) ? '§ebuilder§f' : 'member';
+  const perm = (p) => Util.isOP(p) ? '§aOP§f' : Permissions.has(p, PermissionType.Builder) ? '§eBuilder§f' : 'Member';
   const bool = (v) => v ? '§atrue§r' : '§cfalse§r';
 
+  const title = `§a--- ${target.name}'s status ---§r`;
   origin.send([
-    `--- ${target.name}'s status ---`,
+    title,
     `§7Permission: §f${perm(target)}`,
     `§7Location: §f${x}, ${y}, ${z} (${target.dimension.id})`,
-    `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
+    `§7Health: §f${Math.floor(currentValue)}/${effectiveMax}`,
     `§7GameMode: §f${Util.getGameMode(target)}`,
-    `§7SpawnPoint: §f${spawnLoc.x} ${spawnLoc.y} ${spawnLoc.z} (${spawnPoint.dimension.id})`,
+    `§7SpawnPoint: §f${spawnLoc.x}, ${spawnLoc.y}, ${spawnLoc.z}`,
     mainHand ? `§7MainHand: §f${mainHand}` : null,
     offHand ? `§7OffHand: §f${offHand}` : null,
     `§7ID: §f${target.id}`,
@@ -47,11 +53,12 @@ const statusCommand = new Command({
     `§7CPS: §f${cps}`,
     `§7isMuted: ${bool(target.getDynamicProperty(PropertyIds.mute))}`,
     `§7isFrozen: ${bool(manager.ac.frozenPlayerMap.has(target.id))}`,
-    target.flyACount ? `§7Fly/A Count: §f${target.flyACount}` : null,
-    target.speedACount ? `§7Speed/A Count: §f${target.speedACount}` : null,
-    target.autoClickerCount ? `§7AutoClicker Count: §f${target.autoClickerCount}` : null,
-    target.placeBCount ? `§7PlaceCheck/B Count: §f${target.placeBCount}` : null,
-  ].filter(Boolean).join('\n'));
+    target.flyACount ? `§7§oFly/A count: §r${target.flyACount}` : null,
+    target.speedACount ? `§7§oSpeed/A count: §r${target.speedACount}` : null,
+    target.autoClickerCount ? `§7§oAutoClicker count: §r${target.autoClickerCount}` : null,
+    target.placeBCount ? `§7§oPlaceCheck/B count: §r${target.placeBCount}` : null,
+    '§a' + '-'.repeat(title.length - 2)
+  ].filter(Boolean).join('§r\n'));
 });
 
 export default statusCommand;

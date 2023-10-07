@@ -38,7 +38,7 @@ export function speedA(player) {
   if (!config.speedA.state) return;
   const { x, z } = player.getVelocity();
   const velocity = Math.sqrt(x ** 2 + z ** 2); // velocity without Y
-  const avgVelocity = (velocity + player.lastVelocity ?? velocity) / 2; // 1tick前の速度との平均を出す
+  const avgVelocity = (velocity + (player.lastVelocity ?? velocity)) / 2; // 1tick前の速度との平均を出す
 
   player.lastDimensionId ??= player.dimension.id;
   if (
