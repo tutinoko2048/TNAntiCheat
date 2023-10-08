@@ -21,7 +21,7 @@ export const FORMS = {
     .button('§l自分にテレポート / Teleport Here', Icons.teleportHere)
     .button('§lタグ一覧を表示 / Show Tags', Icons.tags)
     .button('§lスコア一覧を表示 / Show Scores', Icons.scores)
-    .button('戻る / Return', Icons.returnBtn),
+    .button('戻る / Return', Icons.returnBtn), // 9
   itemInfo: new UI.ActionFormData()
     .title('ItemInfo')
     .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', Icons.clear)

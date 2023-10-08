@@ -106,15 +106,16 @@ export class AdminPanel {
     if (selection === 5) {
       this.player.teleport(target.location, { dimension: target.dimension, rotation: target.getRotation() });
       Util.notify(`${target.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
+      return await this.playerInfo(target);
     }
     if (selection === 6) {
       target.teleport(this.player.location, { dimension: this.player.dimension, rotation: this.player.getRotation() });
       Util.notify(`${target.name} §rをテレポートさせました`, this.player);
+      return await this.playerInfo(target);
     }
     if (selection === 7) return await this.showTags(target);
     if (selection === 8) return await this.showScores(target);
-    
-    return await this.playerList(); // back
+    if (selection === 9) return await this.playerList(); // back
   }
   
   /**
