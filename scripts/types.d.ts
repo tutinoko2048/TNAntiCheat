@@ -12,19 +12,19 @@ interface DynamicPropertyTypes {
 }
 
 interface EntityComponentTypes {
-  'minecraft:inventory': mc.EntityInventoryComponent;
-  'minecraft:equippable': mc.EntityEquippableComponent;
-  'minecraft:health': mc.EntityHealthComponent;
-  'minecraft:variant': mc.EntityVariantComponent;
-  'minecraft:item': mc.EntityItemComponent;
+  [mc.BlockInventoryComponent.componentId]: mc.EntityInventoryComponent;
+  [mc.EntityEquippableComponent.componentId]: mc.EntityEquippableComponent;
+  [mc.EntityHealthComponent.componentId]: mc.EntityHealthComponent;
+  [mc.EntityVariantComponent.componentId]: mc.EntityVariantComponent;
+  [mc.EntityItemComponent.componentId]: mc.EntityItemComponent;
 }
 
 interface BlockComponentTypes {
-  'minecraft:inventory': mc.BlockInventoryComponent;
+  [mc.BlockInventoryComponent.componentId]: mc.BlockInventoryComponent;
 }
 
 interface ItemComponentTypes {
-  'minecraft:enchantments': mc.ItemEnchantsComponent;
+  [mc.ItemEnchantsComponent.componentId]: mc.ItemEnchantsComponent;
 }
 
 interface EntityCheckEntry {
