@@ -30,7 +30,7 @@ export function banCheck(player) {
       expireAt && expireAt - Date.now() < 0
     ) {
       BanManager.unban(player);
-      Util.notify(`§aUnbanned${isInQueue ? '' : '§7(expired)§a'}: ${player.name}`);
+      Util.notify(`§o§7Unbanned${isInQueue ? '' : '(expired)'}: ${player.name}`);
       return;
     }
     

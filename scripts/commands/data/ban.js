@@ -26,7 +26,7 @@ const banCommand = new Command({
     const ms = Duration.toMS(_duration);
     if (ms > 0) {
       expireAt = Date.now() + ms;
-      expireAtMessage = `\n§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`;
+      expireAtMessage = `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`;
     }
   }
   const message = [
