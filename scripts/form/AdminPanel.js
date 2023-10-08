@@ -329,11 +329,11 @@ export class AdminPanel {
     /** @type {{ name: string, suffix: import('../lib/duration/main').Duration.List }[]} */
     const timeUnits = [
       { name: '無期限 / Permanent', suffix: null },
-      { name: '年 / Years', suffix: 'y' },
-      { name: '週 / Weeks', suffix: 'w' },
-      { name: '日 / Days', suffix: 'd' },
+      { name: '分 / Minutes', suffix: 'm' },
       { name: '時 / Hours', suffix: 'h' },
-      { name: '分 / Minutes', suffix: 'm' }
+      { name: '日 / Days', suffix: 'd' },
+      { name: '週 / Weeks', suffix: 'w' },
+      { name: '年 / Years', suffix: 'y' },
     ];
     if (target.id === this.player.id) return this.playerInfo(target, '§o§cError: 自分をbanすることはできません');
     const form = new UI.ModalFormData();
@@ -352,7 +352,7 @@ export class AdminPanel {
     const expireAt = Date.now() + ms;
     const message = [
       `§7Reason: §f${reason || '-'}`,
-      isPermanent ? `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})` : null
+      isPermanent ? null : `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`
     ].filter(Boolean).join('\n');
 
     BanManager.ban(target, {
