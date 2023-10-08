@@ -108,6 +108,8 @@ export interface BanOptions {
   expireAt?: number;
   /** kick時に表示するメッセージ(理由) */
   message: string;
+  /** @default true */
+  forceKick?: boolean;
 }
 
 export interface UnbanQueueEntry {

@@ -34,7 +34,7 @@ const banCommand = new Command({
     expireAtMessage
   ].filter(Boolean).join('\n');
   
-  BanManager.ban(player, { message, expireAt });
+  BanManager.ban(player, { reason, message, expireAt });
   origin.broadcast(Util.decorate(`§7${origin.name} >> §c${player.name}§r をbanしました\n${message}`));
   Util.writeLog({
     type: 'command.ban',

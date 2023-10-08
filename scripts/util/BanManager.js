@@ -15,10 +15,10 @@ export class BanManager {
    * @param {boolean} [ban] 
    * @returns {boolean} kickに成功したかどうか
    */
-  static kick(player, reason, ban) {
+  static kick(player, reason, ban, force = true) {
     const { successCount } = overworld.runCommand(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason ?? ''}`);
     const success = successCount > 0;
-    if (!success) player.triggerEvent('tn:kick');
+    if (!success && force) player.triggerEvent('tn:kick');
     return success;
   }
 
@@ -37,7 +37,7 @@ export class BanManager {
       player.setDynamicProperty(PropertyIds.banExpireAt, options.expireAt);
     }
     
-    return BanManager.kick(player, options.message ?? options.reason, true);
+    return BanManager.kick(player, options.message || options.reason, true, options.forceKick ?? true);
   }
 
   /** @param {Player} player */

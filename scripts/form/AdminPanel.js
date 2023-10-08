@@ -9,6 +9,7 @@ import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editLore, editNameTag } from './ItemEditor';
 import { BanManager } from '../util/BanManager';
+import { Duration } from '../lib/duration/main';
 
 /** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
@@ -35,14 +36,15 @@ export class AdminPanel {
   }
   
   async main(busy) {
-    const players = world.getAllPlayers();
     const info = [
+      'TN-AntiCheatの管理者用パネルです\n',
+      '§l§b--- World Info ---',
       `§l§7現在時刻: §r${Util.getTime()}`,
       `§l§7ワールド経過時間: §r${Util.parseMS(Date.now() - this.ac.startTime)}`,
-      `§l§7プレイヤー数: §r${players.length}`,
-      `§l§7TPS: §r${this.ac.getTPS().toFixed(1)}`
-    ].join('\n');
-    const form = FORMS.main.body(`TN-AntiCheatの管理者用パネルです\n\n§l§b--- World Info ---§r\n${info}\n `);
+      `§l§7プレイヤー数: §r${world.getPlayers().length}`,
+      `§l§7TPS: §r${this.ac.getTPS().toFixed(1)}`,
+    ].join('§r\n');
+    const form = FORMS.main.body(`${info}\n `);
     const { selection, canceled } = busy
       ? await Util.showFormToBusy(this.player, form)
       : await form.show(this.player);
@@ -57,8 +59,7 @@ export class AdminPanel {
   async playerList() {
     const perm = (p) => Util.isOP(p) ? '§2[OP]' : Permissions.has(p, PermissionType.Builder) ? '§6[Builder]' : null;
     const icon = (p) => Util.isOP(p) ? Icons.op : Permissions.has(p, PermissionType.Builder) ? Icons.builder : Icons.member;
-    // @ts-ignore
-    const players = world.getAllPlayers().sort((a,b) => a.name - b.name);
+    const players = world.getPlayers().sort((a,b) => a.name.localeCompare(b.name));
     const form = new UI.ActionFormData();
     for (const p of players) form.button(
       perm(p) ? `${perm(p)}§8 ${p.name}` : p.name,
@@ -73,11 +74,15 @@ export class AdminPanel {
     return await this.playerInfo(players[selection]);
   }
   
-  /** @param {Player} target */
-  async playerInfo(target) {
+  /**
+   * @param {Player} target
+   * @param {string} [message]
+   */
+  async playerInfo(target, message) {
     const { x, y, z } = Util.vectorNicely(target.location);
     const { currentValue, effectiveMax } = target.getComponent('minecraft:health');
-    const perm = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, PermissionType.Builder) ? '§ebuilder§f' : 'member';
+    const perm = (p) => Util.isOP(p) ? '§aOP§f' : Permissions.has(p, PermissionType.Builder) ? '§eBuilder§f' : 'Member';
+    const bool = (v) => v ? '§atrue§r' : '§cfalse§r';
     const info = [
       `§7Name: §f${target.name}`,
       `§7Dimension: §f${target.dimension.id}`,
@@ -87,9 +92,10 @@ export class AdminPanel {
       `§7ID: §f${target.id}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
-      `§7isFrozen: ${this.ac.frozenPlayerMap.has(target.id) ? '§atrue§r' : '§cfalse§r'}`
+      `§7isFrozen: ${bool(this.ac.frozenPlayerMap.has(target.id))}`,
+      `§7isMuted: ${bool(target.getDynamicProperty(PropertyIds.mute))}`
     ].filter(Boolean).join('\n');
-    const form = FORMS.playerInfo.body(`${info}\n `);
+    const form = FORMS.playerInfo.body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.showInventory(target);
@@ -300,33 +306,62 @@ export class AdminPanel {
     }
     return await this.playerInfo(target);
   }
-  
+
   /** @param {Player} target */
   async kickPlayer(target) {
-    const res = await confirmForm(this.player, {
-      body: `§l§c${target.name} §rを本当にkickしますか？`,
-      yes: '§ckickする', no: '§lキャンセル'
-    });
-    if (res) {
-      if (target.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
-      Util.kick(target, '-');
-      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${target.name}§r をkickしました`);
-      Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, target);
-    } else return await this.playerInfo(target);
+    const form = new UI.ModalFormData();
+    form.title(`Kick >> ${target.name}`);
+    form.textField('理由 / Reason', 'reason');
+    
+    const { canceled, formValues } = await form.show(this.player);
+    if (canceled) return await this.playerInfo(target);
+    const reason = /** @type {string} */ (formValues[0]);
+    const message = `§7Reason: ${reason || '-'}`;
+
+    const res = BanManager.kick(target, message, false, false);
+    if (!res) return Util.notify('§ckickに失敗しました', this.player);
+    Util.notify(`§7${this.player.name} >> §c${target.name}§r をkickしました\n${message}`);
+    Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}\n${message}` }, target);
   }
   
   /** @param {Player} target */
   async banPlayer(target) {
-    const res = await confirmForm(this.player, {
-      body: `§l§c${target.name} §rを本当にbanしますか？`,
-      yes: '§cbanする', no: '§lキャンセル'
+    /** @type {{ name: string, suffix: import('../lib/duration/main').Duration.List }[]} */
+    const timeUnits = [
+      { name: '無期限 / Permanent', suffix: null },
+      { name: '年 / Years', suffix: 'y' },
+      { name: '週 / Weeks', suffix: 'w' },
+      { name: '日 / Days', suffix: 'd' },
+      { name: '時 / Hours', suffix: 'h' },
+      { name: '分 / Minutes', suffix: 'm' }
+    ];
+    if (target.id === this.player.id) return this.playerInfo(target, '§o§cError: 自分をbanすることはできません');
+    const form = new UI.ModalFormData();
+    form.title(`Ban >> ${target.name}`);
+    form.textField('理由 / Reason', 'reason');
+    form.dropdown('単位 / Unit', timeUnits.map(u => u.name), 0);
+    form.slider('長さ / Duration', 1, 60, 1);
+    
+    const { canceled, formValues } = await form.show(this.player);
+    if (canceled) return await this.playerInfo(target);
+    const reason = /** @type {string} */ (formValues[0]);
+    const unit = timeUnits[/** @type {number} */ (formValues[1])];
+    const duration = /** @type {number} */ (formValues[2]);
+    const ms = Duration.toMS(`${duration}${unit.suffix}`);
+    const isPermanent = unit.suffix === null || ms === 0;
+    const expireAt = Date.now() + ms;
+    const message = [
+      `§7Reason: §f${reason || '-'}`,
+      isPermanent ? `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})` : null
+    ].filter(Boolean).join('\n');
+
+    BanManager.ban(target, {
+      reason, message,
+      expireAt: isPermanent ? undefined : expireAt,
+      forceKick: false
     });
-    if (res) {
-      if (target.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
-      Util.ban(target, '-', '(from AdminPanel)');
-      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${target.name}§r をbanしました`);
-      Util.writeLog({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, target);
-    } else return await this.playerInfo(target);
+    Util.notify(`§7${this.player.name} >> §c${target.name}§r をbanしました\n${message}`);
+    Util.writeLog({ type: 'panel.kick', message: `Banned by ${this.player.name}\n${message}` }, target);
   }
   
   /** @param {Player} target */
