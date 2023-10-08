@@ -73,51 +73,51 @@ export class AdminPanel {
     return await this.playerInfo(players[selection]);
   }
   
-  /** @param {Player} player */
-  async playerInfo(player) {
-    const { x, y, z } = Util.vectorNicely(player.location);
-    const { currentValue, effectiveMax } = player.getComponent('minecraft:health');
+  /** @param {Player} target */
+  async playerInfo(target) {
+    const { x, y, z } = Util.vectorNicely(target.location);
+    const { currentValue, effectiveMax } = target.getComponent('minecraft:health');
     const perm = (p) => Util.isOP(p) ? '§aop§f' : Permissions.has(p, PermissionType.Builder) ? '§ebuilder§f' : 'member';
     const info = [
-      `§7Name: §f${player.name}`,
-      `§7Dimension: §f${player.dimension.id}`,
+      `§7Name: §f${target.name}`,
+      `§7Dimension: §f${target.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
-      `§7GameMode: §f${Util.getGameMode(player)}`,
-      `§7ID: §f${player.id}`,
-      `§7Permission: §f${perm(player)}`,
-      player.joinedAt ? `§7JoinedAt: §f${Util.getTime(player.joinedAt)}` : null,
-      `§7isFrozen: ${this.ac.frozenPlayerMap.has(player.id) ? '§atrue§r' : '§cfalse§r'}`
+      `§7GameMode: §f${Util.getGameMode(target)}`,
+      `§7ID: §f${target.id}`,
+      `§7Permission: §f${perm(target)}`,
+      target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
+      `§7isFrozen: ${this.ac.frozenPlayerMap.has(target.id) ? '§atrue§r' : '§cfalse§r'}`
     ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo.body(`${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === 0) return await this.showInventory(player);
-    if (selection === 1) return await this.managePermission(player);
-    if (selection === 2) return await this.kickPlayer(player);
-    if (selection === 3) return await this.banPlayer(player);
-    if (selection === 4) return await this.manageAbility(player);
+    if (selection === 0) return await this.showInventory(target);
+    if (selection === 1) return await this.managePermission(target);
+    if (selection === 2) return await this.kickPlayer(target);
+    if (selection === 3) return await this.banPlayer(target);
+    if (selection === 4) return await this.manageAbility(target);
     if (selection === 5) {
-      this.player.teleport(player.location, { dimension: player.dimension, rotation: player.getRotation() });
-      Util.notify(`${player.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
+      this.player.teleport(target.location, { dimension: target.dimension, rotation: target.getRotation() });
+      Util.notify(`${target.name} §rにテレポートしました §7[${x}, ${y}, ${z}]§r`, this.player);
     }
     if (selection === 6) {
-      player.teleport(this.player.location, { dimension: this.player.dimension, rotation: this.player.getRotation() });
-      Util.notify(`${player.name} §rをテレポートさせました`, this.player);
+      target.teleport(this.player.location, { dimension: this.player.dimension, rotation: this.player.getRotation() });
+      Util.notify(`${target.name} §rをテレポートさせました`, this.player);
     }
-    if (selection === 7) return await this.showTags(player);
-    if (selection === 8) return await this.showScores(player);
+    if (selection === 7) return await this.showTags(target);
+    if (selection === 8) return await this.showScores(target);
     
     return await this.playerList(); // back
   }
   
   /**
-   * @param {Player} player
+   * @param {Player} target
    * @param {string} [message]
    */
-  async showInventory(player, message) {
+  async showInventory(target, message) {
     /** @type {ItemInformation[]} */
-    const slotList = getAllSlots(player).filter(info => !!info.slot?.typeId);
+    const slotList = getAllSlots(target).filter(info => !!info.slot?.typeId);
    
     const form = new ActionForm();
     form.button('§l§1更新 / Reload', Icons.reload, 'reload');
@@ -125,7 +125,7 @@ export class AdminPanel {
     slotList.forEach((info, index) =>
       form.button(`§0${Util.safeString(info.slot.typeId, 30)}${typeof info.slotId === 'string' ? ' ':''}\n§8slot: ${info.slotId}, amount: ${info.slot.amount}`, null, index)
     );
-    form.title(`${player.name}'s inventory`)
+    form.title(`${target.name}'s inventory`)
       .button('§l§c全て削除 / Clear all', Icons.clear, 'clear')
       .button('§l§cエンダーチェストをクリア / Clear enderchest', Icons.enderchest, 'ender')
       .button('戻る / Return', Icons.returnBtn, 'back');
@@ -133,46 +133,46 @@ export class AdminPanel {
     const { canceled, button } = await form.show(this.player);
     if (canceled) return;
     
-    if (button.id === 'reload') return this.showInventory(player);
+    if (button.id === 'reload') return this.showInventory(target);
     if (button.id === 'clear') {
       const res = await confirmForm(this.player, {
-        body: `§l§c${player.name}§r の全てのアイテムを削除しますか？`,
+        body: `§l§c${target.name}§r の全てのアイテムを削除しますか？`,
         yes: '§c削除する', no: '§lキャンセル'
       });
       if (res) {
-        player.runCommand('clear @s');
-        Util.notify(`${player.name} の全てのアイテムを削除しました`, this.player);
-      } else return await this.showInventory(player);
+        target.runCommand('clear @s');
+        Util.notify(`${target.name} の全てのアイテムを削除しました`, this.player);
+      } else return await this.showInventory(target);
       
     } else if (button.id === 'ender') {
       const res = await confirmForm(this.player, {
-        body: `§l§c${player.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
+        body: `§l§c${target.name}§r のエンダーチェストの全てのアイテムを削除しますか？`,
         yes: '§c削除する', no: '§lキャンセル'
       });
       if (res) {
-        player.runCommand('function util/clear_ec');
-        Util.notify(`${player.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
-      } else return await this.showInventory(player);
+        target.runCommand('function util/clear_ec');
+        Util.notify(`${target.name} のエンダーチェストの全てのアイテムを削除しました`, this.player);
+      } else return await this.showInventory(target);
       
     } else if (button.id === 'back') {
-      return await this.playerInfo(player);
+      return await this.playerInfo(target);
       
     } else {
       /** @type {ItemInformation} */
       const info = slotList[button.id];
-      if (!info.slot.getItem()) return await this.showInventory(player, '§cError: アイテムが移動されています');
-      return await this.itemInfo(player, info);
+      if (!info.slot.getItem()) return await this.showInventory(target, '§cError: アイテムが移動されています');
+      return await this.itemInfo(target, info);
     }
   }
   
   /**
-   * @param {Player} player 
+   * @param {Player} target 
    * @param {ItemInformation} info 
    */
-  async itemInfo(player, info) {
+  async itemInfo(target, info) {
     const item = info.slot.getItem(); // cache item
     const form = FORMS.itemInfo.body([
-      `§7owner: §r${player.name}`,
+      `§7owner: §r${target.name}`,
       `§7item: §r${item.typeId}`,
       `§7slot: §r${info.slotId}${typeof info.slotId === 'number' ? '' : ' '}`,
       `§7amount: §r${item.amount}`,
@@ -183,23 +183,23 @@ export class AdminPanel {
     if (canceled) return;
     
     // form開いてる間に移動された時の対策
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(target, '§cError: アイテムが移動されています');
 
     if (selection === 0) { // delete item
       info.slot.setItem();
-      Util.notify(`[${player.name}] ${item.typeId} §7(slot: ${info.slotId})§r を削除しました`, this.player);
+      Util.notify(`[${target.name}] ${item.typeId} §7(slot: ${info.slotId})§r を削除しました`, this.player);
     }
-    if (selection === 1) return await this.transferItem(player, info);
-    if (selection === 2) return await this.editItem(player, info, EditItemAction.NameTag);
-    if (selection === 3) return await this.editItem(player, info, EditItemAction.Lore);
-    if (selection === 4) return await this.showInventory(player); // back
+    if (selection === 1) return await this.transferItem(target, info);
+    if (selection === 2) return await this.editItem(target, info, EditItemAction.NameTag);
+    if (selection === 3) return await this.editItem(target, info, EditItemAction.Lore);
+    if (selection === 4) return await this.showInventory(target); // back
   }
 
   /**
-   * @param {Player} player 
+   * @param {Player} source 
    * @param {ItemInformation} info 
    */
-  async transferItem(player, info) {
+  async transferItem(source, info) {
     const item = info.slot.getItem();
     const players = world.getPlayers();
     players.sort((a, b) => a.name.localeCompare(b.name));
@@ -210,9 +210,9 @@ export class AdminPanel {
     form.dropdown('転送先 / Target', players.map(p => p.name), 0);
     form.toggle('アイテムを複製 / Duplicate item', false);
     const { canceled, formValues } = await form.show(this.player);
-    if (canceled) return await this.showInventory(player);
+    if (canceled) return await this.showInventory(source);
 
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(player, '§cError: アイテムが移動されています');
+    if (item.typeId !== info.slot.typeId) return await this.showInventory(source, '§cError: アイテムが移動されています');
 
     const targetIndex = /** @type {number} */ (formValues[0]);
     const duplicate = /** @type {boolean} */ (formValues[1]);
@@ -222,7 +222,7 @@ export class AdminPanel {
     if (!duplicate) info.slot.setItem();
 
     Util.notify(
-      `[${player.name}§r >> ${target.name}§r] ${item.typeId} §7(slot: ${info.slotId})§r を${duplicate ? '複製' : '転送'}しました`,
+      `[${source.name}§r >> ${target.name}§r] ${item.typeId} §7(slot: ${info.slotId})§r を${duplicate ? '複製' : '転送'}しました`,
       this.player
     );
   }
@@ -268,10 +268,10 @@ export class AdminPanel {
     return await this.playerInfo(player);
   }
   
-  /** @param {Player} player */
-  async manageAbility(player) {
-    const _mute = player.getDynamicProperty(PropertyIds.mute) ?? false;
-    const _freeze = this.ac.frozenPlayerMap.has(player.id);
+  /** @param {Player} target */
+  async manageAbility(target) {
+    const _mute = target.getDynamicProperty(PropertyIds.mute) ?? false;
+    const _freeze = this.ac.frozenPlayerMap.has(target.id);
     const form = new UI.ModalFormData();
     form.title('Manage Abilities');
     form.toggle('ミュート / Mute', _mute);
@@ -281,79 +281,79 @@ export class AdminPanel {
     const [ mute, freeze ] = formValues;
     
     if (mute !== _mute) {
-      const res = Util.runCommandSafe(`ability @s mute ${mute}`, player);
-      if (!res) return Util.notify(`§c${player.name}§r§c のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
-      player.setDynamicProperty(PropertyIds.mute, mute);
-      Util.notify(`§7${this.player.name}§r§7 >> ${player.name} のミュートを ${mute} に設定しました`);
-      if (mute) Util.notify('§o§eあなたはミュートされています', player);
-      Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, player);
+      const res = Util.runCommandSafe(`ability @s mute ${mute}`, target);
+      if (!res) return Util.notify(`§c${target.name}§r§c のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
+      target.setDynamicProperty(PropertyIds.mute, mute);
+      Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のミュートを ${mute} に設定しました`);
+      if (mute) Util.notify('§o§eあなたはミュートされています', target);
+      Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, target);
     }
     
     if (freeze !== _freeze) {
-      const res = Util.runCommandSafe(`inputpermission set @s movement ${freeze ? 'disabled' : 'enabled'}`, player);
-      if (!res) return Util.notify(`§c${player.name}§r§c のフリーズに失敗しました`, this.player);
-      if (freeze) this.ac.frozenPlayerMap.set(player.id, player.location);
-        else this.ac.frozenPlayerMap.delete(player.id);
-      Util.notify(`§7${this.player.name}§r§7 >> ${player.name} のフリーズを ${freeze} に設定しました`);
-      if (freeze) Util.notify('§o§eあなたはフリーズされています', player);
-      Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, player);
+      const res = Util.runCommandSafe(`inputpermission set @s movement ${freeze ? 'disabled' : 'enabled'}`, target);
+      if (!res) return Util.notify(`§c${target.name}§r§c のフリーズに失敗しました`, this.player);
+      if (freeze) this.ac.frozenPlayerMap.set(target.id, target.location);
+        else this.ac.frozenPlayerMap.delete(target.id);
+      Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);
+      if (freeze) Util.notify('§o§eあなたはフリーズされています', target);
+      Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, target);
     }
-    return await this.playerInfo(player);
+    return await this.playerInfo(target);
   }
   
-  /** @param {Player} player */
-  async kickPlayer(player) {
+  /** @param {Player} target */
+  async kickPlayer(target) {
     const res = await confirmForm(this.player, {
-      body: `§l§c${player.name} §rを本当にkickしますか？`,
+      body: `§l§c${target.name} §rを本当にkickしますか？`,
       yes: '§ckickする', no: '§lキャンセル'
     });
     if (res) {
-      if (player.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
-      Util.kick(player, '-');
-      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をkickしました`);
-      Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, player);
-    } else return await this.playerInfo(player);
+      if (target.name === this.player.name) return Util.notify('§cError: 自分をkickすることはできません', this.player);
+      Util.kick(target, '-');
+      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${target.name}§r をkickしました`);
+      Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}` }, target);
+    } else return await this.playerInfo(target);
   }
   
-  /** @param {Player} player */
-  async banPlayer(player) {
+  /** @param {Player} target */
+  async banPlayer(target) {
     const res = await confirmForm(this.player, {
-      body: `§l§c${player.name} §rを本当にbanしますか？`,
+      body: `§l§c${target.name} §rを本当にbanしますか？`,
       yes: '§cbanする', no: '§lキャンセル'
     });
     if (res) {
-      if (player.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
-      Util.ban(player, '-', '(from AdminPanel)');
-      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${player.name}§r をbanしました`);
-      Util.writeLog({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, player);
-    } else return await this.playerInfo(player);
+      if (target.name === this.player.name) return Util.notify('§cError: 自分をbanすることはできません', this.player);
+      Util.ban(target, '-', '(from AdminPanel)');
+      Util.notify(`§7${this.player.name} >> §fプレイヤー §c${target.name}§r をbanしました`);
+      Util.writeLog({ type: 'panel.ban', message: `Banned by ${this.player.name}` }, target);
+    } else return await this.playerInfo(target);
   }
   
-  /** @param {Player} player */
-  async showTags(player) {
-    const tags = player.getTags().map(t => `- ${t}§r`);
+  /** @param {Player} target */
+  async showTags(target) {
+    const tags = target.getTags().map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
-    form.title(`${player.name}'s tags`)
+    form.title(`${target.name}'s tags`)
       .body(tags.length > 0 ? `タグ一覧 (${tags.length} tags)\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === 0) return await this.playerInfo(player);
+    if (selection === 0) return await this.playerInfo(target);
   }
   
-  /** @param {Player} player */
-  async showScores(player) {
+  /** @param {Player} target */
+  async showScores(target) {
     const objectives = world.scoreboard.getObjectives();
-    objectives.sort((obj0, obj1) => Util.getScore(player, obj1.id) - Util.getScore(player, obj0.id));
+    objectives.sort((obj0, obj1) => Util.getScore(target, obj1.id) - Util.getScore(target, obj0.id));
     const messages = objectives
-      .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(player, obj.id) ?? 'null'}`);
+      .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(target, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
-    form.title(`${player.name}'s scores`)
+    form.title(`${target.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧 (${objectives.length} objectives)\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
       .button('戻る / Return', Icons.returnBtn);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
-    if (selection === 0) return await this.playerInfo(player);
+    if (selection === 0) return await this.playerInfo(target);
   }
   
   async showEntities() {
