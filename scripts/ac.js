@@ -284,6 +284,10 @@ export class TNAntiCheat {
   }
 }
 
+system.beforeEvents.watchdogTerminate.subscribe(ev => {
+  ev.cancel = true;
+});
+
 function checkPlayerJson() { // checks player.json conflict
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant.value !== 2048) {

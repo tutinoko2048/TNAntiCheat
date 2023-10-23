@@ -208,37 +208,33 @@ export class Util {
   }
     
   /**
-   * プレイヤーのゲームモードを取得します。ゲームモードが取得できない場合はundefinedが返ります。
-   * Thanks: https://discord.com/channels/950040604186931351/969011166443626506/1030299392697184346
    * @param {Player} player
    * @returns {GameMode|undefined}
    */
   static getGameMode(player) {
-    for (const gamemodeName in GameMode) {
-      if (world.getPlayers({ name: player.name, gameMode: GameMode[gamemodeName] }).length > 0) {
-        return GameMode[gamemodeName];
-      }
+    for (const key in GameMode) {
+      if (player.matches({ gameMode: GameMode[key] })) return GameMode[key];
     }
   }
   
   /** @param {Player} player */
   static isSurvival(player) {
-    return this.getGameMode(player) === GameMode.survival;
+    return player.matches({ gameMode: GameMode.survival });
   }
   
   /** @param {Player} player */
   static isCreative(player) {
-    return this.getGameMode(player) === GameMode.creative;
+    return player.matches({ gameMode: GameMode.creative });
   }
   
   /** @param {Player} player */
   static isAdventure(player) {
-    return this.getGameMode(player) === GameMode.adventure;
+    return player.matches({ gameMode: GameMode.adventure });
   }
   
   /** @param {Player} player */
   static isSpectator(player) {
-    return this.getGameMode(player) === GameMode.spectator;
+    return player.matches({ gameMode: GameMode.spectator });
   }
   
   static cloneObject(obj) {

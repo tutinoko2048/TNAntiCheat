@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 5
+// configVersion: 6
 export default /** @type {import('./types').IConfig} */ ({
   permission: {
     admin: { // 全ての検知から除外される権限
