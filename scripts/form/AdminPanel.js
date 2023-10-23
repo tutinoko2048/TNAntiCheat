@@ -489,15 +489,17 @@ export async function manageUnbanQueue(player, fromChat) {
   const queue = BanManager.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
   
-  if (queue.length === 0) return player.sendMessage('§cUnbanQueueに登録されているプレイヤーは居ません§r')
-  
   const form = new ActionForm();
   form.title('UnbanQueue Manager');
-  form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
-  form.button('プレイヤーを追加 / Add player', Icons.plus, 'add');
-  for (const entry of queue) form.button(entry.name);
+  form.body(
+    queue.length > 0
+      ? 'UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n '
+      : '§o§cUnbanQueueに登録されているプレイヤーは居ません§r\n '
+  );
+  form.button('§lプレイヤーを追加 / Add player', Icons.plus, 'add');
+  for (const index in queue) form.button(queue[index].name, null, index);
   
-  const { canceled, selection, button } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
+  const { canceled, button } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
   if (canceled) return;
 
   if (button.id === 'add') {
@@ -512,9 +514,9 @@ export async function manageUnbanQueue(player, fromChat) {
     Util.writeLog({ type: 'unban.add', playerName: targetName, message: `Executed by ${player.name}` });
     
   } else {
-    const entry = queue[selection];
-    if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
+    const entry = queue[button.id];
     if (!entry) return player.sendMessage('§cError: 操作に失敗しました');
+    if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
 
     const res = await confirmForm(player, {
       body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`

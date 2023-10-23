@@ -1,4 +1,3 @@
-import './system/dog.js';
 import { world, system, Player, ScriptEventSource } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
