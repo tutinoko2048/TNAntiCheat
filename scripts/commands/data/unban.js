@@ -15,7 +15,7 @@ const unbanCommand = new Command({
   if (_playerName) {
     const playerName = Util.parsePlayerName(_playerName);
     BanManager.addUnbanQueue(playerName);
-    origin.broadcast(Util.decorate(`§7${origin.name} >> §c${playerName}§r をunbanのリストに追加しました`));
+    origin.broadcast(Util.decorate(`§7${origin.name} >> §r${playerName}§r をunbanのリストに追加しました`));
     Util.writeLog({ type: 'unban.add', playerName, message: `source: command\nExecuted by ${origin.name}` });
   } else {
     if (origin.isPlayerOrigin()) {

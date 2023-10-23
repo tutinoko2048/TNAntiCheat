@@ -53,7 +53,8 @@ export class AdminPanel {
     if (selection === 1) return await this.showEntities();
     if (selection === 2) return await this.configPanel();
     if (selection === 3) return await this.actionLogs();
-    if (selection === 4) return await this.about();
+    if (selection === 4) return await manageUnbanQueue(this.player);
+    if (selection === 5) return await this.about();
   }
   
   async playerList() {
@@ -489,24 +490,39 @@ export async function manageUnbanQueue(player, fromChat) {
   
   if (queue.length === 0) return player.sendMessage('§cUnbanQueueに登録されているプレイヤーは居ません§r')
   
-  const form = new UI.ActionFormData();
+  const form = new ActionForm();
   form.title('UnbanQueue Manager');
   form.body('UnbanQueueから削除する人を選択してください\nSelect player to be removed from UnbanQueue\n ');
+  form.button('プレイヤーを追加 / Add player', Icons.plus, 'add');
   for (const entry of queue) form.button(entry.name);
   
-  const { canceled, selection } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
+  const { canceled, selection, button } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
   if (canceled) return;
-  
-  const entry = queue[selection];
-  if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
-  
-  const res = await confirmForm(player, {
-    body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
-  });
-  if (!res) return await manageUnbanQueue(player);
-  BanManager.removeUnbanQueue(entry.name);
-  Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
-  Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
+
+  if (button.id === 'add') {
+    const form = new UI.ModalFormData();
+    form.title('UnbanQueue / Add player');
+    form.textField('プレイヤー名 / Player Name', 'player');
+    const { canceled, formValues } = await form.show(player);
+    const targetName = /** @type {string} */ (formValues[0]);
+    if (canceled || !targetName) return await manageUnbanQueue(player);
+    BanManager.addUnbanQueue(targetName);
+    Util.notify(`§7${player.name} >> §r${targetName}§r をunbanのリストに追加しました`);
+    Util.writeLog({ type: 'unban.add', playerName: targetName, message: `Executed by ${player.name}` });
+    
+  } else {
+    const entry = queue[selection];
+    if (entry.source === 'file') return player.sendMessage('§cError: unban_queue.jsファイル内に書かれているプレイヤーのため削除できません');
+    if (!entry) return player.sendMessage('§cError: 操作に失敗しました');
+
+    const res = await confirmForm(player, {
+      body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
+    });
+    if (!res) return await manageUnbanQueue(player);
+    BanManager.removeUnbanQueue(entry.name);
+    Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
+    Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
+  }
 }
 
 function coloredEntityCount(typeId, count) {
