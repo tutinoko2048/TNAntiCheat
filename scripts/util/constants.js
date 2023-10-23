@@ -30,6 +30,7 @@ export const Icons = /** @type {const} */ ({
   tags: 'textures/items/name_tag',
   scores: 'textures/items/chalkboard_large',
   ability: 'textures/ui/icon_potion',
+  unbanQueue: 'textures/ui/icon_map',
   
   plus: 'textures/ui/color_plus',
   clear: 'textures/ui/icon_trash',
