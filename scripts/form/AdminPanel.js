@@ -94,7 +94,7 @@ export class AdminPanel {
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
       `§7isFrozen: ${bool(this.ac.frozenPlayerMap.has(target.id))}`,
-      `§7isMuted: ${bool(target.getDynamicProperty(PropertyIds.mute))}`
+      `§7isMuted: ${bool(BanManager.isMuted(target))}`
     ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo.body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
     const { selection, canceled } = await form.show(this.player);
@@ -278,7 +278,7 @@ export class AdminPanel {
   
   /** @param {Player} target */
   async manageAbility(target) {
-    const _mute = target.getDynamicProperty(PropertyIds.mute) ?? false;
+    const _mute = BanManager.isMuted(target);
     const _freeze = this.ac.frozenPlayerMap.has(target.id);
     const form = new UI.ModalFormData();
     form.title('Manage Abilities');
@@ -289,9 +289,8 @@ export class AdminPanel {
     const [ mute, freeze ] = formValues;
     
     if (mute !== _mute) {
-      const res = Util.runCommandSafe(`ability @s mute ${mute}`, target);
+      const res = BanManager.setMuted(target, /** @type {boolean} */(mute));
       if (!res) return Util.notify(`§c${target.name}§r§c のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
-      target.setDynamicProperty(PropertyIds.mute, mute);
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のミュートを ${mute} に設定しました`);
       if (mute) Util.notify('§o§eあなたはミュートされています', target);
       Util.writeLog({ type: 'panel.mute', message: `MuteState: ${freeze}\nExecuted by ${this.player.name}` }, target);

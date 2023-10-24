@@ -109,7 +109,7 @@ export class BanManager {
    * @returns {boolean}
    */
   static isMuted(player) {
-    return player.getDynamicProperty(PropertyIds.mute);
+    return !!player.getDynamicProperty(PropertyIds.mute);
   }
 
   /** 

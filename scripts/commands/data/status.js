@@ -1,10 +1,10 @@
 import { world, EquipmentSlot } from '@minecraft/server';
 import { PermissionType, Permissions } from '../../util/Permissions';
-import { PropertyIds } from '../../util/constants';
 import { Util } from '../../util/util';
 import { Command } from '../Command';
 import { CommandError } from '../CommandError';
 import { getCPS } from '../../modules/combat';
+import { BanManager } from '../../util/BanManager';
 
 /**
  * @typedef {import('@minecraft/server').DimensionLocation} DimensionLocation
@@ -51,12 +51,16 @@ const statusCommand = new Command({
     `§7ID: §f${target.id}`,
     target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
     `§7CPS: §f${cps}`,
-    `§7isMuted: ${bool(target.getDynamicProperty(PropertyIds.mute))}`,
+    `§7isMuted: ${bool(BanManager.isMuted(target))}`,
     `§7isFrozen: ${bool(manager.ac.frozenPlayerMap.has(target.id))}`,
     target.flyACount ? `§7§oFly/A count: §r${target.flyACount}` : null,
     target.speedACount ? `§7§oSpeed/A count: §r${target.speedACount}` : null,
     target.autoClickerCount ? `§7§oAutoClicker count: §r${target.autoClickerCount}` : null,
     target.placeBCount ? `§7§oPlaceCheck/B count: §r${target.placeBCount}` : null,
+    target.spammerACount ? `§7§oSpammer/A count: §r${target.spammerACount}` : null,
+    target.spammerBCount ? `§7§oSpammer/B count: §r${target.spammerBCount}` : null,
+    target.spammerCCount ? `§7§oSpammer/C count: §r${target.spammerCCount}` : null,
+
     '§a' + '-'.repeat(title.length - 2)
   ].filter(Boolean).join('§r\n'));
 });

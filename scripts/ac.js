@@ -240,7 +240,7 @@ export class TNAntiCheat {
     if (banned) return;
     modules.xuidBanCheck();
     
-    if (player.getDynamicProperty(PropertyIds.mute)) {
+    if (BanManager.isMuted(player)) {
       const res = Util.runCommandSafe('ability @s mute true', player);
       if (res) Util.notify(`§7あなたはミュートされています`, player);
     }
