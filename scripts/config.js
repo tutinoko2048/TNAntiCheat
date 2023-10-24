@@ -79,14 +79,20 @@ export default /** @type {import('./types').IConfig} */ ({
   },
   spammerA: { // チャットの長さをチェック
     state: true,
-    maxLength: 100
+    maxLength: 100,
+    autoMuteCount: 10, // 自動でミュートされるまでの検知数(-1で無制限)
+    tempMute: true // 一時的なミュートにするか (リログで消えます)
   },
   spammerB: { // 重複するチャットを制限
-    state: true
+    state: true,
+    autoMuteCount: 20,
+    tempMute: true
   },
   spammerC: { // チャットの速さをチェック
     state: true,
-    minInterval: 1500 // ミリ秒で指定 1000ms = 1s
+    minInterval: 1500, // ミリ秒で指定 1000ms = 1s
+    autoMuteCount: 20,
+    tempMute: true
   },
   instaBreak: { // 壊せないブロックの破壊を検知
     state: true,

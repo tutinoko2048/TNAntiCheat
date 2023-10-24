@@ -72,6 +72,9 @@ declare module '@minecraft/server' {
     flyACount?: number;
     placeBCount?: number;
     autoClickerCount?: number;
+    spammerACount?: number;
+    spammerBCount?: number;
+    spammerCCount?: number;
 
     reachAFlag?: string;
     reachBFlag?: string;
@@ -153,6 +156,11 @@ interface OthersModule {
   }
 }
 
+interface SpammerModule extends IModule {
+  autoMuteCount: number;
+  tempMute: boolean;
+}
+
 export interface IConfig {
   [moduleName: string]: IModule;
   command: {
@@ -162,9 +170,9 @@ export interface IConfig {
   itemList: ItemListModule;
   nuker: IModule;
   namespoof: IModule;
-  spammerA: IModule;
-  spammerB: IModule;
-  spammerC: IModule;
+  spammerA: SpammerModule;
+  spammerB: SpammerModule;
+  spammerC: SpammerModule;
   instaBreak: IModule;
   itemCheckA: IModule;
   itemCheckB: IModule;

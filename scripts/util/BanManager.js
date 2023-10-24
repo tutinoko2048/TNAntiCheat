@@ -103,4 +103,25 @@ export class BanManager {
     const queue = BanManager.getUnbanQueue();
     return BanManager.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
   }
+
+  /**
+   * @param {Player} player
+   * @returns {boolean}
+   */
+  static isMuted(player) {
+    return player.getDynamicProperty(PropertyIds.mute);
+  }
+
+  /** 
+   * @param {Player} player
+   * @param {boolean} state
+   * @param {boolean} [temporary]
+   * @returns {boolean}
+   */
+  static setMuted(player, state, temporary) {
+    const res = player.runCommand(`ability @s mute ${state}`);
+    const success = res.successCount > 0;
+    if (temporary && success) player.setDynamicProperty(PropertyIds.mute, state);
+    return success;
+  }
 }

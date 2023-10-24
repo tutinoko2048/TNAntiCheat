@@ -1,6 +1,9 @@
 const state = '有効/無効の設定';
 const punishment = '検知された場合の対応';
 const flagCount = 'Flagするまでの検知回数 (-1で無制限)';
+const excludeTag = '持っていると検知から除外されるタグ';
+const autoMuteCount = '自動ミュートされるまでの検知数 (-1で無制限)';
+const tempMute = '一時的なミュートにするか (リログで解除)';
 
 export const description = {
   permission: {
@@ -41,16 +44,22 @@ export const description = {
   spammerA: {
     desc: '長文すぎるチャットを制限',
     state,
-    maxLength: '最大文字数'
+    maxLength: '最大文字数',
+    autoMuteCount,
+    tempMute
   },
   spammerB: {
     desc: '重複するチャットを制限',
-    state
+    state,
+    autoMuteCount,
+    tempMute
   },
   spammerC: {
     desc: '速すぎるチャットを制限',
     state,
-    minInterval: '最小の間隔 (ミリ秒で指定)'
+    minInterval: '最小の間隔 (ミリ秒で指定)',
+    autoMuteCount,
+    tempMute
   },
   instaBreak: {
     desc: '壊せないブロックの破壊を検知',
@@ -173,7 +182,8 @@ export const description = {
     desc: '速すぎるクリックを検知 (ベータ)',
     state,
     punishment,
-    maxCPS: '1秒あたりの最大クリック数'
+    maxCPS: '1秒あたりの最大クリック数',
+    flagCount
   },
   creative: {
     desc: 'クリエイティブになったら検知',
@@ -187,7 +197,8 @@ export const description = {
     punishment,
     flagCount,
     maxVelocity: '許容するスピードの最大値',
-    rollback: '検知した時に前いた位置までテレポートする'
+    rollback: '検知した時に前いた位置までテレポートする',
+    excludeTag
   },
   flyA: {
     desc: 'flyを検知 (ベータ)',
@@ -196,7 +207,8 @@ export const description = {
     flagCount,
     minFallDistance: '許容する落下距離の最小値',
     detectPiston: 'ピストンで押された時の誤検知を減らす (負荷がかかる可能性あり)',
-    rollback: '検知した時に前いた位置までテレポートする'
+    rollback: '検知した時に前いた位置までテレポートする',
+    excludeTag
   },
   logger: {
     desc: 'ログの記録に関する設定',
@@ -213,8 +225,8 @@ export const description = {
     timezoneOffset: 'timezone offset',
     
     tpsToScore: 'スコアボードにTPSを出力',
-    'tpsToScore:updateInterval': '更新する間隔(ticks)',
-    'tpsToScore:objective': 'スコアのオブジェクト名',
-    'tpsToScore:name': 'スコアの名前'
+    'tpsToScore.updateInterval': '更新する間隔(ticks)',
+    'tpsToScore.objective': 'スコアのオブジェクト名',
+    'tpsToScore.name': 'スコアの名前'
   }
 }
