@@ -18,7 +18,7 @@ const banCommand = new Command({
   const player = Util.getPlayerByName(playerName);
   if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
   if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をBANすることはできません');
-  if (Util.isOwner(player)) throw new CommandError('ホストをBANすることはできません');
+  if (Util.isHost(player)) throw new CommandError('ホストをBANすることはできません');
 
   let expireAt;
   let expireAtMessage;

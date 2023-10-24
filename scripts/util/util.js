@@ -1,7 +1,6 @@
 import { world, system, Player, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
-import { PropertyIds } from './constants';
 import { PermissionType, Permissions } from './Permissions';
 import { BanManager } from './BanManager.js';
 import { Duration } from '../lib/duration/main.js';
@@ -73,7 +72,7 @@ export class Util {
    * @returns {boolean}
    */
   static ban(player, reason, type) {
-    if (Util.isOwner(player)) {
+    if (Util.isHost(player)) {
       console.error('ban failed: cannot ban owner');
       resetCount(player);
       return false;
@@ -90,7 +89,7 @@ export class Util {
    * @returns {boolean}
    */
   static kick(player, reason, ban = false) {
-    if (Util.isOwner(player)) {
+    if (Util.isHost(player)) {
       console.error('kick failed: cannot kick owner');
       resetCount(player);
       return false;
@@ -103,7 +102,7 @@ export class Util {
   
   /** @param {Player} player */
   static disconnect(player) {
-    if (Util.isOwner(player)) {
+    if (Util.isHost(player)) {
       console.error('disconnect failed: cannot disconnect owner');
       resetCount(player);
       return;
@@ -146,14 +145,9 @@ export class Util {
   
   /** @param {Player} player */
   static isHost(player) {
-    return player.id === '-4294967295';
+    return player.id === '-206158430207';
   }
-  
-  /** @param {Player} player */
-  static isOwner(player) {
-    return world.getDynamicProperty(PropertyIds.ownerId) === player.id;
-  }
-  
+    
   /**
    * @arg {import('../types').ActionLog} content
    * @arg {Player} [player]

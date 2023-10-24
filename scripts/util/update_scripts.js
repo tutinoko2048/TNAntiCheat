@@ -1,4 +1,6 @@
+import { world } from '@minecraft/server';
 import { DataManager } from './DataManager';
+import { PropertyIds } from './constants';
 
 export function updateConfig() {
   const data = DataManager.fetch();
@@ -15,4 +17,13 @@ export function updateConfig() {
   }
   
   DataManager.save(data);
+}
+
+export function updateDynamicProperty() {
+  const ownerIdOld = world.getDynamicProperty(PropertyIds.ownerId);
+  if (ownerIdOld) {
+    world.setDynamicProperty(PropertyIds.ownerId);
+    world.setDynamicProperty(PropertyIds.isRegistered, true);
+    console.warn('[TN-AntiCheat] [DP] Successfully updated!');
+  }
 }

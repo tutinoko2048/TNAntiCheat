@@ -6,7 +6,7 @@ import * as modules from './modules/index';
 import { CommandManager } from './commands/CommandManager';
 import { AdminPanel } from './form/AdminPanel';
 import { DataManager, deleteDupe } from './util/DataManager';
-import { updateConfig } from './util/update_config';
+import { updateConfig, updateDynamicProperty } from './util/update_scripts';
 import { BanManager } from './util/BanManager';
 import { events } from './lib/events/index.js';
 import { PermissionType, Permissions } from './util/Permissions';
@@ -35,7 +35,8 @@ export class TNAntiCheat {
     
     // load system
     events.worldLoad.subscribe(() => {
-      if (world.getDynamicProperty(PropertyIds.ownerId)) {
+      updateDynamicProperty();
+      if (world.getDynamicProperty(PropertyIds.isRegistered)) {
         try {
           this.#enable();
         } catch (e) { console.error(e, e.stack) }
@@ -51,9 +52,9 @@ export class TNAntiCheat {
   
   /** @param {Player} player */
   #register(player) {
-    if (world.getDynamicProperty(PropertyIds.ownerId)) return player.sendMessage('TNAC is already registered!');
+    if (world.getDynamicProperty(PropertyIds.isRegistered)) return player.sendMessage('TNAC is already registered!');
     Permissions.add(player, PermissionType.Admin);
-    world.setDynamicProperty(PropertyIds.ownerId, player.id);
+    world.setDynamicProperty(PropertyIds.isRegistered, true);
     this.#enable();
     player.sendMessage('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
   }

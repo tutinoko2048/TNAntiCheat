@@ -7,8 +7,10 @@ export const PropertyIds = /** @type {const} */ ({
   banExpireAt: 'tn:banExpireAt',
   configData: 'tn:configData',
   mute: 'tn:isMuted',
-  ownerId: 'tn:ownerId', // ここ変えると再登録できる
+  /** @deprecated not used since v3.9.0 */
+  ownerId: 'tn:ownerId',
   unbanQueue: 'tn:unbanQueue',
+  isRegistered: 'tn:isRegistered',
 });
 
 export const Icons = /** @type {const} */ ({

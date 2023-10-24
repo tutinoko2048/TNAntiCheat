@@ -9,6 +9,7 @@ interface DynamicPropertyTypes {
   [PropertyIds.mute]: boolean;
   [PropertyIds.ownerId]: string;
   [PropertyIds.unbanQueue]: string;
+  [PropertyIds.isRegistered]: boolean;
 }
 
 interface EntityComponentTypes {
