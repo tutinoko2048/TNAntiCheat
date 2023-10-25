@@ -85,7 +85,7 @@ export default /** @type {import('./types').IConfig} */ ({
   },
   spammerB: { // 重複するチャットを制限
     state: true,
-    autoMuteCount: 20,
+    autoMuteCount: 30,
     tempMute: true
   },
   spammerC: { // チャットの速さをチェック
