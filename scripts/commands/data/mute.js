@@ -23,7 +23,7 @@ const muteCommand = new Command({
   const res = BanManager.setMuted(target, muteState);
   if (!res) err();
   
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のミュートを ${muteState} に設定しました`));
+  origin.broadcast(Util.decorate(`§7${origin.name} >> ${target.name}§r§7 のミュートを ${muteState} に設定しました`));
   if (muteState) Util.notify('§o§eあなたはミュートされています', target);
   Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, target);
 

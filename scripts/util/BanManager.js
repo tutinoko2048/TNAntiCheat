@@ -121,7 +121,7 @@ export class BanManager {
   static setMuted(player, state, temporary) {
     const res = player.runCommand(`ability @s mute ${state}`);
     const success = res.successCount > 0;
-    if (temporary && success) player.setDynamicProperty(PropertyIds.mute, state);
+    if (!temporary && success) player.setDynamicProperty(PropertyIds.mute, state);
     return success;
   }
 }

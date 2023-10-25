@@ -12,10 +12,13 @@ export function spammerA(ev) {
 
     sender.spammerACount ??= 0;
     sender.spammerACount++;
-    if (config.spammerA.autoMuteCount !== -1 && config.spammerA.autoMuteCount === sender.spammerACount) {
+    if (config.spammerA.autoMuteCount !== -1 && sender.spammerACount % config.spammerA.autoMuteCount === 0) {
       system.run(() => {
         const res = BanManager.setMuted(sender, true, config.spammerA.tempMute);
-        if (res) Util.notify(`Spammer/A >> AutoMuted: §c${sender.name}§r §7[${sender.spammerACount}] (l: ${message.length})§r§　`);
+        if (res) {
+          Util.notify(`Spammer/A >> AutoMuted: §c${sender.name}§r §7[${sender.spammerACount}] (l: ${message.length})§r§　`);
+          Util.writeLog({ type: 'Spammer/A', punishment: 'notify', message: `length: ${message.length}` }, sender);
+        }
       });
     }
 
@@ -32,10 +35,13 @@ export function spammerB(ev) {
 
     sender.spammerBCount ??= 0;
     sender.spammerBCount++;
-    if (config.spammerB.autoMuteCount !== -1 && config.spammerB.autoMuteCount === sender.spammerBCount) {
+    if (config.spammerB.autoMuteCount !== -1 && sender.spammerBCount % config.spammerB.autoMuteCount === 0) {
       system.run(() => {
         const res = BanManager.setMuted(sender, true, config.spammerB.tempMute);
-        if (res) Util.notify(`Spammer/B >> AutoMuted: §c${sender.name}§r §7[${sender.spammerBCount}]§r§　`);
+        if (res) {
+          Util.notify(`Spammer/B >> AutoMuted: §c${sender.name}§r §7[${sender.spammerBCount}]§r§　`);
+          Util.writeLog({ type: 'Spammer/B', punishment: 'notify' }, sender);
+        }
       });
     }
 
@@ -56,10 +62,13 @@ export function spammerC(ev) {
 
     sender.spammerCCount ??= 0;
     sender.spammerCCount++;
-    if (config.spammerC.autoMuteCount !== -1 && config.spammerC.autoMuteCount === sender.spammerCCount) {
+    if (config.spammerC.autoMuteCount !== -1 && sender.spammerCCount % config.spammerC.autoMuteCount === 0) {
       system.run(() => {
         const res = BanManager.setMuted(sender, true, config.spammerC.tempMute);
-        if (res) Util.notify(`Spammer/C >> AutoMuted: §c${sender.name}§r §7[${sender.spammerCCount}] (i: ${interval} ms)§r§　`);
+        if (res) {
+          Util.notify(`Spammer/C >> AutoMuted: §c${sender.name}§r §7[${sender.spammerCCount}] (i: ${interval} ms)§r§　`);
+          Util.writeLog({ type: 'Spammer/C', punishment: 'notify', message: `interval: ${interval} ms` }, sender);
+        }
       });
     }
 

@@ -61,7 +61,7 @@ const statusCommand = new Command({
     target.spammerBCount ? `§7§oSpammer/B count: §r${target.spammerBCount}` : null,
     target.spammerCCount ? `§7§oSpammer/C count: §r${target.spammerCCount}` : null,
 
-    '§a' + '-'.repeat(title.length - 2)
+    '§a' + '-'.repeat(title.length - 5)
   ].filter(Boolean).join('§r\n'));
 });
 
