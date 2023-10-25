@@ -1,21 +1,21 @@
 {
   "format_version": 2,
   "header": {
-    "name": "TN-AntiCheat v3.8.0",
+    "name": "TN-AntiCheat v3.9.0",
     "description": "AntiCheat with ScriptAPI\n軽量で使いやすいアンチチートアドオンです\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
-    "version": [ 3, 8, 0 ],
-    "min_engine_version": [ 1, 20, 30 ]
+    "version": [ 3, 9, 0 ],
+    "min_engine_version": [ 1, 20, 40 ]
   },
   "modules": [
     {
-      "version": [ 3, 8, 0 ],
+      "version": [ 3, 9, 0 ],
       "type": "data",
       "uuid": "91a60c53-392b-4007-859a-a1e087a62d1a",
       "description": "data module"
     },
     {
-      "version": [ 3, 8, 0 ],
+      "version": [ 3, 9, 0 ],
       "type": "script",
       "language": "javascript",
       "entry": "scripts/index.js",
