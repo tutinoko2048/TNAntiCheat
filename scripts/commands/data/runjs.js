@@ -9,6 +9,7 @@ import config from '../../config.js';
 import unbanQueue from '../../unban_queue.js';
 import { DataManager } from '../../util/DataManager';
 import { format } from '../../lib/formatter/main';
+import { BanManager } from '../../util/BanManager';
 
 const runjsCommand = new Command({
   name: 'runjs',
