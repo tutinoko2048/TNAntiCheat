@@ -2,7 +2,7 @@ import { world, ItemStack, ItemTypes, EquipmentSlot, Player } from '@minecraft/s
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { PropertyIds, Icons, panelItem } from '../util/constants';
+import { Icons, panelItem } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
 import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
