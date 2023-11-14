@@ -198,6 +198,9 @@ export interface IConfig {
   logger: {
     console: boolean;
     maxLogs: number;
+    shortName: boolean;
+    sendws: boolean;
+    emitScriptEvent: string;
   };
   others: OthersModule;
 }

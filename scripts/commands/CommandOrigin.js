@@ -37,10 +37,14 @@ export class CommandOrigin {
   
   /** @arg {string} message */
   broadcast(message) {
-    config.others.sendws
-      ? world.getDimension('overworld').runCommandAsync(`say "${message}"`)
+    const overworld = world.getDimension('overworld');
+    config.logger.sendws
+      ? overworld.runCommandAsync(`say "${message}"`)
       : world.sendMessage(message);
     if (this.isServerOrigin()) console.warn(message);
+    if (config.logger.emitScriptEvent !== '') {
+      overworld.runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(message)}`);
+    }
   }
 }
 

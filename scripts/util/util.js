@@ -119,9 +119,13 @@ export class Util {
     if (target instanceof Player) {
       target.sendMessage(result);
     } else {
-      config.others.sendws
+      config.logger.sendws
         ? overworld.runCommandAsync(`say "${result}"`)
         : world.sendMessage(result);
+      
+      if (config.logger.emitScriptEvent !== '') {
+        overworld.runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(result)}`);
+      }
     }
   }
   
@@ -130,7 +134,7 @@ export class Util {
    * @returns {string}
    */
   static decorate(message) {
-    const name = config.others.shortName ? 'TN-AC' : 'TN-AntiCheat';
+    const name = config.logger.shortName ? 'TN-AC' : 'TN-AntiCheat';
     return `[§l§a${name}§r] ${message}`;
   }
   
