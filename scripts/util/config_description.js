@@ -213,12 +213,12 @@ export const description = {
   logger: {
     desc: 'ログの記録に関する設定',
     console: '検知メッセージをコンテンツログに出力する',
-    maxLogs: '保存するログの数'
+    maxLogs: '保存するログの数',
+    shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
+    sendws: 'メッセージをsayで出力します (discord-mcbe用)',
   },
   others: {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',
-    sendws: 'メッセージをsayで出力します (discord-mcbe用)',
-    shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
     debug: 'ログを表示 デバッグ用',
     fixBDS: 'BDSのOP検知のバグ回避用',
     blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます',

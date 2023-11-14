@@ -15,6 +15,18 @@ export function updateConfig() {
     data.nuker.cancel = data.nuker.place;
     delete data.nuker.place;
   }
+
+  if (data.others?.sendws !== undefined) {
+    data.logger ??= {};
+    data.logger.sendws = data.others.sendws;
+    delete data.others.sendws;
+  }
+
+  if (data.others?.shortName !== undefined) {
+    data.logger ??= {};
+    data.logger.shortName = data.others.shortName;
+    delete data.others.shortName;
+  }
   
   DataManager.save(data);
 }

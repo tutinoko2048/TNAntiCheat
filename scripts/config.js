@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 6
+// configVersion: 7
 export default /** @type {import('./types').IConfig} */ ({
   permission: {
     admin: { // 全ての検知から除外される権限
@@ -294,14 +294,18 @@ export default /** @type {import('./types').IConfig} */ ({
   },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
-    maxLogs: 50 // 保存するログの数
+    maxLogs: 50, // 保存するログの数
+    shortName: false, // メッセージ先頭 "TN-AntiCheat"の表示を"TN-AC"に変更
+    sendws: false, // For discord-mcbe | メッセージをsayで出力
+    
+    // TNACからのメッセージ送信時にScriptEventにもメッセージを飛ばす
+    // namespace:idの形で入力
+    emitScriptEvent: ''
   },
   others: {
     adminPanel: "minecraft:stick", // 管理者用パネルを呼び出すためのアイテム
-    sendws: false, // For discord-mcbe | メッセージをsayで出力します
-    shortName: false, // チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします
     debug: false,
-    fixBDS: false, // Bedrock Serverで使う場合はオンにしてください
+    fixBDS: false, // Realmsで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
     
