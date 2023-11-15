@@ -207,6 +207,14 @@ export class TNAntiCheat {
         nearby.forEach(p => p.pistonPushedAt = Date.now());
       }
     });
+
+    world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
+      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+    });
+
+    world.beforeEvents.playerInteractWithEntity.subscribe(ev => {
+      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+    });
     
     system.afterEvents.scriptEventReceive.subscribe(ev => {
       const { id, sourceEntity, message, sourceType } = ev;

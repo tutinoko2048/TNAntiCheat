@@ -214,7 +214,7 @@ export const description = {
     desc: 'ログの記録に関する設定',
     console: '検知メッセージをコンテンツログに出力する',
     maxLogs: '保存するログの数',
-    shortName: 'チャットに出てくる"TN-AntiCheat"の表示を"TN-AC"にして圧迫感を無くします',
+    shortName: 'メッセージ先頭 "TN-AntiCheat"の表示を"TN-AC"に変更',
     sendws: 'メッセージをsayで出力します (discord-mcbe用)',
   },
   others: {
