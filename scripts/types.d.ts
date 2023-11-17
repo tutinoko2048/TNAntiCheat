@@ -12,22 +12,6 @@ interface DynamicPropertyTypes {
   [PropertyIds.isRegistered]: boolean;
 }
 
-interface EntityComponentTypes {
-  [mc.BlockInventoryComponent.componentId]: mc.EntityInventoryComponent;
-  [mc.EntityEquippableComponent.componentId]: mc.EntityEquippableComponent;
-  [mc.EntityHealthComponent.componentId]: mc.EntityHealthComponent;
-  [mc.EntityVariantComponent.componentId]: mc.EntityVariantComponent;
-  [mc.EntityItemComponent.componentId]: mc.EntityItemComponent;
-}
-
-interface BlockComponentTypes {
-  [mc.BlockInventoryComponent.componentId]: mc.BlockInventoryComponent;
-}
-
-interface ItemComponentTypes {
-  [mc.ItemEnchantsComponent.componentId]: mc.ItemEnchantsComponent;
-}
-
 interface EntityCheckEntry {
   typeId: string;
   item?: string;
@@ -81,18 +65,9 @@ declare module '@minecraft/server' {
     reachCFlag?: string;
     flagQueue?: string;
     
-    getComponent<K extends keyof EntityComponentTypes>(componentId: K): EntityComponentTypes[K];
 
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
     setDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T, value: DynamicPropertyTypes[T]): void;
-  }
-
-  interface Block {
-    getComponent<K extends keyof BlockComponentTypes>(componentId: K): BlockComponentTypes[K];
-  }
-  
-  interface ItemStack {
-    getComponent<K extends keyof ItemComponentTypes>(componentId: K): ItemComponentTypes[K];
   }
 }
 
