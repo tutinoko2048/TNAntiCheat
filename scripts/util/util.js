@@ -309,16 +309,16 @@ export class Util {
   }
 
   /**
-   *
    * @param {Entity|string} target
    * @param {string} objective
+   * @param {boolean} [useZero]
    * @returns {number|null}
    */
-  static getScore(target, objective) {
+  static getScore(target, objective, useZero) {
     try {
-      return world.scoreboard.getObjective(objective).getScore(target);
+      return world.scoreboard.getObjective(objective).getScore(target) ?? (useZero ? 0 : null);
     } catch {
-      return null;
+      return useZero ? 0 : null;
     }
   }
   

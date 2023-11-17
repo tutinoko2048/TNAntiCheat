@@ -9,6 +9,7 @@
     "target": "es2021",
     "noEmit": true,
     "moduleResolution": "node",
-    "skipLibCheck": false
+    "skipLibCheck": false,
+    "strictNullChecks": false
   }
 }

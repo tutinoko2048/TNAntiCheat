@@ -367,7 +367,7 @@ export class AdminPanel {
   
   /** @param {Player} target */
   async showTags(target) {
-    const tags = target.getTags().map(t => `- ${t}§r`);
+    const tags = target.getTags().sort((a, b) => a.localeCompare(b)).map(t => `- ${t}§r`);
     const form = new UI.ActionFormData();
     form.title(`${target.name}'s tags`)
       .body(tags.length > 0 ? `タグ一覧 (${tags.length} tags)\n\n${tags.join('\n')}` : 'このプレイヤーはタグを持っていません')
@@ -380,7 +380,8 @@ export class AdminPanel {
   /** @param {Player} target */
   async showScores(target) {
     const objectives = world.scoreboard.getObjectives();
-    objectives.sort((obj0, obj1) => Util.getScore(target, obj1.id) - Util.getScore(target, obj0.id));
+    objectives.sort((obj0, obj1) => obj0.id.localeCompare(obj1.id))
+    objectives.sort((obj0, obj1) => Util.getScore(target, obj1.id, true) - Util.getScore(target, obj0.id, true));
     const messages = objectives
       .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(target, obj.id) ?? 'null'}`);
     const form = new UI.ActionFormData();
@@ -469,7 +470,10 @@ export class AdminPanel {
     return item;
   }
   
-  /** @arg {ItemStack} item  @returns {boolean} */
+  /**
+   * @arg {ItemStack} [item]
+   * @returns {boolean}
+   */
   static isPanelItem(item) {
     if (!item) return false;
     return (

@@ -173,8 +173,8 @@ export class TNAntiCheat {
       ) {
         await Util.cancel(ev);
         const target = source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
-        if (target?.entity instanceof Player) new AdminPanel(this, source).playerInfo(target.entity); // show playerInfo
-        else new AdminPanel(this, source).show(); // show AdminPanel
+        if (target?.entity instanceof Player) new AdminPanel(this, source).playerInfo(target.entity);
+        else new AdminPanel(this, source).show();
         return;
       }
       if (this.frozenPlayerMap.has(source.id)) ev.cancel = true;
@@ -190,7 +190,7 @@ export class TNAntiCheat {
     
     world.afterEvents.itemReleaseUse.subscribe(ev => {
       const { itemStack, source } = ev;
-      if (itemStack.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
+      if (itemStack?.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });
     
     world.afterEvents.entityHitEntity.subscribe(ev => {
