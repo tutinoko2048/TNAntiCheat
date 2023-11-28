@@ -92,7 +92,7 @@ export class TNAntiCheat {
         modules.flyA(player);
         
         if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
-        if (!(system.currentTick % 40)) modules.flag(player); // prevent notification spam and causing lag
+        if (!(system.currentTick % 50)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.banCheck(player); // tag check
         
         modules.debugView(player, this);

@@ -13,8 +13,10 @@ export function reachA(ev) { // attacking
   ) return;
   
   const distance = Vector.distance(attacker.getHeadLocation(), hitEntity.location);
-  if (distance > config.reachA.maxReach)
-    attacker.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)})§r`;
+  if (distance > config.reachA.maxReach) {
+    const deltaLocation = attacker.lastLocation && Vector.distance(attacker.location, attacker.lastLocation);
+    attacker.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)}, deltaLoc: ${(deltaLocation ?? 0).toFixed(1)})§r`;
+  }
 }
 
 /** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
@@ -26,7 +28,8 @@ export function reachB(ev) { // placement
   const distance = Vector.distance(source.getHeadLocation(), block.location);
   if (distance > config.reachB.maxReach) {
     if (config.reachB.cancel) ev.cancel = true;
-    source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)})§r`;
+    const deltaLocation = source.lastLocation && Vector.distance(source.location, source.lastLocation);
+    source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${(deltaLocation ?? 0).toFixed(1)})§r`;
   }
 }
 
@@ -39,7 +42,8 @@ export function reachC(ev) { // destruction
   const distance = Vector.distance(player.getHeadLocation(), block.location);
   if (distance > config.reachC.maxReach) {
     if (config.reachC.cancel) ev.cancel = true;
-    player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)})§r`;
+    const deltaLocation = player.lastLocation && Vector.distance(player.location, player.lastLocation);
+    player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${(deltaLocation ?? 0).toFixed(1)})§r`;
     return true;
   }
 }
