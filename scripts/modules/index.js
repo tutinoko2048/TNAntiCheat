@@ -115,7 +115,6 @@ export function getBlock(ev) {
   
   if (
     !config.others.blockCopy ||
-    !(source instanceof Player) ||
     !Util.isCreative(source) ||
     !AdminPanel.isPanelItem(item)
   ) return;
@@ -137,15 +136,15 @@ export function debugView(p, ac) {
   const cps = getCPS(p);
   
   p.onScreenDisplay.setActionBar([
-    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${format(Util.isOP(p))}, op(mc): ${format(p.isOp())}`,
-`slot: ${format(p.selectedSlot)}, hand: ${format(mainHand)}`,
-    `sneaking: ${format(p.isSneaking)}, onGround: ${format(p.isOnGround)}, flying: ${format(p.isFlying)}, fallDistance: ${format(p.fallDistance.toFixed(2))}, cps: ${format(cps?.toFixed(1))}`,
+    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.isOp())}`,
+`slot: ${fmt(p.selectedSlot)}, hand: ${fmt(mainHand)}`,
+    `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, fallDistance: ${fmt(p.fallDistance.toFixed(2))}, cps: ${fmt(cps?.toFixed(1))}`,
     `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,
     `rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
   ].join('\n'));
 }
 
-function format(value) {
+function fmt(value) {
   if (typeof value === 'boolean') return value ? `§a${value}§r` : `§c${value}§r`;
   if (value === undefined || value === null) return `§7${value}§r`;
   return value;

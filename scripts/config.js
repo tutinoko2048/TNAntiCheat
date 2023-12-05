@@ -264,7 +264,7 @@ export default /** @type {import('./types').IConfig} */ ({
     maxReach: 10,
     cancel: true, // ブロックの破壊をキャンセル
   },
-  autoClicker: { // れんつを検知 (ベータ)
+  autoClicker: { // 連打ツールの使用を検知
     state: true,
     punishment: "notify",
     maxCPS: 23,

@@ -31,9 +31,11 @@ export function reachB(ev) { // placement
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
   const distance = Vector.distance(source.getHeadLocation(), block.location);
   if (distance > config.reachB.maxReach) {
-    if (config.reachB.cancel) ev.cancel = true;
     const deltaLoc = (source.lastLocation && Vector.distance(source.location, source.lastLocation)) ?? 0;
-    source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
+    if (deltaLoc < config.reachB.maxReach + 1) {
+      if (config.reachB.cancel) ev.cancel = true;
+      source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
+    }
   }
 }
 
@@ -45,10 +47,12 @@ export function reachC(ev) { // destruction
   
   const distance = Vector.distance(player.getHeadLocation(), block.location);
   if (distance > config.reachC.maxReach) {
-    if (config.reachC.cancel) ev.cancel = true;
     const deltaLoc = (player.lastLocation && Vector.distance(player.location, player.lastLocation)) ?? 0;
-    player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
-    return true;
+    if (deltaLoc < config.reachC.maxReach + 1) {
+      if (config.reachC.cancel) ev.cancel = true;
+      player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
+      return true;
+    }
   }
 }
 
