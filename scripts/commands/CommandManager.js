@@ -48,8 +48,7 @@ export class CommandManager {
     const command = this.getCommand(commandName);
     if (!command) {
       if (!scriptEvent) { // コマンドが見つからなかったら非表示にだけして他のアドオンにも回す
-        ev.sendToTargets = true;
-        ev.setTargets([]);
+        ev.targets.length = 0; // .targets can be optional...?
       }
       return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
     }
