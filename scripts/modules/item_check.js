@@ -3,7 +3,7 @@
 import { Util } from '../util/util';
 import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
-import { EnchantmentList, EquipmentSlot, ItemStack, Player } from '@minecraft/server';
+import { EquipmentSlot, ItemStack, Player } from '@minecraft/server';
 
 /** @typedef {{ flag: boolean, item?: ItemStack | null }} EnchantCheckResult */
 
@@ -38,11 +38,11 @@ export function itemCheck(player) {
     
     if (config.itemCheckD.state || config.itemCheckE.state) {
       if (config.itemCheckD.mode == 'hand' && i === player.selectedSlot) {
-        const result = enchantCheck(item, i, player);
+        const result = enchantCheck(item, player);
         if (result.flag) container.setItem(i, result.item); // flagされてたら更新
       
       } else if (config.itemCheckD.mode == 'inventory') {
-        const result = enchantCheck(item, i, player);
+        const result = enchantCheck(item, player);
         if (result.flag) container.setItem(i, result.item);
       }
     }
@@ -54,7 +54,7 @@ export function itemCheck(player) {
     if (!item) continue;
     
     if (config.itemCheckD.state || config.itemCheckE.state) {
-      const result = enchantCheck(item, slotId, player);
+      const result = enchantCheck(item, player);
       if (result.flag) equipment.setEquipment(slotId, result.item); // flagされてたら更新
     }
   }
@@ -62,38 +62,36 @@ export function itemCheck(player) {
 
 /**
  * @param {ItemStack} item
- * @param {number|EquipmentSlot} slot
  * @param {Player} player
  * @returns {EnchantCheckResult}
  */
-function enchantCheck(item, slot, player) {
+function enchantCheck(item, player) {
   const levelChecked = [];
   const itemChecked = [];
   let shouldClearItem = false; // アイテム消すかどうか
 
-  const enchantment = item.getComponent('minecraft:enchantments');
-  const { enchantments } = enchantment;
-  const _enchantments = new EnchantmentList(enchantments.slot);
+  const enchantment = item.getComponent('minecraft:enchantable');
+  const _enchantment = new ItemStack(item.type).getComponent('minecraft:enchantable');
   
-  for (const enchant of enchantments) {
+  for (const enchant of enchantment.getEnchantments()) {
     const { level, type } = enchant;
+    if (typeof type === 'string') continue; // ignore when EnchantType is string
     const { id, maxLevel } = type;
     // ItemCheck/E item with illegal enchantment
-    if (config.itemCheckE.state && _enchantments && !_enchantments.canAddEnchantment(enchant)) {
-      enchantments.removeEnchantment(type);
+    if (config.itemCheckE.state && _enchantment && !_enchantment.canAddEnchantment(enchant)) {
+      enchantment.removeEnchantment(type);
       itemChecked.push({ level, id });
       continue;
     }
     
     // ItemCheck/D illegal enchantment level
     if (config.itemCheckD.state && (level < 1 || maxLevel < level)) {
-      enchantments.removeEnchantment(type);
+      enchantment.removeEnchantment(type);
       levelChecked.push({ level, id });
       continue;
     }
   }
   if (levelChecked.length > 0) {
-    enchantment.enchantments = enchantments;
     if (config.itemCheckD.clearItem) shouldClearItem = true;
     
     const msg = levelChecked.map(e => `- §7ID: §9${e.id}§7, Level: §9${e.level}§r`);
@@ -104,7 +102,6 @@ function enchantCheck(item, slot, player) {
   }
   
   if (itemChecked.length > 0) {
-    enchantment.enchantments = enchantments;
     if (config.itemCheckE.clearItem) shouldClearItem = true;
     
     const msg = itemChecked.map(e => `- §7ID: §9${e.id}§7, Level: §9${e.level}§r`);
