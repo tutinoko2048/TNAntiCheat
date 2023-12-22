@@ -311,6 +311,7 @@ export default /** @type {import('./types').IConfig} */ ({
     fixBDS: false, // Realmsで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
+    customKickMessage: "", // キック時に表示する追加のメッセージ
     
     tpsToScore: { // スコアボードにTPSを出力
       enabled: false,

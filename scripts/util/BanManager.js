@@ -12,11 +12,16 @@ export class BanManager {
   /**
    * @param {Player} player 
    * @param {string} [reason] 
-   * @param {boolean} [ban] 
+   * @param {boolean} [isBan] 
+   * @param {boolean} [force=true] 
    * @returns {boolean} kickに成功したかどうか
    */
-  static kick(player, reason, ban, force = true) {
-    const { successCount } = overworld.runCommand(`kick "${player.name}" §l${ban ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason ?? ''}`);
+  static kick(player, reason = '', isBan, force = true) {
+    if (config.others.customKickMessage) reason += `\n${config.others.customKickMessage}`;
+
+    const { successCount } = overworld.runCommand(
+      `kick "${player.name}" §l${isBan ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`
+    );
     const success = successCount > 0;
     if (!success && force) player.triggerEvent('tn:kick');
     return success;

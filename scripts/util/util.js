@@ -86,6 +86,7 @@ export class Util {
   /**
    * @param {Player} player
    * @param {string} reason
+   * @param {boolean} [ban=false] 
    * @returns {boolean}
    */
   static kick(player, reason, ban = false) {
@@ -96,7 +97,7 @@ export class Util {
     }
     
     const success = BanManager.kick(player, reason, ban);
-    if (!success) Util.notify('Kickに失敗したため強制退出させました');
+    if (!success) console.warn('Kickに失敗したため強制退出させました');
     return success;
   }
   
@@ -368,8 +369,15 @@ export class Util {
 }
 /** @arg {Player} player */
 function resetCount(player) {
-  player.speedACount = 0;
-  player.flyACount = 0;
-  player.placeBCount = 0;
-  player.autoClickerCount = 0;
+  /** @type {(keyof Player)[]} */
+  const propertiesToReset = [
+    'speedACount',
+    'flyACount',
+    'placeBCount',
+    'autoClickerCount',
+    'spammerACount', 'spammerBCount', 'spammerCCount',
+    'reachACount', 'reachBCount', 'reachCCount',
+  ];
+  // @ts-expect-error
+  propertiesToReset.forEach(key => player[key] = 0);
 }

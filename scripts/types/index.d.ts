@@ -96,5 +96,3 @@ export interface UnbanQueueEntry {
   name: string;
   source: 'property' | 'file';
 }
-
-

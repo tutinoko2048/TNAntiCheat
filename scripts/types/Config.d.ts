@@ -32,7 +32,8 @@ interface OthersModule {
     updateInterval: number;
     objective: string;
     name: string;
-  }
+  },
+  customKickMessage: string;
 }
 
 interface SpammerModule extends IModule {
