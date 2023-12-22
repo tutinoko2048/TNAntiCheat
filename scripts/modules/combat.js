@@ -21,7 +21,20 @@ export function reachA(ev) { // attacking
     if (
       deltaLocA < config.reachA.maxReach + 1 &&
       deltaLocH < config.reachA.maxReach + 1
-    ) attacker.reachAFlag = `長いリーチの攻撃を検知しました §7(${hitEntity.typeId}, distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLocA.toFixed(1)})§r`;
+    ) {
+      attacker.reachACount ??= 0;
+      attacker.reachACount++;
+      if (config.reachA.flagCount === -1 || attacker.reachACount <= config.reachA.flagCount) {
+        attacker.flagQueue = `Reach/A >> §c${attacker.name}§r §7[${attacker.reachACount}] (d: ${distance.toFixed(1)})§r§ `;
+      }
+      if (config.reachA.flagCount !== -1 && attacker.reachACount > config.reachA.flagCount) {
+        const typeId = hitEntity.typeId.replace('minecraft:', '');
+        Util.flag(
+          attacker, 'Reach/A', config.reachA.punishment,
+          `長いリーチの攻撃を検知しました §7(count: ${attacker.reachACount}, hit: ${typeId}, d: ${distance.toFixed(2)}, dLoc: ${deltaLocA.toFixed(1)})`
+        )
+      }
+    }
   }
 }
 
@@ -36,7 +49,18 @@ export function reachB(ev) { // placement
     const deltaLoc = (source.lastLocation && Vector.distance(source.location, source.lastLocation)) ?? 0;
     if (deltaLoc < config.reachB.maxReach + 1) {
       if (config.reachB.cancel) ev.cancel = true;
-      source.reachBFlag = `長いリーチの設置を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
+
+      source.reachBCount ??= 0;
+      source.reachBCount++;
+      if (config.reachB.flagCount === -1 || source.reachBCount <= config.reachB.flagCount) {
+        source.flagQueue = `Reach/B >> §c${source.name}§r §7[${source.reachBCount}] (d: ${distance.toFixed(1)})§r§ `;
+      }
+      if (config.reachB.flagCount !== -1 && source.reachBCount > config.reachB.flagCount) {
+        Util.flag(
+          source, 'Reach/B', config.reachB.punishment,
+          `長いリーチの設置を検知しました §7(count: ${source.reachBCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r§ `
+        )
+      }
     }
   }
 }
@@ -52,7 +76,19 @@ export function reachC(ev) { // destruction
     const deltaLoc = (player.lastLocation && Vector.distance(player.location, player.lastLocation)) ?? 0;
     if (deltaLoc < config.reachC.maxReach + 1) {
       if (config.reachC.cancel) ev.cancel = true;
-      player.reachCFlag = `長いリーチの破壊を検知しました §7(distance: ${distance.toFixed(2)}, deltaLoc: ${deltaLoc.toFixed(1)})§r`;
+
+      player.reachCCount ??= 0;
+      player.reachCCount++;
+      if (config.reachC.flagCount === -1 || player.reachCCount <= config.reachC.flagCount) {
+        player.flagQueue = `Reach/C >> §c${player.name}§r §7[${player.reachCCount}] (d: ${distance.toFixed(1)})§r§ `;
+      }
+      if (config.reachC.flagCount !== -1 && player.reachCCount > config.reachC.flagCount) {
+        Util.flag(
+          player, 'Reach/C', config.reachC.punishment,
+          `長いリーチの破壊を検知しました §7(count: ${player.reachCCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r`
+        )
+      }
+
       return true;
     }
   }

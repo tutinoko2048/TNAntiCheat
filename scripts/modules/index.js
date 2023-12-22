@@ -62,18 +62,6 @@ export function xuidBanCheck() {
 
 /** @param {Player} player */
 export function flag(player) { // don't run every tick not to spam
-  if (player.reachAFlag) {
-    Util.flag(player, 'Reach/A', config.reachA.punishment, player.reachAFlag);
-    player.reachAFlag = null;
-  }
-  if (player.reachBFlag) {
-    Util.flag(player, 'Reach/B', config.reachB.punishment, player.reachBFlag);
-    player.reachBFlag = null;
-  }
-  if (player.reachCFlag) {
-    Util.flag(player, 'Reach/C', config.reachC.punishment, player.reachCFlag);
-    player.reachCFlag = null;
-  }
   if (player.flagQueue) {
     Util.notify(player.flagQueue);
     player.flagQueue = null;

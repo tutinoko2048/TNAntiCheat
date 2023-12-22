@@ -160,6 +160,7 @@ export const description = {
     desc: '攻撃の長すぎるリーチを検知',
     state,
     punishment,
+    flagCount,
     maxReach: '最大リーチ',
     excludeCustomEntities: 'バニラ以外のmobの検知を除外',
     excludeEntities: '除外するエンティティ'
@@ -168,6 +169,7 @@ export const description = {
     desc: 'ブロック設置の長すぎるリーチを検知',
     state,
     punishment,
+    flagCount,
     maxReach: '最大リーチ',
     cancel: 'ブロックの設置をキャンセルする',
   },
@@ -175,11 +177,12 @@ export const description = {
     desc: 'ブロック破壊の長すぎるリーチを検知',
     state,
     punishment,
+    flagCount,
     maxReach: '最大リーチ',
     cancel: 'ブロックの破壊をキャンセルする',
   },
   autoClicker: {
-    desc: '速すぎるクリックを検知 (ベータ)',
+    desc: '速すぎるクリックを検知',
     state,
     punishment,
     maxCPS: '1秒あたりの最大クリック数',
@@ -192,7 +195,7 @@ export const description = {
     defaultGamemode: '検知した時に設定するGamemode'
   },
   speedA: {
-    desc: '速すぎる移動を検知 (ベータ)',
+    desc: '速すぎる移動を検知',
     state,
     punishment,
     flagCount,

@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 7
+// configVersion: 8
 export default /** @type {import('./types').IConfig} */ ({
   permission: {
     admin: { // 全ての検知から除外される権限
@@ -241,6 +241,7 @@ export default /** @type {import('./types').IConfig} */ ({
   reachA: { // 攻撃の長すぎるリーチを検知
     state: true,
     punishment: "notify",
+    flagCount: 20,
     maxReach: 10,
     excludeCustomEntities: true, // バニラ以外のmobの検知を除外する
     excludeEntities: [ // 除外するエンティティ
@@ -255,12 +256,14 @@ export default /** @type {import('./types').IConfig} */ ({
   reachB: { // ブロック設置の長すぎるリーチを検知
     state: true,
     punishment: "notify",
+    flagCount: 20,
     maxReach: 10,
     cancel: true, // ブロックの設置をキャンセル
   },
   reachC: { // ブロック破壊の長すぎるリーチを検知
     state: true,
     punishment: "notify",
+    flagCount: 20,
     maxReach: 10,
     cancel: true, // ブロックの破壊をキャンセル
   },

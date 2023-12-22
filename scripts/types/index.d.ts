@@ -1,6 +1,8 @@
 import * as mc from '@minecraft/server';
 import { PropertyIds } from '../util/constants';
 
+export * from './Config'
+
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
   [PropertyIds.banReason]: string;
@@ -59,12 +61,11 @@ declare module '@minecraft/server' {
     spammerACount?: number;
     spammerBCount?: number;
     spammerCCount?: number;
+    reachACount?: number;
+    reachBCount?: number;
+    reachCCount?: number;
 
-    reachAFlag?: string;
-    reachBFlag?: string;
-    reachCFlag?: string;
     flagQueue?: string;
-    
 
     getDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T): DynamicPropertyTypes[T];
     setDynamicProperty<T extends keyof DynamicPropertyTypes>(identifier: T, value: DynamicPropertyTypes[T]): void;
