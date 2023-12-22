@@ -2,6 +2,8 @@ import { Player, Vector } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
+const MAX_REACH_THRESHOLD = 30;
+
 /** @param {import('@minecraft/server').EntityHitEntityAfterEvent} ev */
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
@@ -13,7 +15,7 @@ export function reachA(ev) { // attacking
   ) return;
   
   const distance = Vector.distance(attacker.getHeadLocation(), hitEntity.location);
-  if (distance > config.reachA.maxReach) {
+  if (config.reachA.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
     const deltaLocA = (attacker.lastLocation && Vector.distance(attacker.location, attacker.lastLocation)) ?? 0;
     const deltaLocH = (hitEntity.lastLocation && Vector.distance(hitEntity.location, hitEntity.lastLocation)) ?? 0;
     if (
@@ -30,7 +32,7 @@ export function reachB(ev) { // placement
   
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
   const distance = Vector.distance(source.getHeadLocation(), block.location);
-  if (distance > config.reachB.maxReach) {
+  if (config.reachB.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
     const deltaLoc = (source.lastLocation && Vector.distance(source.location, source.lastLocation)) ?? 0;
     if (deltaLoc < config.reachB.maxReach + 1) {
       if (config.reachB.cancel) ev.cancel = true;
@@ -46,7 +48,7 @@ export function reachC(ev) { // destruction
   if (Util.isCreative(player) || Util.isOP(player)) return;
   
   const distance = Vector.distance(player.getHeadLocation(), block.location);
-  if (distance > config.reachC.maxReach) {
+  if (config.reachC.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
     const deltaLoc = (player.lastLocation && Vector.distance(player.location, player.lastLocation)) ?? 0;
     if (deltaLoc < config.reachC.maxReach + 1) {
       if (config.reachC.cancel) ev.cancel = true;
@@ -94,7 +96,7 @@ export function autoClickerCheck(player) {
 
     //player.autoClickerFlag = `高いCPSを検知しました §7(${cps}clicks/s)§r`;
     if (config.autoClicker.flagCount === -1 || player.autoClickerCount <= config.autoClicker.flagCount) {
-      player.flagQueue = `AutoClicker >> §c${player.name}§r §7[${player.autoClickerCount}] (cps: ${cps})§r§　`;
+      player.flagQueue = `AutoClicker >> §c${player.name}§r §7[${player.autoClickerCount}] (cps: ${cps})§r§ `;
     }
     if (config.autoClicker.flagCount !== -1 && player.autoClickerCount > config.autoClicker.flagCount) {
       Util.flag(
