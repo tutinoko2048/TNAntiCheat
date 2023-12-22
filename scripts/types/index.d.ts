@@ -14,7 +14,7 @@ interface DynamicPropertyTypes {
   [PropertyIds.isRegistered]: boolean;
 }
 
-interface EntityCheckEntry {
+export interface EntityCheckEntry {
   typeId: string;
   item?: string;
   x: number;
