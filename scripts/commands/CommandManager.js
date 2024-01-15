@@ -47,22 +47,23 @@ export class CommandManager {
     );
     const command = this.getCommand(commandName);
     if (!command) {
-      if (!scriptEvent) { // コマンドが見つからなかったら非表示にだけして他のアドオンにも回す
-        ev.targets.length = 0; // .targets can be optional...?
-      }
-      return sender.sendMessage('[CommandManager] §cError: コマンドが見つかりませんでした');
+      // broadcastを止める方法がなくなったため無効化
+      //if (!scriptEvent) { // コマンドが見つからなかったら非表示にだけして他のアドオンにも回す
+      //  ev.targets.length = 0;
+      //}
+      return; //Util.notify('§cError: コマンドが見つかりませんでした', sender);
     }
     
     await Util.cancel(ev); // コマンドがあったらキャンセル
-    if (command.permission && !command.permission(sender)) return sender.sendMessage('[CommandManager] §cError: 権限がありません');
-    if (scriptEvent && command.disableScriptEvent) return sender.sendMessage('このコマンドはScriptEventからの実行を許可されていません');
+    if (command.permission && !command.permission(sender)) return Util.notify('§cError: 権限がありません', sender);
+    if (scriptEvent && command.disableScriptEvent) return Util.notify('§cこのコマンドはScriptEventからの実行を許可されていません', sender);
     
+    const origin = scriptEvent ? new ScriptEventCommandOrigin(sender) : new PlayerCommandOrigin(sender);
     try {
-      const origin = scriptEvent ? new ScriptEventCommandOrigin(sender) : new PlayerCommandOrigin(sender);
       command.func(origin, args, this);
     } catch (e) {
-      sender.sendMessage(`[CommandManager] §c${e}`);
-      if (config.others.debug && e.stack && !(e instanceof CommandError)) sender.sendMessage(`§c${e.stack}`);
+      origin.send(Util.decorate(`§c${e}`));
+      if (config.others.debug && e.stack && !(e instanceof CommandError)) origin.send(`§c${e.stack}`);
     }
   }
   
@@ -76,14 +77,15 @@ export class CommandManager {
     
     const [ commandName, ...args ] = Util.splitNicely(message);
     const command = this.getCommand(commandName);
-    if (!command) return console.error('[CommandManager] §cError: コマンドが見つかりませんでした');
-    if (command.disableScriptEvent) return console.error('このコマンドはScriptEventからの実行を許可されていません');
+    if (!command) return console.error(Util.decorate('Error: コマンドが見つかりませんでした'));
+    if (command.disableScriptEvent) return console.error(Util.decorate('このコマンドはScriptEventからの実行を許可されていません'));
+
+    const origin = new ServerCommandOrigin();
     try {
-      const origin = new ServerCommandOrigin();
       command.func(origin, args, this);
     } catch (e) {
-      console.error(`[CommandManager] §c${e}`);
-      if (config.others.debug && e.stack && !(e instanceof CommandError)) console.error(`§c${e.stack}`);
+      origin.send(String(e));
+      if (config.others.debug && e.stack && !(e instanceof CommandError)) origin.send(String(e));
     }
   }
   
@@ -108,13 +110,13 @@ export class CommandManager {
   async load() {
     const showError = (msg) => {
       console.error(msg);
-      world.sendMessage(msg);
+      world.sendMessage('§c' + msg);
     }
     
     const wait = COMMANDS.map(async name => {
       return import(`./data/${name}`)
         .then(file => this.create(file.default))
-        .catch(e => showError(`[CommandManager] §cError: failed to load command: ${name}\n${e}\n${e.stack}`));
+        .catch(e => showError(`[CommandManager] Error: failed to load command: ${name}\n${e}\n${e.stack}`));
     });
     
     const data = await Promise.all(wait);

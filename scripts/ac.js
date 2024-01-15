@@ -203,8 +203,8 @@ export class TNAntiCheat {
       if (!config.flyA.state || !config.flyA.detectPiston) return;
       if (ev.isExpanding) {
         const loc = ev.block.location;
-        const nearby = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
-        nearby.forEach(p => p.pistonPushedAt = Date.now());
+        const pushedPlayers = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
+        pushedPlayers.forEach(p => p.pistonPushedAt = Date.now());
       }
     });
 

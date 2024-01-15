@@ -1,6 +1,8 @@
 import config from '../config.js';
 import { world, Player } from '@minecraft/server';
 
+const overworld = world.getDimension('overworld');
+
 /** @enum {'Player' | 'ScriptEvent' | 'Server'} */
 export const CommandOriginType = /** @type {const} */ ({
   Player: 'Player',
@@ -37,7 +39,6 @@ export class CommandOrigin {
   
   /** @arg {string} message */
   broadcast(message) {
-    const overworld = world.getDimension('overworld');
     config.logger.sendws
       ? overworld.runCommandAsync(`say "${message}"`)
       : world.sendMessage(message);
@@ -92,6 +93,9 @@ export class ServerCommandOrigin extends CommandOrigin {
   
   /** @arg {string} message */
   send(message) {
-    return console.warn(message);
+    console.warn(message);
+    if (config.logger.emitScriptEvent !== '') {
+      overworld.runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(message)}`);
+    }
   }
 }
