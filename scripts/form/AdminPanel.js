@@ -125,7 +125,7 @@ export class AdminPanel {
    */
   async showInventory(target, message) {
     /** @type {ItemInformation[]} */
-    const slotList = getAllSlots(target).filter(info => !!info.slot?.typeId);
+    const slotList = getAllSlots(target).filter(info => info.slot?.hasItem());
    
     const form = new ActionForm();
     form.button('§l§1更新 / Reload', Icons.reload, 'reload');
@@ -191,7 +191,7 @@ export class AdminPanel {
     if (canceled) return;
     
     // form開いてる間に移動された時の対策
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(target, '§cError: アイテムが移動されています');
+    if (item.typeId !== (info.slot.hasItem() && info.slot.typeId)) return await this.showInventory(target, '§cError: アイテムが移動されています');
 
     if (selection === 0) { // delete item
       info.slot.setItem();
@@ -220,7 +220,7 @@ export class AdminPanel {
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return await this.showInventory(source);
 
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(source, '§cError: アイテムが移動されています');
+    if (item.typeId !== (info.slot.hasItem() && info.slot.typeId)) return await this.showInventory(source, '§cError: アイテムが移動されています');
 
     const targetIndex = /** @type {number} */ (formValues[0]);
     const duplicate = /** @type {boolean} */ (formValues[1]);
@@ -246,7 +246,7 @@ export class AdminPanel {
     if (action === EditItemAction.NameTag) isChanged = await editNameTag(this.player, item);
     if (action === EditItemAction.Lore) isChanged = await editLore(this.player, item);
 
-    if (item.typeId !== info.slot.typeId) return await this.showInventory(target, '§cError: アイテムが移動されています');
+    if (item.typeId !== (info.slot.hasItem() && info.slot.typeId)) return await this.showInventory(target, '§cError: アイテムが移動されています');
 
     if (isChanged) info.slot.setItem(item);
     return await this.itemInfo(target, info);
