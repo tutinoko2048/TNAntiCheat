@@ -1,10 +1,10 @@
 import * as mc from '@minecraft/server';
 
 interface IModule {
-  [key: string]: any;
   state?: boolean;
   punishment?: import('../util/util').PunishmentType;
   flagCount?: number;
+  [key: string]: any;
 }
 
 interface EntityCounterModule extends IModule {
@@ -12,7 +12,7 @@ interface EntityCounterModule extends IModule {
 }
 
 interface CreativeModule extends IModule {
-  defaultGamemode: mc.GameMode;
+  defaultGamemode: mc.GameMode[keyof mc.GameMode];
 }
 
 interface ItemListModule {
@@ -41,8 +41,7 @@ interface SpammerModule extends IModule {
   tempMute: boolean;
 }
 
-export interface IConfig {
-  [moduleName: string]: IModule;
+export type IConfig = {
   command: {
     prefix: string;
     enableConsole: boolean;
@@ -83,4 +82,5 @@ export interface IConfig {
     emitScriptEvent: string;
   };
   others: OthersModule;
+  [moduleName: string]: IModule;
 }

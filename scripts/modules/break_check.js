@@ -1,5 +1,6 @@
 import { Util } from '../util/util';
 import config from '../config.js';
+import { Block } from '@minecraft/server';
 
 /** @param {import('@minecraft/server').Player} player */
 export function nukerFlag(player) {
@@ -11,17 +12,48 @@ export function nukerFlag(player) {
   }
 }
 
+/** @param {Block} block */
+function hasContainer(block) {
+  const blockIds = [
+    'minecraft:barrel',
+    'minecraft:blast_furnace',
+    'minecraft:chest',
+    'minecraft:dispenser',
+    'minecraft:dropper',
+    'minecraft:furnace',
+    'minecraft:hopper',
+    'minecraft:smoker',
+    'minecraft:trapped_chest'
+  ];
+
+  return (
+    blockIds.includes(block.typeId) || 
+    (block.typeId.endsWith('shulker_box') && block.typeId.startsWith('minecraft:')) || 
+    block.getComponent('minecraft:inventory')?.container
+  )
+}
+
 /** @param {import('@minecraft/server').PlayerBreakBlockBeforeEvent} ev */
 export function nukerBreak(ev) {
-  const { player } = ev;
+  const { player, block } = ev;
   if (!config.nuker.state || Util.isOP(player)) return;
   
   player.breakCount ??= 0;
-  player.breakCount++
+  player.breakCount++;
   
   if (player.breakCount > config.nuker.limit) {
     if (config.nuker.cancel) ev.cancel = true;
     return true; // illegal destruction -> return true
+  }
+
+  // lower threshold if block can hold items
+  if (
+    player.breakCount > Math.max(1, config.nuker.limit * 0.7) &&
+    config.nuker.cancel && 
+    hasContainer(block)
+  ) {
+    ev.cancel = true;
+    return true;
   }
 }
 
