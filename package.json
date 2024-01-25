@@ -20,7 +20,8 @@
   "devDependencies": {
     "@minecraft/server": "1.9.0-beta.1.20.60-preview.25",
     "@minecraft/server-ui": "1.2.0-beta.1.20.60-preview.25",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^46.8.2",
     "typescript": "^5.3.3"
   }
