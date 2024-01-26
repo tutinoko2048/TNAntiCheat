@@ -1,4 +1,3 @@
-import { world } from '@minecraft/server';
 import { Util } from '../util/util'
 import { CommandError } from './CommandError';
 import config from '../config.js';
@@ -108,20 +107,12 @@ export class CommandManager {
   }
   
   async load() {
-    const showError = (msg) => {
-      console.error(msg);
-      world.sendMessage('§c' + msg);
-    }
-    
-    const wait = COMMANDS.map(async name => {
-      return import(`./data/${name}`)
-        .then(file => this.create(file.default))
-        .catch(e => showError(`[CommandManager] Error: failed to load command: ${name}\n${e}\n${e.stack}`));
-    });
-    
-    const data = await Promise.all(wait);
+    COMMANDS.forEach(c => this.create(c));
+
     if (config.others.debug)
-      console.warn(`[CommandManager] Registered ${data.filter(Boolean).length}/${COMMANDS.length} commands`);
+      console.warn(`[CommandManager] Registered ${this.registeredCommands.size}/${COMMANDS.length} commands`);
+
+    return this;
   }
   
   /** @param {import('./Command').Command} command */
