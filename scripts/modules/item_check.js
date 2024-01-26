@@ -5,7 +5,7 @@ import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
 import { EquipmentSlot, ItemStack, Player } from '@minecraft/server';
 
-/** @typedef {{ flag: boolean, item?: ItemStack | null }} EnchantCheckResult */
+/** @typedef {{ flag: boolean, item?: ItemStack | undefined }} EnchantCheckResult */
 
 const ArmorSlots = [ EquipmentSlot.Head, EquipmentSlot.Chest, EquipmentSlot.Legs, EquipmentSlot.Feet ];
 
@@ -39,23 +39,23 @@ export function itemCheck(player) {
     if (config.itemCheckD.state || config.itemCheckE.state) {
       if (config.itemCheckD.mode == 'hand' && i === player.selectedSlot) {
         const result = enchantCheck(item, player);
-        if (result.flag) container.setItem(i, result.item); // flagされてたら更新
+        if (result?.flag) container.setItem(i, result.item); // flagされてたら更新
       
       } else if (config.itemCheckD.mode == 'inventory') {
         const result = enchantCheck(item, player);
-        if (result.flag) container.setItem(i, result.item);
+        if (result?.flag) container.setItem(i, result.item);
       }
     }
   }
   
-  const equipment = player.getComponent('minecraft:equippable');
+  const equippable = player.getComponent('minecraft:equippable');
   for (const slotId of ArmorSlots) {
-    const item = equipment.getEquipment(slotId);
+    const item = equippable.getEquipment(slotId);
     if (!item) continue;
     
     if (config.itemCheckD.state || config.itemCheckE.state) {
       const result = enchantCheck(item, player);
-      if (result.flag) equipment.setEquipment(slotId, result.item); // flagされてたら更新
+      if (result?.flag) equippable.setEquipment(slotId, result.item); // flagされてたら更新
     }
   }
 }
@@ -63,7 +63,7 @@ export function itemCheck(player) {
 /**
  * @param {ItemStack} item
  * @param {Player} player
- * @returns {EnchantCheckResult}
+ * @returns {EnchantCheckResult | undefined}
  */
 function enchantCheck(item, player) {
   const levelChecked = [];
@@ -71,6 +71,7 @@ function enchantCheck(item, player) {
   let shouldClearItem = false; // アイテム消すかどうか
 
   const enchantment = item.getComponent('minecraft:enchantable');
+  if (!enchantment) return;
   const _enchantment = new ItemStack(item.type).getComponent('minecraft:enchantable');
   
   for (const enchant of enchantment.getEnchantments()) {
@@ -113,6 +114,6 @@ function enchantCheck(item, player) {
   
   return {
     flag: levelChecked.length > 0 || itemChecked.length > 0, // setItemかけるかどうか
-    item: shouldClearItem ? null : item // アイテムを消すか更新するか
+    item: shouldClearItem ? undefined : item // アイテムを消すか更新するか
   }
 }
