@@ -1,4 +1,4 @@
-import { world, system, Player, ScriptEventSource } from '@minecraft/server';
+import { world, system, Player, ScriptEventSource, EntityVariantComponent } from '@minecraft/server';
 import { VERSION, PropertyIds } from './util/constants';
 import config from './config.js';
 import { Util } from './util/util';
@@ -297,6 +297,8 @@ system.beforeEvents.watchdogTerminate.subscribe(ev => {
 });
 
 function checkPlayerJson() { // checks player.json conflict
+  /** @type {EntityVariantComponent} */
+  // @ts-ignore
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant.value !== 2048) {
     config.speedA.state = false;
