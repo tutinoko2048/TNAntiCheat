@@ -1,34 +1,30 @@
 import { world, system, Player, ScriptEventSource, EntityVariantComponent } from '@minecraft/server';
-import { VERSION, PropertyIds } from './util/constants';
-import config from './config.js';
-import { Util } from './util/util';
-import * as modules from './modules/index';
 import { CommandManager } from './commands/CommandManager';
-import { AdminPanel } from './form/AdminPanel';
-import { DataManager, deleteDupe } from './util/DataManager';
-import { updateConfig, updateDynamicProperty } from './util/update_scripts';
 import { BanManager } from './util/BanManager';
-import { events } from './lib/events/index.js';
+import { DataManager, deleteDupe } from './util/DataManager';
 import { PermissionType, Permissions } from './util/Permissions';
+import { AdminPanel } from './form/AdminPanel';
+import { VERSION, PropertyIds } from './util/constants';
+import { Util } from './util/util';
+import { updateConfig, updateDynamicProperty } from './util/update_scripts';
+import { events } from './lib/events/index.js';
+import { getTPS } from './util/tps';
+
+import config from './config.js';
+import * as modules from './modules/index';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
 export class TNAntiCheat {
-  /** @type {number[]} */
-  #deltaTimes;
-  /** @type {number} */
-  #lastTick;
   /** @type {boolean} */
   #isEnabled;
   
   constructor() {
     console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
     this.startTime = Date.now();
-    this.#deltaTimes = [];
-    this.#lastTick;
     this.#isEnabled;
     
-    this.commands = new CommandManager(this);
+    this.commandManager = new CommandManager(this);
     
     /** @type {Map<string, import('@minecraft/server').Vector3>} */
     this.frozenPlayerMap = new Map();
@@ -95,7 +91,7 @@ export class TNAntiCheat {
         if (!(system.currentTick % 50)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.banCheck(player); // tag check
         
-        modules.debugView(player, this);
+        modules.debugView(player);
         
         try {
           if (this.frozenPlayerMap.has(player.id)) {
@@ -116,7 +112,7 @@ export class TNAntiCheat {
         player.wasGliding = player.isGliding;
       }
 
-      const tps = this.getTPS();
+      const tps = getTPS();
       if (!(system.currentTick % calcInterval(tps))) modules.entityCounter();
       
       const tpsToScore = config.others.tpsToScore;
@@ -128,11 +124,6 @@ export class TNAntiCheat {
           ?? world.scoreboard.addObjective(tpsToScore.objective, tpsToScore.objective);
         objective.setScore(tpsToScore.name, Math.round(tps));
       }
-      
-      const now = Date.now();
-      if (this.#lastTick) this.#deltaTimes.push(now - this.#lastTick);
-      if (this.#deltaTimes.length > 20) this.#deltaTimes.shift();
-      this.#lastTick = now;
     });
     
     world.beforeEvents.playerBreakBlock.subscribe(ev => {
@@ -220,10 +211,10 @@ export class TNAntiCheat {
       const { id, sourceEntity, message, sourceType } = ev;
       if (id !== 'ac:command') return;
       if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
-        this.commands.handle({ sender: sourceEntity, message }, true);
+        this.commandManager.handle({ sender: sourceEntity, message }, true);
         
       } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
-        this.commands.handleFromServer({ message });
+        this.commandManager.handleFromServer({ message });
       }
     }, {
       namespaces: [ 'ac' ]
@@ -233,7 +224,7 @@ export class TNAntiCheat {
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #handleChat(ev) {
     const tooFast = modules.spammerC(ev);
-    if (!tooFast && this.commands.isCommand(ev.message)) return this.commands.handle(ev);
+    if (!tooFast && this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
     
     !tooFast &&
     !modules.spammerA(ev) &&
@@ -277,15 +268,7 @@ export class TNAntiCheat {
   getConfig() {
     return config;
   }
-  
-  /** @returns {number} */
-  getTPS() {
-    return Math.min(
-      Util.average(this.#deltaTimes.map(n => 1000 / n)),
-      20
-    );
-  }
-  
+    
   /** @type {boolean} */
   get isEnabled() {
     return this.#isEnabled;

@@ -6,6 +6,7 @@ import { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
 import { BanManager } from '../util/BanManager';
+import { getTPS } from '../util/tps';
 
 export * from './item_check';
 export * from './spammer';
@@ -114,8 +115,8 @@ export function getBlock(ev) {
   });
 }
 
-/** @arg {Player} p @arg {import('../ac').TNAntiCheat} ac */
-export function debugView(p, ac) {
+/** @param {Player} p */
+export function debugView(p) {
   if (!p.hasTag('ac:debug')) return;
   const loc = p.location;
   const rot = p.getRotation();
@@ -124,7 +125,7 @@ export function debugView(p, ac) {
   const cps = getCPS(p);
   
   p.onScreenDisplay.setActionBar([
-    `[${p.name}] tps: ${ac.getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.isOp())}`,
+    `[${p.name}] tps: ${getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.isOp())}`,
 `slot: ${fmt(p.selectedSlot)}, hand: ${fmt(mainHand)}`,
     `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, fallDistance: ${fmt(p.fallDistance.toFixed(2))}, cps: ${fmt(cps?.toFixed(1))}`,
     `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,

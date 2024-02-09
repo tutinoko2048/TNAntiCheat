@@ -1,3 +1,4 @@
+import { getTPS } from '../../util/tps';
 import { Command } from '../Command';
 
 const tpsCommand = new Command({
@@ -5,8 +6,8 @@ const tpsCommand = new Command({
   description: 'TPSを表示します',
   args: [ '' ],
   aliases: [ 'ping' ],
-}, (origin, _, manager) => {
-  const tps = manager.ac.getTPS();
+}, (origin) => {
+  const tps = getTPS();
   origin.send(`Current TPS: ${getColor(tps)}${tps.toFixed(1)}/20.0`);
 });
 

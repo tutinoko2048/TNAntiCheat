@@ -10,6 +10,7 @@ import { ActionForm } from '../lib/form/index';
 import { editLore, editNameTag } from './ItemEditor';
 import { BanManager } from '../util/BanManager';
 import { Duration } from '../lib/duration/main';
+import { getTPS } from '../util/tps';
 
 /** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
@@ -42,7 +43,7 @@ export class AdminPanel {
       `§l§7現在時刻: §r${Util.getTime()}`,
       `§l§7ワールド経過時間: §r${Util.parseMS(Date.now() - this.ac.startTime)}`,
       `§l§7プレイヤー数: §r${world.getPlayers().length}`,
-      `§l§7TPS: §r${this.ac.getTPS().toFixed(1)}`,
+      `§l§7TPS: §r${getTPS().toFixed(1)}`,
     ].join('§r\n');
     const form = FORMS.main.body(`${info}\n `);
     const { selection, canceled } = busy
