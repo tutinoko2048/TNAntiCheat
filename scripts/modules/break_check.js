@@ -1,6 +1,7 @@
 import { Util } from '../util/util';
 import config from '../config.js';
 import { Block } from '@minecraft/server';
+import { getTPS } from '../util/tps';
 
 /** @param {import('@minecraft/server').Player} player */
 export function nukerFlag(player) {
@@ -37,18 +38,23 @@ function hasContainer(block) {
 export function nukerBreak(ev) {
   const { player, block } = ev;
   if (!config.nuker.state || Util.isOP(player)) return;
-  
+
   player.breakCount ??= 0;
   player.breakCount++;
+
+  let baseThreshold = config.nuker.limit;
+  if (player.breakCount > 1) { // fix threshold based on tps
+    baseThreshold = (20 / getTPS()) ** 0.85 * baseThreshold;
+  }
   
-  if (player.breakCount > config.nuker.limit) {
+  if (player.breakCount > baseThreshold) {
     if (config.nuker.cancel) ev.cancel = true;
     return true; // illegal destruction -> return true
   }
 
   // lower threshold if block can hold items
   if (
-    player.breakCount > Math.max(1, config.nuker.limit * 0.7) &&
+    player.breakCount > Math.max(1, baseThreshold ** 0.7) &&
     config.nuker.cancel && 
     hasContainer(block)
   ) {
