@@ -18,11 +18,14 @@
   },
   "homepage": "https://github.com/tutinoko2048/TNAntiCheat/blob/main/README.md",
   "devDependencies": {
-    "@minecraft/server": "1.9.0-beta.1.20.60-stable",
-    "@minecraft/server-ui": "1.2.0-beta.1.20.60-stable",
+    "@minecraft/server": "1.10.0-beta.1.20.70-preview.25",
+    "@minecraft/server-ui": "1.2.0-beta.1.20.70-preview.25",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^46.8.2",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "@minecraft/server": "$@minecraft/server"
   }
 }
