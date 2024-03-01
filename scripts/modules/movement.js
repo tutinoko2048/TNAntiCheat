@@ -20,7 +20,7 @@ export function flyA(player) {
     const vy = player.getVelocity().y.toFixed(2);
     const distance = player.fallDistance.toFixed(2);
     if (config.flyA.flagCount === -1 || player.flyACount <= config.flyA.flagCount) {
-      player.flagQueue = `Fly/A >> §c${player.name}§r §7[${player.flyACount}] (fall: ${distance}, vy: ${vy})§r§　`;
+      player.flagQueue = `Fly/A >> §c${player.name}§r §7[${player.flyACount}] (fall: ${distance}, vy: ${vy})§r§ `;
     }
     // rollback
     const loc = player.lastLocation ?? player.location;
@@ -53,14 +53,14 @@ export function speedA(player) {
     !player.isOnGround ||
     player.getEffect('speed') ||
     player.hasComponent(EntityRidingComponent.componentId) ||
-    excluded.includes(Util.getGameMode(player)) ||
+    excluded.includes(player.getGameMode()) ||
     (config.speedA.excludeTag && player.hasTag(config.speedA.excludeTag))
   ) return;
       
   player.speedACount ??= 0;
   player.speedACount++;
   if (config.speedA.flagCount === -1 || player.speedACount <= config.speedA.flagCount) {
-    player.flagQueue = `Speed/A >> §c${player.name}§r §7[${player.speedACount}] (v: ${avgVelocity.toFixed(3)})§r§　`;
+    player.flagQueue = `Speed/A >> §c${player.name}§r §7[${player.speedACount}] (v: ${avgVelocity.toFixed(3)})§r§ `;
   }
   // rollback
   const loc = player.lastLocation ?? player.location;

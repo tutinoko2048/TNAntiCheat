@@ -205,35 +205,25 @@ export class Util {
   static average(numbers) {
     return (numbers.reduce((a,b) => a + b, 0) / numbers.length) || 0;
   }
-    
-  /**
-   * @param {Player} player
-   * @returns {GameMode|undefined}
-   */
-  static getGameMode(player) {
-    for (const key in GameMode) {
-      if (player.matches({ gameMode: GameMode[key] })) return GameMode[key];
-    }
-  }
   
   /** @param {Player} player */
   static isSurvival(player) {
-    return player.matches({ gameMode: GameMode.survival });
+    return player.getGameMode() === GameMode.survival;
   }
   
   /** @param {Player} player */
   static isCreative(player) {
-    return player.matches({ gameMode: GameMode.creative });
+    return player.getGameMode() === GameMode.creative;
   }
   
   /** @param {Player} player */
   static isAdventure(player) {
-    return player.matches({ gameMode: GameMode.adventure });
+    return player.getGameMode() === GameMode.adventure;
   }
   
   /** @param {Player} player */
   static isSpectator(player) {
-    return player.matches({ gameMode: GameMode.spectator });
+    return player.getGameMode() === GameMode.spectator;
   }
   
   static cloneObject(obj) {

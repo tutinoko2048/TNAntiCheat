@@ -56,7 +56,7 @@ export async function placeCheckB(ev) {
       flagMsg = itemMessageBuilder(checkedItems[0].item);
       flagMsg += `\n§7more ${checkedItems.length - 1} items...`;
     }
-    player.flagQueue = `PlaceCheckB >> §c${player.name}§r §7{${player.placeBCount ?? 1}}§r\n${block.typeId} -> ${flagMsg}§　`;
+    player.flagQueue = `PlaceCheckB >> §c${player.name}§r §7{${player.placeBCount ?? 1}}§r\n${block.typeId} -> ${flagMsg}§ `;
 
     for (const entry of checkedItems) { // clear items
       container.setItem(entry.slot);
@@ -88,7 +88,7 @@ export async function placeCheckD(ev) {
   const { source, itemStack: item, block } = ev;
   const loc = block.location;
   if (!config.placeCheckD.state || !(source instanceof Player) || Util.isOP(source)) return;
-  const gameMode = Util.getGameMode(source);
+  const gameMode = source.getGameMode();
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
   const { container } = source.getComponent('minecraft:inventory');
 

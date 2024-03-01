@@ -90,7 +90,7 @@ export class AdminPanel {
       `§7Dimension: §f${target.dimension.id}`,
       `§7Location: §f${x}, ${y}, ${z}`,
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
-      `§7GameMode: §f${Util.getGameMode(target)}`,
+      `§7GameMode: §f${target.getGameMode()}`,
       `§7ID: §f${target.id}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
