@@ -1,15 +1,17 @@
 {
-  "include": ["scripts/"],
-  "exclude": ["node_modules", "./scripts/util/secret.js"],
-  "files": ["scripts/types/index.d.ts"],
+  "include": ["src"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
     "module": "ES2020",
     "target": "es2021",
     "noEmit": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "strictNullChecks": false
+    "strictNullChecks": true,
+    "outDir": "dist",
+    "baseUrl": "src",
+    "paths": {
+      "@config": ["./util/Config.ts"]
+    }
   }
 }
