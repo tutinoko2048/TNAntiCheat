@@ -1,8 +1,10 @@
 import { ja_JP } from '../lang/ja_JP';
+import { en_US } from '../lang/en_US';
 import { config } from '@config';
 
 const languages = {
   ja_JP,
+  en_US
 }
 export type LanguageTypes = keyof typeof languages;
 
