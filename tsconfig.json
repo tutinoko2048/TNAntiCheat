@@ -12,7 +12,7 @@
     "baseUrl": "src",
     "paths": {
       "@config": ["./util/Config.ts"],
-      "@types": ["./types/index.ts"]
+      "@/*": ["./*"]
     }
   }
 }

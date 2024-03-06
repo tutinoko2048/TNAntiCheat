@@ -1,5 +1,5 @@
-import { ja_JP } from '../lang/ja_JP';
-import { en_US } from '../lang/en_US';
+import { ja_JP } from '@/lang/ja_JP';
+import { en_US } from '@/lang/en_US';
 import { config } from '@config';
 
 const languages = {

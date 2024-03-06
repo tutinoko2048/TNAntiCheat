@@ -1,5 +1,5 @@
-import { general } from '../config/general';
-import { GeneralConfig } from '@types';
+import { general } from '@/config/general';
+import { GeneralConfig } from '@/types';
 import { DynamicProperty, DynamicPropertyTypeMap } from './DynamicProperty';
 
 const cache = {

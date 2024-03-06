@@ -1,4 +1,4 @@
-import { GeneralConfig } from '@types';
+import { GeneralConfig } from '@/types';
 
 export const general: GeneralConfig = {
   language: 'ja_JP',
