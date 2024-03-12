@@ -307,7 +307,7 @@ export class Util {
    */
   static getScore(target, objective, useZero) {
     try {
-      return world.scoreboard.getObjective(objective).getScore(target) ?? (useZero ? 0 : null);
+      return world.scoreboard.getObjective(objective)?.getScore(target) ?? (useZero ? 0 : null);
     } catch {
       return useZero ? 0 : null;
     }

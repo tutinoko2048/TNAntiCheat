@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot, Player } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -381,10 +381,13 @@ export class AdminPanel {
   /** @param {Player} target */
   async showScores(target) {
     const objectives = world.scoreboard.getObjectives();
-    objectives.sort((obj0, obj1) => obj0.id.localeCompare(obj1.id))
-    objectives.sort((obj0, obj1) => Util.getScore(target, obj1.id, true) - Util.getScore(target, obj0.id, true));
-    const messages = objectives
-      .map(obj => `- ${obj.id}§r (${obj.displayName}§r) : ${Util.getScore(target, obj.id) ?? 'null'}`);
+    /** @type {[ScoreboardObjective, number | undefined][]} */
+    const entries = objectives.map(obj => [obj, Util.getScore(target, obj.id)]);
+    entries.sort((a, b) => a[0].id.localeCompare(b[0].id));
+    entries.sort((a, b) => (a[1] ?? 0) - (b[1] ?? 0));
+    entries.sort((entry) => typeof entry[1] === 'number' ? -1 : 1);
+    const messages = entries
+      .map(([obj, score]) => `- ${obj.id}§r (${obj.displayName}§r) : ${score ?? 'null'}`);
     const form = new UI.ActionFormData();
     form.title(`${target.name}'s scores`)
       .body(messages.length > 0 ? `スコア一覧 (${objectives.length} objectives)\n\n${messages.join('\n')}` : 'このプレイヤーはスコアを持っていません')
