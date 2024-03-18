@@ -2,6 +2,7 @@ import { Entity, world } from '@minecraft/server';
 
 export interface DynamicPropertyTypeMap {
   generalConfig: string;
+  moduleConfig: string;
 }
 
 export class DynamicProperty {

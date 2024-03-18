@@ -1,9 +1,11 @@
 import { general } from '@/config/general';
-import { GeneralConfig } from '@/types';
+import { module } from '@/config/module';
+import { GeneralConfig, ModuleConfig } from '@/types';
 import { DynamicProperty, DynamicPropertyTypeMap } from './DynamicProperty';
 
 const cache = {
-  general
+  general,
+  module
 }
 
 class Config {
@@ -11,19 +13,24 @@ class Config {
 
   load() {
     loadConfig('generalConfig', cache.general);
+    loadConfig('moduleConfig', cache.module);
     this.isLoaded = true;
   }
 
   get general(): GeneralConfig {
-    if (!this.isLoaded) throw Error('Config is not loaded');
+    if (!this.isLoaded) console.error('Config is not loaded');
     return cache.general;
+  }
+
+  get module(): ModuleConfig {
+    if (!this.isLoaded) console.error('Config is not loaded');
+    return cache.module;
   }
 }
 
 export const config = new Config();
 
-type Configs = GeneralConfig;
-function loadConfig(key: keyof DynamicPropertyTypeMap, target: Configs) {
+function loadConfig(key: keyof DynamicPropertyTypeMap, target: typeof cache[keyof typeof cache]) {
   const rawData = DynamicProperty.get(undefined, key) ?? '{}';
   try {
     const data = JSON.parse(rawData);
@@ -33,14 +40,14 @@ function loadConfig(key: keyof DynamicPropertyTypeMap, target: Configs) {
   }
 }
 
-/** オブジェクトはassign, 配列はそのまま上書き */
+/** オブジェクトはassign, 別の型or配列はそのまま上書き */
 function deepAssign(target: any, source: any) {
   for (const key in source) {
     if (
       source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key]) &&
       target[key] !== null && typeof target[key] === 'object' && !Array.isArray(target[key])
     ) {
-      if (!(key in target)) target[key] = {};
+      target[key] ??= {};
       deepAssign(target[key], source[key]);
       
     } else {
