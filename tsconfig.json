@@ -4,7 +4,6 @@
   "compilerOptions": {
     "module": "ES2020",
     "target": "es2021",
-    "noEmit": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -13,6 +12,9 @@
     "paths": {
       "@config": ["./util/Config.ts"],
       "@/*": ["./*"]
-    }
+    },
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+    ]
   }
 }

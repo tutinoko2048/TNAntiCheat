@@ -1,8 +1,8 @@
 on: push
 
 jobs:
-  lint:
-    name: Lint
+  lint-and-build:
+    name: "Lint and Build"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -10,16 +10,16 @@ jobs:
         with:
           node-version: "16"
       - run: npm i --save-dev
-      - name: eslint
+      - name: Lint
         run: |
           npm run lint
-      - name: tsc
+      - name: Build
         run: |
-          npx tsc
-  build:
-    name: Build package
+          npm run build
+  upload:
+    name: Upload package
     runs-on: ubuntu-latest
-    needs: lint
+    needs: lint-and-build
     steps:
       - uses: actions/checkout@master
       - run: echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}" >> $GITHUB_ENV
