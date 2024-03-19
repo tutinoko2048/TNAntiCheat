@@ -2,10 +2,13 @@ import { world } from '@minecraft/server';
 import { config } from '@config';
 import { version } from '@/util/constants';
 import { _t } from '@/util/i18n';
-import { module as nuker } from '@/modules/Nuker';
+import nuker from '@/modules/Nuker';
+import { CommandHandler } from './commands/CommandHandler';
 
 export class Main {
   static readonly version = version;
+
+  public readonly commandHandler: CommandHandler = new CommandHandler(this);
   
   private moduleCount: number = 0;
   
@@ -19,5 +22,7 @@ export class Main {
     nuker.load(this);
 
     console.warn(`[TN-AntiCheat] Loaded ${this.moduleCount} modules`);
+
+    this.commandHandler.load();
   }
 }
