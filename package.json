@@ -24,12 +24,11 @@
     "@minecraft/server-ui": "1.2.0-beta.1.20.70-stable",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsdoc": "^46.8.2",
     "ts-patch": "^3.1.2",
-    "typescript": "^5.3.3",
+    "typescript": "^5.4.2",
     "typescript-transform-paths": "^3.4.7"
   },
   "overrides": {
