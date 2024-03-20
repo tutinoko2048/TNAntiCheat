@@ -1,6 +1,7 @@
 {
   "extends": ["eslint:recommended"],
-  "plugins": ["jsdoc", "import"],
+  "plugins": ["import", "@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
   "env": {
     "node": true,
     "es2021": true
@@ -16,7 +17,6 @@
     "keyword-spacing": "warn",
     "no-irregular-whitespace": "off",
     "no-class-assign": "off",
-    "jsdoc/no-undefined-types": 1,
     "import/no-unresolved": "error",
     "import/no-cycle": "error"
   },
@@ -29,6 +29,12 @@
       "node": {
         "extensions": [ ".js", ".ts", ".d.ts" ]
       }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "typescript": {
+      "project": "."
     }
   }
 }
