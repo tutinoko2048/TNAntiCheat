@@ -22,19 +22,15 @@
   },
   "parserOptions": {
     "ecmaVersion": 13,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "settings": {
     "import/resolver": {
-      "node": {
-        "extensions": [ ".js", ".ts", ".d.ts" ]
-      }
+      "typescript": {}
     },
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "typescript": {
-      "project": "."
     }
   }
 }

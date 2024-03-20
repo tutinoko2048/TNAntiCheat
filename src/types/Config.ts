@@ -1,4 +1,4 @@
-import { LanguageTypes } from '@/util/i18n';
+import type { LanguageTypes } from '@/util/i18n';
 
 export type Punishments = 'ban' | 'kick' | 'tempkick' | 'notify' | 'none';
 
