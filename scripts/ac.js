@@ -223,10 +223,9 @@ export class TNAntiCheat {
   
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #handleChat(ev) {
-    const tooFast = modules.spammerC(ev);
-    if (!tooFast && this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
+    if (this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
     
-    !tooFast &&
+    !modules.spammerC(ev) &&
     !modules.spammerA(ev) &&
     !modules.spammerB(ev);
   }
