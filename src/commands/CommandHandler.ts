@@ -1,7 +1,7 @@
 import type { Main } from '@/main';
 import { world, type ChatSendAfterEvent, Player } from '@minecraft/server';
-import { ArgumentParserMap, type Command, CommandArgumentType } from './Command';
-import { InvalidArgumentError, ParseContext } from './Parser';
+import { type Command } from './Command';
+import { InvalidArgumentError, ParseContext, ArgumentParserMap, CommandArgumentType, NoTargetsFoundError } from './Parser';
 import { _t } from '@/util/i18n';
 import { registerCommands } from './register';
 
@@ -48,11 +48,11 @@ export class CommandHandler {
     const args = Object.entries(command.options.args);
     const parsedArgs: [string, any][] = [];
     try {
-      const ctx: ParseContext = { index: 0, args: rawArgs }
+      const ctx: ParseContext = new ParseContext(0, rawArgs, sender);
       while (ctx.index < args.length) {
-        const { parse } = ArgumentParserMap[args[ctx.index][1]];
-        parsedArgs.push([args[ctx.index][0], parse(ctx)]);
-        ctx.index++;
+        const parser = ArgumentParserMap[args[ctx.index][1]];
+        parsedArgs.push([args[ctx.index][0], parser(ctx)]);
+        ctx.next();
       }
       command.execute?.(sender, Object.fromEntries(parsedArgs), this.main);
 
@@ -63,6 +63,8 @@ export class CommandHandler {
           rawArgs[e.argumentIndex] ?? '',
           ' ' + `${args.slice(e.argumentIndex + 1).join(' ')}`.slice(0, 9)
         ]);
+      } if (e instanceof NoTargetsFoundError) {
+        sendTranslatedMessage(sender, 'commands.generic.noTargetMatch');
       } else {
         sender.sendMessage(_t('commands.error.unexpected', `${e}\n${e.stack}`));
       }

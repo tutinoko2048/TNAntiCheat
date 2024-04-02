@@ -1,18 +1,6 @@
 import type { Player } from '@minecraft/server';
-import { NumberArgument, StringArgument, Vector3Argument } from './Parser';
+import { ArgumentParserMap, CommandArgumentType } from './Parser';
 import type { Main } from '@/main';
-
-export enum CommandArgumentType {
-  String,
-  Number,
-  Vector3
-}
-
-export const ArgumentParserMap = {
-  [CommandArgumentType.String]: StringArgument,
-  [CommandArgumentType.Number]: NumberArgument,
-  [CommandArgumentType.Vector3]: Vector3Argument
-}
 
 export interface CommandOptions<ARGS> {
   description: string | (() => string);
@@ -28,7 +16,7 @@ export class Command<ARGS extends Record<string, CommandArgumentType>> {
     public execute?: (
       origin: Player,
       args: {
-        [key in keyof ARGS]: ReturnType<(typeof ArgumentParserMap)[ARGS[key]]['parse']>
+        [key in keyof ARGS]: ReturnType<(typeof ArgumentParserMap)[ARGS[key]]>
       },
       main: Main
     ) => void
