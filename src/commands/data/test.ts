@@ -1,11 +1,12 @@
-import { Command, CommandArgumentType } from '../Command';
+import { Command } from '../Command';
+import { CommandArgumentType } from '../Parser';
   
 const help = new Command('test', {
   description: 'description',
   aliases: ['tes'],
   args: {
     aiueo: CommandArgumentType.String,
-    hello: CommandArgumentType.Number,
+    hello: CommandArgumentType.Int,
     location: CommandArgumentType.Vector3
   }
 }, (origin, args) => {
