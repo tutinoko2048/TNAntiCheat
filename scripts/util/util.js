@@ -356,6 +356,20 @@ export class Util {
   static formatDuration(duration) {
     return Duration.format(duration, false);
   }
+
+  /**
+   * Returns the distance of two vectors.
+   * @param {Vector3} a 
+   * @param {Vector3} b
+   * @returns {number} 
+   */
+  static distance(a, b) {
+    return Math.hypot(
+      a.x - b.x,
+      a.y - b.y,
+      a.z - b.z
+    );
+  }
 }
 /** @arg {Player} player */
 function resetCount(player) {

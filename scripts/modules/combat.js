@@ -1,4 +1,4 @@
-import { Player, Vector } from '@minecraft/server';
+import { Player } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -14,10 +14,10 @@ export function reachA(ev) { // attacking
     config.reachA.excludeEntities.includes(hitEntity.typeId)
   ) return;
   
-  const distance = Vector.distance(attacker.getHeadLocation(), hitEntity.location);
+  const distance = Util.distance(attacker.getHeadLocation(), hitEntity.location);
   if (config.reachA.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
-    const deltaLocA = (attacker.lastLocation && Vector.distance(attacker.location, attacker.lastLocation)) ?? 0;
-    const deltaLocH = (hitEntity.lastLocation && Vector.distance(hitEntity.location, hitEntity.lastLocation)) ?? 0;
+    const deltaLocA = (attacker.lastLocation && Util.distance(attacker.location, attacker.lastLocation)) ?? 0;
+    const deltaLocH = (hitEntity.lastLocation && Util.distance(hitEntity.location, hitEntity.lastLocation)) ?? 0;
     if (
       deltaLocA < config.reachA.maxReach + 1 &&
       deltaLocH < config.reachA.maxReach + 1
@@ -44,9 +44,9 @@ export function reachB(ev) { // placement
   const { source, block } = ev;
   
   if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
-  const distance = Vector.distance(source.getHeadLocation(), block.location);
+  const distance = Util.distance(source.getHeadLocation(), block.location);
   if (config.reachB.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
-    const deltaLoc = (source.lastLocation && Vector.distance(source.location, source.lastLocation)) ?? 0;
+    const deltaLoc = (source.lastLocation && Util.distance(source.location, source.lastLocation)) ?? 0;
     if (deltaLoc < config.reachB.maxReach + 1) {
       if (config.reachB.cancel) ev.cancel = true;
 
@@ -71,9 +71,9 @@ export function reachC(ev) { // destruction
   const { player, block } = ev;
   if (Util.isCreative(player) || Util.isOP(player)) return;
   
-  const distance = Vector.distance(player.getHeadLocation(), block.location);
+  const distance = Util.distance(player.getHeadLocation(), block.location);
   if (config.reachC.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
-    const deltaLoc = (player.lastLocation && Vector.distance(player.location, player.lastLocation)) ?? 0;
+    const deltaLoc = (player.lastLocation && Util.distance(player.location, player.lastLocation)) ?? 0;
     if (deltaLoc < config.reachC.maxReach + 1) {
       if (config.reachC.cancel) ev.cancel = true;
 
