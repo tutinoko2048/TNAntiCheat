@@ -13,6 +13,7 @@
     "paths": {
       "@config": ["./utils/Config.ts"],
       "@minecraft/vanilla-data": ["./utils/vanilla-data/index"],
+      "@bedrock-oss/bedrock-boost": ["./utils/bedrock-boost/index"],
       "@/*": ["./*"]
     },
     "plugins": [
