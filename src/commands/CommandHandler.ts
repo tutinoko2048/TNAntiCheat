@@ -2,7 +2,7 @@ import type { Main } from '@/main';
 import { world, type ChatSendAfterEvent, Player } from '@minecraft/server';
 import { type Command } from './Command';
 import { InvalidArgumentError, ParseContext, ArgumentParserMap, CommandArgumentType, NoTargetsFoundError } from './Parser';
-import { _t } from '@/util/i18n';
+import { _t } from '@/utils/i18n';
 import { registerCommands } from './register';
 
 type GenericCommand = Command<Record<string, CommandArgumentType>>;

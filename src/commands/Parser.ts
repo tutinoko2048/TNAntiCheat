@@ -1,4 +1,4 @@
-import { Util } from '@/util/util';
+import { Util } from '@/utils/util';
 import { Player, Vector2, Vector3, world } from '@minecraft/server';
 
 export class InvalidArgumentError extends Error {
@@ -101,12 +101,11 @@ function parsePlayerSelector(ctx: ParseContext): Player[] {
   }
 }
 
-export const ArgumentParserMap = Object.freeze({
+export const ArgumentParserMap = {
   [CommandArgumentType.String]: parseString,
   [CommandArgumentType.Int]: parseInt,
   [CommandArgumentType.Float]: parseFloat,
   [CommandArgumentType.Vector2]: parseVector2,
   [CommandArgumentType.Vector3]: parseVector3,
   [CommandArgumentType.PlayerSelector]: parsePlayerSelector
-});
-export type ArgumentParserMap = typeof ArgumentParserMap;
+} as const;

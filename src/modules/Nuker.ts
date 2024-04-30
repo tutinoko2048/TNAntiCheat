@@ -1,6 +1,6 @@
 import { system, world } from '@minecraft/server';
 import { BaseModule } from './BaseModule';
-import { createCache } from '@/util/PlayerCache';
+import { createCache } from '@/utils/PlayerCache';
 
 const breakCount = createCache<number>();
 

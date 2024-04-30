@@ -9,9 +9,10 @@
     "strictNullChecks": true,
     "outDir": "dist",
     "baseUrl": "src",
+    "allowJs": true,
     "paths": {
-      "@config": ["./util/Config.ts"],
-      "@minecraft/vanilla-data": ["./util/vanilla-data/index"],
+      "@config": ["./utils/Config.ts"],
+      "@minecraft/vanilla-data": ["./utils/vanilla-data/index"],
       "@/*": ["./*"]
     },
     "plugins": [

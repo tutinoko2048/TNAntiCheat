@@ -1,7 +1,7 @@
 import { world } from '@minecraft/server';
 import { config } from '@config';
-import { version } from '@/util/constants';
-import { _t } from '@/util/i18n';
+import { version } from '@/utils/constants';
+import { _t } from '@/utils/i18n';
 import nuker from '@/modules/Nuker';
 import { CommandHandler } from './commands/CommandHandler';
 
