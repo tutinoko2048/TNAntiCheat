@@ -1,5 +1,5 @@
 import type { Player } from '@minecraft/server';
-import { ArgumentParserMap, CommandArgumentType } from './Parser';
+import { type ArgumentParserMap, CommandArgumentType } from './Parser';
 import type { Main } from '@/main';
 
 export interface CommandOptions<ARGS> {
@@ -16,7 +16,7 @@ export class Command<ARGS extends Record<string, CommandArgumentType>> {
     public execute?: (
       origin: Player,
       args: {
-        [key in keyof ARGS]: ReturnType<(typeof ArgumentParserMap)[ARGS[key]]>
+        [key in keyof ARGS]: ReturnType<(ArgumentParserMap)[ARGS[key]]>
       },
       main: Main
     ) => void

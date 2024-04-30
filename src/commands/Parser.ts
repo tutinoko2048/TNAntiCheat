@@ -1,5 +1,5 @@
 import { Util } from '@/util/util';
-import { Player, Vector3, world } from '@minecraft/server';
+import { Player, Vector2, Vector3, world } from '@minecraft/server';
 
 export class InvalidArgumentError extends Error {
   constructor(public argumentIndex: number) {
@@ -29,6 +29,7 @@ export enum CommandArgumentType {
   String,
   Int,
   Float,
+  Vector2,
   Vector3,
   PlayerSelector
 }
@@ -50,6 +51,13 @@ function parseInt(ctx: ParseContext): number {
 }
 
 const parseFloat = parseNumber;
+
+function parseVector2(ctx: ParseContext): Vector2 {
+  const x = parseNumber(ctx);
+  ctx.next();
+  const y = parseNumber(ctx);
+  return { x, y }
+}
 
 function parseVector3(ctx: ParseContext): Vector3 {
   const x = parseNumber(ctx);
@@ -86,17 +94,19 @@ function parsePlayerSelector(ctx: ParseContext): Player[] {
   } else {
     let value = ctx.value;
     if (value.startsWith('@')) value = value.slice(1);
-    if (value.startsWith('"')) value = value.slice(1, -1);
+    if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
     const result = world.getPlayers({ name: value });
     if (!result[0]) throw new NoTargetsFoundError();
     return result;
   }
 }
 
-export const ArgumentParserMap = {
+export const ArgumentParserMap = Object.freeze({
   [CommandArgumentType.String]: parseString,
   [CommandArgumentType.Int]: parseInt,
   [CommandArgumentType.Float]: parseFloat,
+  [CommandArgumentType.Vector2]: parseVector2,
   [CommandArgumentType.Vector3]: parseVector3,
   [CommandArgumentType.PlayerSelector]: parsePlayerSelector
-}
+});
+export type ArgumentParserMap = typeof ArgumentParserMap;
