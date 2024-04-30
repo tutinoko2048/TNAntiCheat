@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint ./src --ext .ts",
     "build": "tsc",
-    "prepare": "ts-patch install -s"
+    "prepare": "ts-patch install -s",
+    "postinstall": "node src/node_scripts/copy_lib.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "eslint": "^8.57.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "fs-extra": "^11.2.0",
     "ts-patch": "^3.1.2",
     "typescript": "^5.4.2",
     "typescript-transform-paths": "^3.4.7"
