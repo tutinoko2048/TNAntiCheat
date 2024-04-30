@@ -23,6 +23,7 @@
   "devDependencies": {
     "@minecraft/server": "1.11.0-beta.1.20.80-stable",
     "@minecraft/server-ui": "1.2.0-beta.1.20.80-stable",
+    "@minecraft/vanilla-data": "1.20.80",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "eslint": "^8.57.0",

@@ -11,6 +11,7 @@
     "baseUrl": "src",
     "paths": {
       "@config": ["./util/Config.ts"],
+      "@minecraft/vanilla-data": ["./util/vanilla-data/index"],
       "@/*": ["./*"]
     },
     "plugins": [
