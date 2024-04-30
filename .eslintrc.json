@@ -30,7 +30,7 @@
   },
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "typescript": { "project": "./" }
     },
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]

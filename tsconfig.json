@@ -3,7 +3,7 @@
   "exclude": ["node_modules"],
   "compilerOptions": {
     "module": "ES2020",
-    "target": "es2021",
+    "target": "ES2021",
     "moduleResolution": "node",
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -11,7 +11,7 @@
     "baseUrl": "src",
     "allowJs": true,
     "paths": {
-      "@config": ["./utils/Config.ts"],
+      "@config": ["./utils/Config"],
       "@minecraft/vanilla-data": ["./utils/vanilla-data/index"],
       "@bedrock-oss/bedrock-boost": ["./utils/bedrock-boost/index"],
       "@/*": ["./*"]

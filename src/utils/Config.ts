@@ -6,7 +6,7 @@ import { DynamicProperty, DynamicPropertyTypeMap } from './DynamicProperty';
 const cache = {
   general,
   module
-}
+} as const;
 
 class Config {
   public isLoaded: boolean = false;

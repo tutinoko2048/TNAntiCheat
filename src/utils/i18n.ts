@@ -14,7 +14,7 @@ function translate(key: keyof typeof languages[typeof defaultFallbackLanguage], 
   let str = languages[config.general.language][key] ?? languages[defaultFallbackLanguage][key];
   if (!str) return key;
   for (const i in args) {
-    str = str.replace(new RegExp(`$${i}`, 'g'), String(args[0]));
+    str = str.replace(new RegExp(`$${i}`, 'g'), String(args[i])) as any;
   }
   return str;
 }
