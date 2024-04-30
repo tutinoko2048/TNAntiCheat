@@ -19,7 +19,9 @@
     "no-irregular-whitespace": "off",
     "no-class-assign": "off",
     "import/no-unresolved": "error",
-    "import/no-cycle": "error"
+    "import/no-cycle": "error",
+    "no-dupe-class-members": "off",
+    "@typescript-eslint/no-dupe-class-members": "error"
   },
   "parserOptions": {
     "ecmaVersion": 13,
