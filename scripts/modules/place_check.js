@@ -40,7 +40,7 @@ export async function placeCheckB(ev) {
   player.placeBCount ??= 0;
   if (checkedItems.length > 0) {
     player.placeBCount++
-    const mainHand = player.getComponent('minecraft:inventory').container.getSlot(player.selectedSlot);
+    const mainHand = player.getComponent('minecraft:inventory').container.getSlot(player.selectedSlotIndex);
     system.run(() => {
       if (mainHand.typeId === block.typeId) mainHand.setItem();
     });
@@ -70,7 +70,7 @@ export function placeCheckC(ev) {
   if (!config.placeCheckC.state || !config.placeCheckC.detect.includes(block.typeId) || Util.isOP(player)) return;
   if (config.placeCheckC.excludeCreative && Util.isCreative(player)) return;
   
-  const permutation = block.permutation.clone();
+  const permutation = block.permutation;
   player.runCommand(`setblock ${block.x} ${block.y} ${block.z} ${block.typeId}`);
   block.setPermutation(permutation);
   if (config.others.debug) console.warn(`[DEBUG] PlaceCheckC: Reset: ${block.typeId}`);
@@ -112,10 +112,10 @@ export async function placeCheckD(ev) {
     
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
-      container.setItem(source.selectedSlot);
+      container.setItem(source.selectedSlotIndex);
     } else {
       item.amount--;
-      container.setItem(source.selectedSlot, item);
+      container.setItem(source.selectedSlotIndex, item);
     }
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
@@ -124,10 +124,10 @@ export async function placeCheckD(ev) {
     spawn('minecraft:chest_boat');
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
-      container.setItem(source.selectedSlot);
+      container.setItem(source.selectedSlotIndex);
     } else {
       item.amount--;
-      container.setItem(source.selectedSlot, item);
+      container.setItem(source.selectedSlotIndex, item);
     }
   }
 }

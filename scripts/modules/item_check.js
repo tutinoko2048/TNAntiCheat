@@ -37,7 +37,7 @@ export function itemCheck(player) {
     }
     
     if (config.itemCheckD.state || config.itemCheckE.state) {
-      if (config.itemCheckD.mode == 'hand' && i === player.selectedSlot) {
+      if (config.itemCheckD.mode == 'hand' && i === player.selectedSlotIndex) {
         const result = enchantCheck(item, player);
         if (result?.flag) container.setItem(i, result.item); // flagされてたら更新
       
