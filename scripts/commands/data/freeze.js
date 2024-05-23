@@ -17,12 +17,9 @@ const freezeCommand =  new Command({
   const target = targetName ? Util.getPlayerByName(targetName) : sender;
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
   const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
-
-  const res = Util.runCommandSafe(`inputpermission set @s movement ${freezeState ? 'disabled' : 'enabled'}`, target);
-  if (!res) throw new CommandError('コマンドの実行中にエラーが発生しました');
-  
+  target.inputPermissions.movementEnabled = !freezeState;
   if (freezeState) handler.ac.frozenPlayerMap.set(target.id, target.location);
-  else handler.ac.frozenPlayerMap.delete(target.id);
+    else handler.ac.frozenPlayerMap.delete(target.id);
 
   origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のフリーズを ${freezeState} に設定しました`));
   if (freezeState) Util.notify('§o§eあなたはフリーズされています', target);

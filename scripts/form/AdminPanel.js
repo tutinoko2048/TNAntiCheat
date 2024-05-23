@@ -298,8 +298,7 @@ export class AdminPanel {
     }
     
     if (freeze !== _freeze) {
-      const res = Util.runCommandSafe(`inputpermission set @s movement ${freeze ? 'disabled' : 'enabled'}`, target);
-      if (!res) return Util.notify(`§c${target.name}§r§c のフリーズに失敗しました`, this.player);
+      target.inputPermissions.movementEnabled = !freeze;
       if (freeze) this.ac.frozenPlayerMap.set(target.id, target.location);
         else this.ac.frozenPlayerMap.delete(target.id);
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);
