@@ -21,7 +21,14 @@
     "import/no-unresolved": "error",
     "import/no-cycle": "error",
     "no-dupe-class-members": "off",
-    "@typescript-eslint/no-dupe-class-members": "error"
+    "@typescript-eslint/no-dupe-class-members": "error",
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": [
+      "error",
+      {
+        "ignoreDeclarationMerge": true
+      }
+    ]
   },
   "parserOptions": {
     "ecmaVersion": 13,

@@ -3,6 +3,9 @@ import { Entity, world } from '@minecraft/server';
 export interface DynamicPropertyTypeMap {
   generalConfig: string;
   moduleConfig: string;
+  memberPermission: number;
+  moderatorPermission: number;
+  adminPermission: number;
 }
 
 export class DynamicProperty {
