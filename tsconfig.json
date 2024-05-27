@@ -11,7 +11,7 @@
     "baseUrl": "src",
     "allowJs": true,
     "paths": {
-      "@config": ["./utils/Config"],
+      "@config": ["./storage/Config"],
       "@minecraft/vanilla-data": ["./utils/vanilla-data/index"],
       "@bedrock-oss/bedrock-boost": ["./utils/bedrock-boost/index"],
       "@/*": ["./*"]

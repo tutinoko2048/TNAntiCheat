@@ -1,7 +1,7 @@
 import { general } from '@/config/general';
 import { module } from '@/config/module';
 import { GeneralConfig, ModuleConfig } from '@/types';
-import { DynamicProperty, DynamicPropertyTypeMap } from './DynamicProperty';
+import { DynamicProperty, DynamicPropertyTypeMap } from '../utils/DynamicProperty';
 
 const cache = {
   general,
