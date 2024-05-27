@@ -2,7 +2,7 @@ import { world } from '@minecraft/server';
 import { config } from '@config';
 import { version } from '@/utils/constants';
 import { _t } from '@/utils/i18n';
-import { CommandHandler } from './commands/CommandHandler';
+import { CommandHandler } from '@/commands/CommandHandler';
 import nuker from '@/modules/Nuker';
 
 export class Main {
