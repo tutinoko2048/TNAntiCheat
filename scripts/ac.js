@@ -86,6 +86,7 @@ export class TNAntiCheat {
         modules.creative(player); 
         modules.speedA(player);
         // modules.flyA(player);
+        modules.scaffold.updatePlayerData(player);
         
         if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
         if (!(system.currentTick % 50)) modules.flag(player); // prevent notification spam and causing lag
@@ -154,6 +155,7 @@ export class TNAntiCheat {
     world.afterEvents.playerPlaceBlock.subscribe(ev => {
       modules.placeCheckB(ev);
       modules.placeCheckC(ev);
+      modules.scaffold.onPlaceBlock(ev);
     });
     
     world.beforeEvents.itemUse.subscribe(async ev => {

@@ -15,6 +15,7 @@ export * from './entity_check';
 export * from './combat';
 export * from './break_check';
 export * from './movement';
+export * as scaffold from './scaffold';
 
 /**
  * @param {Player} player
