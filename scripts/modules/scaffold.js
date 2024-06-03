@@ -168,13 +168,13 @@ export function updatePlayerData(player) {
     }
     const data = lastData[player.id] ?? {};
 
-    player.onScreenDisplay.setActionBar([
-      `location: ${fLoc(player.location)}`,
-      `lastLocation: ${fLoc(data.location ?? player.location)}`,
-      `bps: ${log.length}`,
-      `potential: ${potentialScaffold[player.id]}`,
-      `xRot: ${player.getRotation().x.toFixed(2)}`,
-    ].join('\n'));
+    // player.onScreenDisplay.setActionBar([
+    //   `location: ${fLoc(player.location)}`,
+    //   `lastLocation: ${fLoc(data.location ?? player.location)}`,
+    //   `bps: ${log.length}`,
+    //   `potential: ${potentialScaffold[player.id]}`,
+    //   `xRot: ${player.getRotation().x.toFixed(2)}`,
+    // ].join('\n'));
 
     Object.assign(data, {
       at: now,
