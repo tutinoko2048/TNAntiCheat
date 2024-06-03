@@ -160,6 +160,7 @@ op-permission-level=2
 config.jsを開き、`others` 内にある `fixBDS` をtrueに変更してください
 
 ## Acknowledgements
+- [Bedrock-OSS/bedrock-boost](https://github.com/Bedrock-OSS/bedrock-boost)
 - Duration: by [@akki0256](https://github.com/akki0256)
 - [Paradox_AntiCheat](https://github.com/Pete9xi/Paradox_AntiCheat): autoclicker detection
 - [Scythe-AntiCheat](https://github.com/Scythe-Anticheat/Scythe-AntiCheat)
