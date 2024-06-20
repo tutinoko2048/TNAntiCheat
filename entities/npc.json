@@ -3,6 +3,7 @@
   "minecraft:entity": {
     "description": {
       "identifier": "minecraft:npc",
+      "spawn_category": "creature",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false
@@ -20,10 +21,7 @@
         }
       },
       "minecraft:type_family": {
-        "family": [
-          "npc",
-          "mob"
-        ]
+        "family": [ "npc", "mob" ]
       },
       "minecraft:fire_immune": true,
       "minecraft:movement": {
@@ -38,35 +36,19 @@
       },
       "minecraft:behavior.look_at_player": {
         "priority": 0,
-        "look_distance": 6,
+        "look_distance": 6.0,
         "probability": 0.02
       },
       "minecraft:persistent": {},
       "minecraft:npc": {
         "npc_data": {
           "portrait_offsets": {
-            "translate": [
-              -7,
-              50,
-              0
-            ],
-            "scale": [
-              1.75,
-              1.75,
-              1.75
-            ]
+            "translate": [ -7, 50, 0 ],
+            "scale": [ 1.75, 1.75, 1.75 ]
           },
           "picker_offsets": {
-            "translate": [
-              0,
-              20,
-              0
-            ],
-            "scale": [
-              1.7,
-              1.7,
-              1.7
-            ]
+            "translate": [ 0, 20, 0 ],
+            "scale": [ 1.7, 1.7, 1.7 ]
           },
           "skin_list": [
             {
@@ -173,6 +155,81 @@
             },
             {
               "variant": 24
+            },
+            {
+              "variant": 35
+            },
+            {
+              "variant": 36
+            },
+            {
+              "variant": 37
+            },
+            {
+              "variant": 38
+            },
+            {
+              "variant": 39
+            },
+            {
+              "variant": 40
+            },
+            {
+              "variant": 41
+            },
+            {
+              "variant": 42
+            },
+            {
+              "variant": 43
+            },
+            {
+              "variant": 44
+            },
+            {
+              "variant": 50
+            },
+            {
+              "variant": 51
+            },
+            {
+              "variant": 52
+            },
+            {
+              "variant": 53
+            },
+            {
+              "variant": 54
+            },
+            {
+              "variant": 45
+            },
+            {
+              "variant": 46
+            },
+            {
+              "variant": 47
+            },
+            {
+              "variant": 48
+            },
+            {
+              "variant": 49
+            },
+            {
+              "variant": 55
+            },
+            {
+              "variant": 56
+            },
+            {
+              "variant": 57
+            },
+            {
+              "variant": 58
+            },
+            {
+              "variant": 59
             }
           ]
         }
