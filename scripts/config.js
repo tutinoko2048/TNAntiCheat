@@ -286,6 +286,7 @@ export default /** @type {import('./types').IConfig} */ ({
     rollback: true,
     excludeTag: "" // 検知から除外するタグ
   },
+  // [1.21.20] 削除済み removed
   flyA: { // flyを検知 (ベータ)
     state: true,
     punishment: "tempkick",

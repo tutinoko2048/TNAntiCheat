@@ -5,6 +5,7 @@ import config from '../config.js';
 const excluded = [ GameMode.creative, GameMode.spectator ];
 
 /** @arg {Player} player */
+/*
 export function flyA(player) {
   if (!config.flyA.state) return;
   if (player.fallDistance < config.flyA.minFallDistance) {
@@ -32,6 +33,7 @@ export function flyA(player) {
     }
   }
 }
+*/
 
 /** @arg {Player} player */
 export function speedA(player) {

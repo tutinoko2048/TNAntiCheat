@@ -53,7 +53,7 @@ const statusCommand = new Command({
     `§7CPS: §f${cps}`,
     `§7isMuted: ${bool(BanManager.isMuted(target))}`,
     `§7isFrozen: ${bool(manager.ac.frozenPlayerMap.has(target.id))}`,
-    target.flyACount ? `§7§oFly/A count: §r${target.flyACount}` : null,
+    // target.flyACount ? `§7§oFly/A count: §r${target.flyACount}` : null,
     target.speedACount ? `§7§oSpeed/A count: §r${target.speedACount}` : null,
     target.autoClickerCount ? `§7§oAutoClicker count: §r${target.autoClickerCount}` : null,
     target.placeBCount ? `§7§oPlaceCheck/B count: §r${target.placeBCount}` : null,

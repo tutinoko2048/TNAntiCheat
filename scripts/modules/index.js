@@ -127,7 +127,7 @@ export function debugView(p) {
   p.onScreenDisplay.setActionBar([
     `[${p.name}] tps: ${getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.isOp())}`,
 `slot: ${fmt(p.selectedSlotIndex)}, hand: ${fmt(mainHand)}`,
-    `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, fallDistance: ${fmt(p.fallDistance.toFixed(2))}, cps: ${fmt(cps?.toFixed(1))}`,
+    `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, cps: ${fmt(cps?.toFixed(1))}`,
     `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,
     `rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
   ].join('\n'));

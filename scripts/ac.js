@@ -85,7 +85,7 @@ export class TNAntiCheat {
         modules.nukerFlag(player);
         modules.creative(player); 
         modules.speedA(player);
-        modules.flyA(player);
+        // modules.flyA(player);
         
         if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
         if (!(system.currentTick % 50)) modules.flag(player); // prevent notification spam and causing lag
@@ -190,14 +190,14 @@ export class TNAntiCheat {
 
     }, entityOption);
     
-    world.afterEvents.pistonActivate.subscribe(ev => {
-      if (!config.flyA.state || !config.flyA.detectPiston) return;
-      if (ev.isExpanding) {
-        const loc = ev.block.location;
-        const pushedPlayers = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
-        pushedPlayers.forEach(p => p.pistonPushedAt = Date.now());
-      }
-    });
+    // world.afterEvents.pistonActivate.subscribe(ev => {
+    //   if (!config.flyA.state || !config.flyA.detectPiston) return;
+    //   if (ev.isExpanding) {
+    //     const loc = ev.block.location;
+    //     const pushedPlayers = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
+    //     pushedPlayers.forEach(p => p.pistonPushedAt = Date.now());
+    //   }
+    // });
 
     world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
       if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
