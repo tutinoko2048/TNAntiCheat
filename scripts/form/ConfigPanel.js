@@ -8,6 +8,8 @@ import { DataManager } from '../util/DataManager';
 import { DROPDOWNS, confirmForm } from './static_form';
 import { canAdd } from '../util/config_setting';
 
+const MODULE_EXCLUDE_LIST = ['flyA']
+
 export class ConfigPanel {
   /**
    * @param {import('../ac').TNAntiCheat} ac 
@@ -20,6 +22,10 @@ export class ConfigPanel {
     if (Util.isOP(player)) this.selectModule(busy).catch(e => console.error(e, e.stack));
   }
   
+  /**
+   * @param {boolean} [busy] 
+   * @param {string} [message]
+   */
   async selectModule(busy, message) {
     let body = '編集したいConfigを選択してください';
     if (message) body = `§o${message}§r\n\n${body}`;
@@ -28,18 +34,19 @@ export class ConfigPanel {
       .body(body);
     const modules = Object.keys(config);
     for (const moduleName of modules) {
+      if (MODULE_EXCLUDE_LIST.includes(moduleName)) continue;
       const moduleData = config[moduleName];
       const color = moduleData.state ? '§2' : (moduleData.state === false) ? '§4' : '';
       const desc = description[moduleName]?.desc ? `\n§o§9${description[moduleName].desc}§r` : '';
-      form.button(`${color}§l${moduleName}§r${desc}`, null, 'moduleName');
+      form.button(`${color}§l${moduleName}§r${desc}`, null, moduleName);
     }
-    form.button('§l§c初期設定に戻す', Icons.reset, 'reset');
-    const { selection, canceled, button } = busy
+    form.button('§l§c初期設定に戻す', Icons.reset, '.reset');
+    const { canceled, button } = busy
       ? await Util.showFormToBusy(this.player, form) // from chat
       : await form.show(this.player);
     if (canceled) return;
     
-    if (button.id === 'reset') {
+    if (button.id === '.reset') {
       const res = await confirmForm(this.player, {
         body: `全てのConfigを初期設定に戻しますか？`,
         yes: '§cリセットする',
@@ -51,7 +58,7 @@ export class ConfigPanel {
       Util.writeLog({ type: 'config.resetAll', message: `全ての設定をリセットしました` }, this.player);
       return await this.selectModule(false, `§a全ての設定をリセットしました`);
     }
-    const moduleName = modules[selection];
+    const moduleName = /** @type {string} */ (button.id);
     const diff = {};
     const moduleData = Util.cloneObject(config[moduleName]);
     if (!moduleData) return Util.notify(`§cError: unexpected index`, this.player);
@@ -66,6 +73,7 @@ export class ConfigPanel {
     if (res.reopen) await this.selectModule(false, res.message);
   }
   
+  /** @returns {Promise<{ reopen?: boolean, edited?: boolean, message?: string }>} */
   async selectValue(value, key, ref, { deletable = false, title, isModule = false }) {
     switch (typeof value) {
       case 'object': {
