@@ -282,7 +282,7 @@ function checkPlayerJson() { // checks player.json conflict
   /** @type {EntityVariantComponent} */
   // @ts-ignore
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
-  if (variant.value !== 2048) {
+  if (variant?.value !== 2048) {
     config.speedA.state = false;
     Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました§r');
     if (config.others.debug) console.warn('[debug] disabled: Speed/A, tempkick');
