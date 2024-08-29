@@ -55,7 +55,21 @@ interface ScaffoldModule extends IModule {
   minSpeed: number;
 }
 
+interface PermissionRole {
+  encrypt: boolean;
+  tag: string;
+  players: string[];
+  ids: string[];
+}
+
+interface PermissionModule {
+  admin: PermissionRole;
+  builder: PermissionRole;
+  ban: PermissionRole & { xuids: string[] };
+}
+
 export type IConfig = {
+  permission: PermissionModule;
   command: {
     prefix: string;
     enableConsole: boolean;
