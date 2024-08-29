@@ -64,6 +64,7 @@ declare module '@minecraft/server' {
     reachACount?: number;
     reachBCount?: number;
     reachCCount?: number;
+    scaffoldCount?: number;                                                                                                                                
 
     flagQueue?: string;
 

@@ -213,6 +213,12 @@ export const description = {
     rollback: '検知した時に前いた位置までテレポートする',
     excludeTag
   },
+  scaffold: {
+    desc: 'Scaffoldを検知',
+    punishment,
+    flagCount,
+    minBPS: '１秒あたりの最小設置数'
+  },
   logger: {
     desc: 'ログの記録に関する設定',
     console: '検知メッセージをコンテンツログに出力する',

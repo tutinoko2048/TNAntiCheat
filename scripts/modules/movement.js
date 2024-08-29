@@ -62,7 +62,7 @@ export function speedA(player) {
   player.speedACount ??= 0;
   player.speedACount++;
   if (config.speedA.flagCount === -1 || player.speedACount <= config.speedA.flagCount) {
-    player.flagQueue = `Speed/A >> §c${player.name}§r §7[${player.speedACount}] (v: ${avgVelocity.toFixed(3)})§r§ `;
+    player.flagQueue = `Speed/A >> §c${player.name}§r §7[${player.speedACount}] (v: ${avgVelocity.toFixed(3)})§r§　`;
   }
   // rollback
   const loc = player.lastLocation ?? player.location;

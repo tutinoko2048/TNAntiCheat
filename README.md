@@ -105,6 +105,9 @@ Nukerの使用を検知
 - Speed/A  
 速すぎる移動を検知
 
+- Scaffold  
+Scaffoldの使用を検知
+
 </details>
 
 ## その他の機能

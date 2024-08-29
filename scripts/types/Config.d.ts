@@ -41,6 +41,20 @@ interface SpammerModule extends IModule {
   tempMute: boolean;
 }
 
+interface ScaffoldModule extends IModule {
+  A: boolean;
+  B: boolean;
+  C: boolean;
+  D: boolean;
+  E: boolean;
+  F: boolean;
+  H: boolean;
+  minBPS: number;
+  yDiff: number;
+  dDiff: number;
+  minSpeed: number;
+}
+
 export type IConfig = {
   command: {
     prefix: string;
@@ -74,6 +88,7 @@ export type IConfig = {
   creative: CreativeModule;
   speedA: IModule;
   flyA: IModule;
+  scaffold: ScaffoldModule;
   logger: {
     console: boolean;
     maxLogs: number;
@@ -82,5 +97,5 @@ export type IConfig = {
     emitScriptEvent: string;
   };
   others: OthersModule;
-  [moduleName: string]: IModule;
+  // [moduleName: string]: IModule;
 }

@@ -296,6 +296,21 @@ export default /** @type {import('./types').IConfig} */ ({
     rollback: true,
     excludeTag: "" // 検知から除外するタグ
   },
+  scaffold: {
+    punishment: "tempkick",
+    flagCount: 5,
+    A: true,
+    B: true,
+    C: true,
+    D: true,
+    E: true,
+    F: true,
+    H: true,
+    minBPS: 4,
+    yDiff: 0.3,
+    dDiff: 15,
+    minSpeed: 0.18,
+  },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
     maxLogs: 50, // 保存するログの数
