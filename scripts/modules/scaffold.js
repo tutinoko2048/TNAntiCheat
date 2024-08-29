@@ -6,15 +6,16 @@ import { Util } from '../util/util';
 /** @typedef {import('@minecraft/server').Vector3} Vector3 */
 
 /**
- * @typedef PlayerData
+ * @typedef PlaceData
  * @property {number} speed
  * @property {import('@minecraft/server').Vector2} rot
  * @property {number} dDiff
  * @property {number} mDiff
  * @property {number} bps
+ * @property {() => void} cancel
  */
 
-/** @type {Map<string, number[]>} */
+/** @type {Map<string, { at: number, blockId: string, block: import('@minecraft/server').Block }[]>} */
 const placeLog = new Map();
 /** @type {Record<string, { at?: number, location?: Vector3, lastLocation?: Vector3 }>} */
 const lastDataCache = {}
@@ -25,7 +26,7 @@ const types = new Set();
 
 /** @param {PlayerPlaceBlockAfterEvent} ev */
 export function onPlaceBlock(ev) {
-  const { player } = ev;
+  const { player, block } = ev;
 
   if (Util.isOP(player)) return;
 
@@ -35,10 +36,27 @@ export function onPlaceBlock(ev) {
   const placeData = placeLog.get(player.id);
   const now = Date.now();
 
-  const bps = placeData?.filter(t => now - t < 1000).length ?? 0;
-  placeData?.push(now);
+  const bps = placeData?.filter(({ at }) => now - at < 1000).length ?? 0;
+  placeData?.push({ at: now, blockId: block.typeId, block });
+  player.onScreenDisplay.setActionBar(placeData.map(o => `[${o.at}] ${JSON.stringify(o.block.location)}`).join('\n'));
 
-  const data = /** @type {PlayerData} */ ({});
+
+  const cancel = () => {
+    for (let i = 0; i < 8; i++) {
+      const data = placeData[placeData.length - 1 - i];
+      if (!data) break;
+      if (!(
+        Date.now() - data.at < 5000 &&
+        data.block.isValid() &&
+        data.block.typeId === data.blockId
+      )) continue;
+      data.block.setType('minecraft:air');
+    }
+    block.setType('minecraft:air');
+    player.teleport(player.lastLocation ?? player.location);
+  }
+
+  const data = /** @type {PlaceData} */ ({ cancel });
   scaffold(ev, bps, data);
   const { speed, rot, dDiff, mDiff } = data;
 
@@ -58,21 +76,16 @@ export function onPlaceBlock(ev) {
 
   potentialScaffold[player.id] = 0;
   types.clear();
-  ev.block.setType('minecraft:air');
-  player.teleport(player.lastLocation ?? player.location);
+  cancel();
 }
 
 /**
  * @param {PlayerPlaceBlockAfterEvent} ev
  * @param {number} bps
- * @param {PlayerData} data
+ * @param {PlaceData} data
  */
 function scaffold(ev, bps, data) {
   const { player, block } = ev;
-  const cancel = () => {
-    block.setType('minecraft:air');
-    player.teleport(player.lastLocation ?? player.location);
-  }
   if (bps < config.scaffold.bps) return;
 
   const range = block.dimension.heightRange;
@@ -129,7 +142,7 @@ function scaffold(ev, bps, data) {
     types.add('D');
     potentialScaffold[player.id]++;
     // console.warn(`${player.name} D (bps=${bps}, xRot=${rot.x}, sprint=${isSprinting}, jump=${player.isJumping})`);
-    if (potentialScaffold[player.id] > 1 || isSprinting) cancel();
+    if (potentialScaffold[player.id] > 1 || isSprinting) data.cancel();
     return;
   }
 
@@ -190,7 +203,7 @@ export function updatePlayerData(player) {
   const log = placeLog.get(player.id);
   const now = Date.now();
   while (log.length) {
-    if (now - log[0] < 1000) break;
+    if (now - log[0]?.at < 1000) break;
     log.shift();
   }
   const data = lastDataCache[player.id] ?? {};
