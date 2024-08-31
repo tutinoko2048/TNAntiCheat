@@ -8,7 +8,7 @@ const MAX_REACH_THRESHOLD = 30;
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
   const { damagingEntity: attacker, hitEntity } = ev;
-  if (!hitEntity || !(attacker instanceof Player) || Util.isCreative(attacker) || Util.isOP(attacker)) return;
+  if (!hitEntity?.isValid() || !(attacker instanceof Player) || Util.isCreative(attacker) || Util.isOP(attacker)) return;
   if (
     (config.reachA.excludeCustomEntities && !hitEntity.typeId.startsWith('minecraft:')) ||
     config.reachA.excludeEntities.includes(hitEntity.typeId)
