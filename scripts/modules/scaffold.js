@@ -38,8 +38,6 @@ export function onPlaceBlock(ev) {
 
   const bps = placeData?.filter(({ at }) => now - at < 1000).length ?? 0;
   placeData?.push({ at: now, blockId: block.typeId, block });
-  player.onScreenDisplay.setActionBar(placeData.map(o => `[${o.at}] ${JSON.stringify(o.block.location)}`).join('\n'));
-
 
   const cancel = () => {
     for (let i = 0; i < 8; i++) {

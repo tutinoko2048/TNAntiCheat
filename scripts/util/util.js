@@ -370,6 +370,14 @@ export class Util {
       a.z - b.z
     );
   }
+
+  /**
+   * @param {Vector3} vec
+   * @returns {Vector3}
+   */
+  static floorVector(vec) {
+    return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
+  }
 }
 /** @arg {Player} player */
 function resetCount(player) {
