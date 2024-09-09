@@ -40,7 +40,7 @@ export function onPlaceBlock(ev) {
   placeData?.push({ at: now, blockId: block.typeId, block });
 
   const cancel = () => {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < Math.max(8, bps); i++) {
       const data = placeData[placeData.length - 1 - i];
       if (!data) break;
       if (!(
@@ -84,11 +84,11 @@ export function onPlaceBlock(ev) {
  */
 function scaffold(ev, bps, data) {
   const { player, block } = ev;
-  if (bps < config.scaffold.bps) return;
+  if (bps <= config.scaffold.minBPS) return;
 
-  const range = block.dimension.heightRange;
-  const below = range.min !== block.y && block.below();
-  if (below && !(below.isAir || below.isLiquid)) return;
+  // const range = block.dimension.heightRange;
+  // const below = range.min !== block.y && block.below();
+  // if (below && !(below.isAir || below.isLiquid)) return;
 
   const loc = Vec3.from(player.location);
   const vel = player.getVelocity();
@@ -158,6 +158,14 @@ function scaffold(ev, bps, data) {
     potentialScaffold[player.id]++;
     if (rot.x < -80) potentialScaffold[player.id]++;
     // console.warn(`${player.name} F (bps=${bps}, xRot=${rot.x})`);
+    return;
+  }
+
+  // Scaffold/G: detects if the player is placing blocks while moving fast
+  if (config.scaffold.G && (Math.sqrt(speed) * 8 + (bps - 5) * 0.4) > 20) {
+    types.add('G');
+    potentialScaffold[player.id] ++;
+    // console.warn(`${player.name} G (bps=${bps}, speed=${speed.toFixed(2)})`);
     return;
   }
 

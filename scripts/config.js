@@ -305,6 +305,7 @@ export default /** @type {import('./types').IConfig} */ ({
     D: true,
     E: true,
     F: true,
+    G: true,
     H: true,
     minBPS: 4,
     yDiff: 0.3,

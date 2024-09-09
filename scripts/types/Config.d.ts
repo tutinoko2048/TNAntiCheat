@@ -48,6 +48,7 @@ interface ScaffoldModule extends IModule {
   D: boolean;
   E: boolean;
   F: boolean;
+  G: boolean;
   H: boolean;
   minBPS: number;
   yDiff: number;
