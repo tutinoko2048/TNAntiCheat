@@ -6,16 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: 20
       - run: npm i --save-dev
-      - name: eslint
+      - name: lint
         run: |
           npm run lint
-      - name: tsc
-        run: |
-          npx tsc
   build:
     name: Build package
     runs-on: ubuntu-latest
