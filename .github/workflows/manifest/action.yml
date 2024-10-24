@@ -6,5 +6,5 @@ outputs:
     description: 'the name of the file.'
 
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: 'node20'
+  main: 'index.mjs'
