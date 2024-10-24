@@ -87,12 +87,11 @@ export class AdminPanel {
     const bool = (v) => v ? '§atrue§r' : '§cfalse§r';
     const info = [
       `§7Name: §f${target.name}`,
-      `§7Dimension: §f${target.dimension.id}`,
-      `§7Location: §f${x}, ${y}, ${z}`,
-      `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
+      `§7ID: §f${target.id}`,
+      `§7Location: §f${x}, ${y}, ${z} (${target.dimension.id.replace('minecraft:', '')})`,
       `§7GameMode: §f${target.getGameMode()}`,
       `§7Platform: §f${target.clientSystemInfo.platformType}`,
-      `§7ID: §f${target.id}`,
+      `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
       `§7isFrozen: ${bool(this.ac.frozenPlayerMap.has(target.id))}`,
