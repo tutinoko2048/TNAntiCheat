@@ -280,7 +280,6 @@ export class Vec3 {
         const x = axis.x * Math.sin(halfAngle);
         const y = axis.y * Math.sin(halfAngle);
         const z = axis.z * Math.sin(halfAngle);
-        // eslint-disable-next-line 
         const v = this;
         // Rotate vector (v) using quaternion
         // Simplified direct computation reflecting quaternion rotation and its conjugate effect
@@ -507,7 +506,7 @@ export class Vec3 {
             const other = Vec3._from(x, y, z);
             return this.x === other.x && this.y === other.y && this.z === other.z;
         }
-        catch (e) {
+        catch {
             return false;
         }
     }

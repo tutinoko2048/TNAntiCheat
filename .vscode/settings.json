@@ -1,3 +1,4 @@
 {
-  "git.branchProtection": ["main"]
+  "git.branchProtection": ["main"],
+  "eslint.useFlatConfig": true
 }
