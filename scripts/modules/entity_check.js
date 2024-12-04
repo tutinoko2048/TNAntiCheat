@@ -2,7 +2,9 @@ import { world } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { isIllegalItem, isSpawnEgg, entityCheckLog } from './util';
-const overworld = world.getDimension('overworld');
+
+/** @type {import('@minecraft/server').Dimension} */
+let overworld;
 
 const despawnable = ['minecraft:npc', 'minecraft:command_block_minecart'];
 
@@ -63,6 +65,8 @@ const countCooltime = {};
 
 export function entityCounter() {
   if (!config.entityCounter.state) return;
+
+  overworld ??= world.getDimension('overworld');
   
   /** @type {Record<string, number>} */
   const entities = {};

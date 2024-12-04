@@ -5,8 +5,6 @@ import { PermissionType, Permissions } from './Permissions';
 import { BanManager } from './BanManager.js';
 import { Duration } from '../lib/duration/main.js';
 
-const overworld = world.getDimension('overworld');
-
 /** @enum {'ban'|'kick'|'tempkick'|'notify'|'none'} */
 export const PunishmentType = /** @type {const} */ ({
   ban: 'ban',
@@ -116,6 +114,8 @@ export class Util {
    * @arg {Player} [target]
    */
   static notify(message, target) {
+    const overworld = world.getDimension('overworld');
+
     const result = Util.decorate(message);
     if (target instanceof Player) {
       target.sendMessage(result);

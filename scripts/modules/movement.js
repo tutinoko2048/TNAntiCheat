@@ -3,38 +3,7 @@ import { Util } from '../util/util';
 import config from '../config.js';
 import { createPlayerCache } from '../util/PlayerCache';
 
-const excluded = [ GameMode.creative, GameMode.spectator ];
-
-/** @arg {Player} player */
-/*
-export function flyA(player) {
-  if (!config.flyA.state) return;
-  if (player.fallDistance < config.flyA.minFallDistance) {
-    if (
-      Util.isOP(player) ||
-      Date.now() - player.threwTridentAt < 4000 ||
-      Date.now() - player.pistonPushedAt < 3000 ||
-      (config.flyA.excludeTag && player.hasTag(config.flyA.excludeTag))
-    ) return;
-    
-    player.flyACount ??= 0;
-    player.flyACount++;
-    const vy = player.getVelocity().y.toFixed(2);
-    const distance = player.fallDistance.toFixed(2);
-    if (config.flyA.flagCount === -1 || player.flyACount <= config.flyA.flagCount) {
-      player.flagQueue = `Fly/A >> §c${player.name}§r §7[${player.flyACount}] (fall: ${distance}, vy: ${vy})§r§ `;
-    }
-    // rollback
-    const loc = player.lastLocation ?? player.location;
-    const dimension = world.getDimension(player.lastDimensionId);
-    if (config.flyA.rollback) player.teleport(loc, { dimension, rotation: player.getRotation() });
-    // flag
-    if (config.flyA.flagCount !== -1 && player.flyACount > config.flyA.flagCount) {
-      Util.flag(player, 'Fly/A', config.flyA.punishment, `飛行を検知しました §7(count: ${player.flyACount}, fall: ${distance}, vy: ${vy})§r`);
-    }
-  }
-}
-*/
+const excluded = [GameMode.creative, GameMode.spectator];
 
 const cacheLength = 5;
 

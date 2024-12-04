@@ -6,8 +6,6 @@ import unbanQueue from '../unban_queue.js';
 
 /** @typedef {import('../types').UnbanQueueEntry} UnbanQueueEntry */
 
-const overworld = world.getDimension('overworld');
-
 export class BanManager {
   /**
    * @param {Player} player 
@@ -19,7 +17,7 @@ export class BanManager {
   static kick(player, reason = '', isBan, force = true) {
     if (config.others.customKickMessage) reason += `\n${config.others.customKickMessage}`;
 
-    const { successCount } = overworld.runCommand(
+    const { successCount } = player.dimension.runCommand(
       `kick "${player.name}" §l${isBan ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`
     );
     const success = successCount > 0;

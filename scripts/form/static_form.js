@@ -3,7 +3,7 @@ import * as UI from '@minecraft/server-ui';
 import { Icons, VERSION, DISCORD_URL } from '../util/constants';
 
 export const FORMS = {
-  main: new UI.ActionFormData()
+  main: () => new UI.ActionFormData()
     .title('TN-AntiCheat AdminPanel')
     .button('§lプレイヤーリスト / Player List', Icons.playerList) // 0
     .button('§lエンティティ数を表示 / Show Entities', Icons.entities) // 1
@@ -11,7 +11,7 @@ export const FORMS = {
     .button('§lログ / Logs', Icons.logs) // 3
     .button('§lUnbanリスト / Unban Queue', Icons.unbanQueue) // 4
     .button('§lこのアドオンについて / About', Icons.about), // 5
-  playerInfo: new UI.ActionFormData()
+  playerInfo: () => new UI.ActionFormData()
     .title('PlayerInfo')
     .button('§lインベントリを表示 / Show Inventory', Icons.inventory)
     .button('§l権限を管理 / Manage Permissions', Icons.permission)
@@ -23,14 +23,14 @@ export const FORMS = {
     .button('§lタグ一覧を表示 / Show Tags', Icons.tags)
     .button('§lスコア一覧を表示 / Show Scores', Icons.scores)
     .button('戻る / Return', Icons.returnBtn), // 9
-  itemInfo: new UI.ActionFormData()
+  itemInfo: () => new UI.ActionFormData()
     .title('ItemInfo')
     .button('§l削除 / Clear\n§r§8インベントリからアイテムを削除します', Icons.clear)
     .button('§l転送 / Transfer\n§r§8アイテムを転送します', Icons.transfer)
     .button('§l名前を編集 / Edit NameTag')
     .button('§l説明文を編集 / Edit Lore')
     .button('戻る / Return', Icons.returnBtn),
-  about: new UI.ActionFormData()
+  about: () => new UI.ActionFormData()
     .title('About')
     .body([
       `§l§aTN-AntiCheat v${VERSION}§r\n`,

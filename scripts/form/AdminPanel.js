@@ -45,7 +45,7 @@ export class AdminPanel {
       `§l§7プレイヤー数: §r${world.getPlayers().length}`,
       `§l§7TPS: §r${getTPS().toFixed(1)}`,
     ].join('§r\n');
-    const form = FORMS.main.body(`${info}\n `);
+    const form = FORMS.main().body(`${info}\n `);
     const { selection, canceled } = busy
       ? await Util.showFormToBusy(this.player, form)
       : await form.show(this.player);
@@ -97,7 +97,7 @@ export class AdminPanel {
       `§7isFrozen: ${bool(this.ac.frozenPlayerMap.has(target.id))}`,
       `§7isMuted: ${bool(BanManager.isMuted(target))}`
     ].filter(Boolean).join('\n');
-    const form = FORMS.playerInfo.body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
+    const form = FORMS.playerInfo().body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.showInventory(target);
@@ -180,7 +180,7 @@ export class AdminPanel {
    */
   async itemInfo(target, info) {
     const item = info.slot.getItem(); // cache item
-    const form = FORMS.itemInfo.body([
+    const form = FORMS.itemInfo().body([
       `§7owner: §r${target.name}`,
       `§7item: §r${item.typeId}`,
       `§7slot: §r${info.slotId}${typeof info.slotId === 'number' ? '' : ' '}`,
@@ -460,7 +460,7 @@ export class AdminPanel {
   }
 
   async about() {
-    const form = FORMS.about;
+    const form = FORMS.about();
     const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.main();
