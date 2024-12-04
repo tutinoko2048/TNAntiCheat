@@ -90,7 +90,7 @@ export class AdminPanel {
       `§7ID: §f${target.id}`,
       `§7Location: §f${x}, ${y}, ${z} (${target.dimension.id.replace('minecraft:', '')})`,
       `§7GameMode: §f${target.getGameMode()}`,
-      `§7Platform: §f${target.clientSystemInfo.platformType}`,
+      `§7Platform: §f${target.clientSystemInfo.platformType} - ${target.inputInfo.lastInputModeUsed}`,
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
