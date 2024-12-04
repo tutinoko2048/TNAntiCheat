@@ -18,6 +18,7 @@ const freezeCommand =  new Command({
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
   const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
   target.inputPermissions.movementEnabled = !freezeState;
+  target.inputPermissions.cameraEnabled = !freezeState;
   if (freezeState) handler.ac.frozenPlayerMap.set(target.id, target.location);
     else handler.ac.frozenPlayerMap.delete(target.id);
 

@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -11,6 +11,13 @@ import { editLore, editNameTag } from './ItemEditor';
 import { BanManager } from '../util/BanManager';
 import { Duration } from '../lib/duration/main';
 import { getTPS } from '../util/tps';
+
+const inputModeMap = {
+  [InputMode.KeyboardAndMouse]: 'KeyboardMouse',
+  [InputMode.Gamepad]: 'Controller',
+  [InputMode.Touch]: 'Touch',
+  [InputMode.MotionController]: 'MotionController'
+}
 
 /** @typedef {{ slot: import('@minecraft/server').ContainerSlot, slotId: EquipmentSlot | number }} ItemInformation */
 
@@ -90,7 +97,7 @@ export class AdminPanel {
       `§7ID: §f${target.id}`,
       `§7Location: §f${x}, ${y}, ${z} (${target.dimension.id.replace('minecraft:', '')})`,
       `§7GameMode: §f${target.getGameMode()}`,
-      `§7Platform: §f${target.clientSystemInfo.platformType} - ${target.inputInfo.lastInputModeUsed}`,
+      `§7Platform: §f${target.clientSystemInfo.platformType} (${inputModeMap[target.inputInfo.lastInputModeUsed]})`,
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
@@ -299,6 +306,7 @@ export class AdminPanel {
     
     if (freeze !== _freeze) {
       target.inputPermissions.movementEnabled = !freeze;
+      target.inputPermissions.cameraEnabled = !freeze;
       if (freeze) this.ac.frozenPlayerMap.set(target.id, target.location);
         else this.ac.frozenPlayerMap.delete(target.id);
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);
