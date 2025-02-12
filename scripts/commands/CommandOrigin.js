@@ -1,5 +1,5 @@
 import config from '../config.js';
-import { world, Player } from '@minecraft/server';
+import { world, Player, system } from '@minecraft/server';
 
 
 /** @enum {'Player' | 'ScriptEvent' | 'Server'} */
@@ -44,7 +44,7 @@ export class CommandOrigin {
       : world.sendMessage(message);
     if (this.isServerOrigin()) console.warn(message);
     if (config.logger.emitScriptEvent !== '') {
-      overworld.runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(message)}`);
+      system.scriptEvent(config.logger.emitScriptEvent, message);
     }
   }
 }
@@ -95,8 +95,7 @@ export class ServerCommandOrigin extends CommandOrigin {
   send(message) {
     console.warn(message);
     if (config.logger.emitScriptEvent !== '') {
-      world.getDimension('overworld')
-        .runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(message)}`);
+      system.scriptEvent(config.logger.emitScriptEvent, message);
     }
   }
 }

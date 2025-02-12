@@ -125,7 +125,7 @@ export class Util {
         : world.sendMessage(result);
       
       if (config.logger.emitScriptEvent !== '') {
-        overworld.runCommandAsync(`scriptevent ${config.logger.emitScriptEvent} ${JSON.stringify(result)}`);
+        system.scriptEvent(config.logger.emitScriptEvent, result);
       }
     }
   }

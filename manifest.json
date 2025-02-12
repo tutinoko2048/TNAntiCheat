@@ -5,7 +5,7 @@
     "description": "AntiCheat with ScriptAPI\n軽量で使いやすいアンチチートアドオンです\nMade by RetoRuto9900K / tutinoko2048",
     "uuid": "c225a904-422a-4917-b88d-5c3452b8d17f",
     "version": [ 3, 18, 0 ],
-    "min_engine_version": [ 1, 21, 50 ]
+    "min_engine_version": [ 1, 21, 60 ]
   },
   "modules": [
     {
@@ -26,7 +26,7 @@
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "1.17.0-beta"
+      "version": "1.18.0-beta"
     },
     {
       "module_name": "@minecraft/server-ui",
