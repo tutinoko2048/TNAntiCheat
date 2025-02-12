@@ -25,7 +25,7 @@ jobs:
           DATE=$(date "+%Y%d%m-%H-%M")
           NAME="${REPOSITORY_NAME}_${DATE}"
           echo "FILE_NAME=${NAME}" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{env.FILE_NAME}}
           path: |
