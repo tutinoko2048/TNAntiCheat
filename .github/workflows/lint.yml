@@ -32,11 +32,11 @@ jobs:
       - name: Set File Name
         run: |
           DATE=$(date "+%Y%m%d-%H-%M")
-          BASE_NAME="${GITHUB_REPOSITORY##*/}_${DATE}"
+          BASE_NAME="${GITHUB_REPOSITORY##*/}"
           if [ "${{ matrix.isRealms }}" = "true" ]; then
-            FILE_NAME="${BASE_NAME}-realms"
+            FILE_NAME="${BASE_NAME}-realms_${DATE}"
           else
-            FILE_NAME="${BASE_NAME}"
+            FILE_NAME="${BASE_NAME}_${DATE}"
           fi
           echo "FILE_NAME=${FILE_NAME}" >> $GITHUB_ENV
 
