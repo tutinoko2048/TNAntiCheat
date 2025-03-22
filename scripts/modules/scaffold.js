@@ -45,7 +45,7 @@ export function onPlaceBlock(ev) {
       if (!data) break;
       if (!(
         Date.now() - data.at < 5000 &&
-        data.block.isValid() &&
+        data.block.isValid &&
         data.block.typeId === data.blockId
       )) continue;
       data.block.setType('minecraft:air');

@@ -11,7 +11,7 @@ export class WorldLoadEventSignal extends BaseEventSignal {
   constructor() {
     super();
     
-    world.afterEvents.worldInitialize.subscribe(() => {
+    world.afterEvents.worldLoad.subscribe(() => {
       const run = system.runInterval(() => {
         if (loaded) return;
         if (world.getAllPlayers().length > 0) {

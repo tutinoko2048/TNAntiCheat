@@ -121,11 +121,11 @@ export class Util {
       target.sendMessage(result);
     } else {
       config.logger.sendws
-        ? overworld.runCommandAsync(`say "${result}"`)
+        ? overworld.runCommand(`say "${result}"`)
         : world.sendMessage(result);
       
       if (config.logger.emitScriptEvent !== '') {
-        system.scriptEvent(config.logger.emitScriptEvent, result);
+        system.sendScriptEvent(config.logger.emitScriptEvent, result);
       }
     }
   }

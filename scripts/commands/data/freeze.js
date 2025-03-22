@@ -1,3 +1,4 @@
+import { InputPermissionCategory } from '@minecraft/server';
 import { Util } from '../../util/util';
 import { CommandError } from '../CommandError';
 import { Command } from '../Command';
@@ -16,9 +17,10 @@ const freezeCommand =  new Command({
   const sender = origin.isPlayerOrigin() ? origin.sender : null;
   const target = targetName ? Util.getPlayerByName(targetName) : sender;
   if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
+  
   const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
-  target.inputPermissions.movementEnabled = !freezeState;
-  target.inputPermissions.cameraEnabled = !freezeState;
+  target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freezeState);
+  target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freezeState);
   if (freezeState) handler.ac.frozenPlayerMap.set(target.id, target.location);
     else handler.ac.frozenPlayerMap.delete(target.id);
 

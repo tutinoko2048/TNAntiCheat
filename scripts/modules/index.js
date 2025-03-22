@@ -99,20 +99,20 @@ export function creative(player) {
   }
 }
 
-/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
+/** @param {import('@minecraft/server').PlayerInteractWithBlockBeforeEvent} ev */
 export function getBlock(ev) {
-  const { source, itemStack: item, block } = ev;
+  const { player, itemStack: item, block } = ev;
   
   if (
     !config.others.blockCopy ||
-    !Util.isCreative(source) ||
+    !Util.isCreative(player) ||
     !AdminPanel.isPanelItem(item)
   ) return;
   
   system.run(() => {
-    if (!source.isSneaking) return;
+    if (!player.isSneaking) return;
     const blockItem = block.getItemStack(1, true);
-    source.getComponent('minecraft:inventory').container.addItem(blockItem);
+    player.getComponent('minecraft:inventory').container.addItem(blockItem);
   });
 }
 

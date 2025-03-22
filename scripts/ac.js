@@ -30,20 +30,23 @@ export class TNAntiCheat {
     this.frozenPlayerMap = new Map();
     
     // load system
-    events.worldLoad.subscribe(() => {
-      updateDynamicProperty();
-      if (world.getDynamicProperty(PropertyIds.isRegistered)) {
-        try {
-          this.#enable();
-        } catch (e) { console.error(e, e.stack) }
-      } else {
-        world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
-      }
-    });
+    events.worldLoad.subscribe(() => this.#onWorldLoad());
+    
     system.afterEvents.scriptEventReceive.subscribe(({ id, sourceEntity }) => {
       if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
       this.#register(sourceEntity);
     }, { namespaces: [ 'ac' ] });
+  }
+
+  #onWorldLoad() {
+    updateDynamicProperty();
+    if (world.getDynamicProperty(PropertyIds.isRegistered)) {
+      try {
+        this.#enable();
+      } catch (e) { console.error(e, e.stack) }
+    } else {
+      world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
+    }
   }
   
   /** @param {Player} player */
@@ -143,13 +146,16 @@ export class TNAntiCheat {
       modules.entityCheck(ev.entity);
     });
     
-    world.beforeEvents.itemUseOn.subscribe(ev => {
+    world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
       modules.placeCheckA(ev);
-      modules.reachB(ev);
       modules.placeCheckD(ev);
       
       modules.getBlock(ev);
-      if (this.frozenPlayerMap.has(ev.source.id)) ev.cancel = true;
+      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+    });
+
+    world.beforeEvents.playerPlaceBlock.subscribe(ev => {
+      modules.reachB(ev);
     });
     
     world.afterEvents.playerPlaceBlock.subscribe(ev => {
@@ -282,7 +288,6 @@ system.beforeEvents.watchdogTerminate.subscribe(ev => {
 
 function checkPlayerJson() { // checks player.json conflict
   /** @type {EntityVariantComponent} */
-  // @ts-ignore
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant?.value !== 2048) {
     config.speedA.state = false;

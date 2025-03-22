@@ -1,16 +1,16 @@
-import { system, Player, GameMode } from '@minecraft/server';
+import { system, GameMode } from '@minecraft/server';
 import config from '../config.js';
 import { Util } from '../util/util';
 import { getItemPunishment, itemMessageBuilder, isIllegalItem, isShulkerBox, isSpawnEgg } from './util';
 
-/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
+/** @param {import('@minecraft/server').PlayerInteractWithBlockBeforeEvent} ev */
 export function placeCheckA(ev) {
-  const { source, itemStack: item } = ev;
-  if (!config.placeCheckA.state || !(source instanceof Player) || Util.isOP(source)) return;
+  const { player, itemStack: item } = ev;
+  if (!config.placeCheckA.state || Util.isOP(player)) return;
   if (isIllegalItem(item?.typeId)) {
     ev.cancel = true;
     system.run(() => {
-      Util.flag(source, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
+      Util.flag(player, 'PlaceCheck/A', getItemPunishment(item.typeId), `禁止アイテムの使用を検知しました (${itemMessageBuilder(item)})`, config.placeCheckA.notifyCreative);
     });
   }
 }
@@ -83,20 +83,20 @@ const RAILS = [
   'minecraft:golden_rail'
 ];
 
-/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
+/** @param {import('@minecraft/server').PlayerInteractWithBlockBeforeEvent} ev */
 export async function placeCheckD(ev) {
-  const { source, itemStack: item, block } = ev;
+  const { player, itemStack: item, block } = ev;
   const loc = block.location;
-  if (!config.placeCheckD.state || !(source instanceof Player) || Util.isOP(source)) return;
-  const gameMode = source.getGameMode();
+  if (!config.placeCheckD.state || Util.isOP(player)) return;
+  const gameMode = player.getGameMode();
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
-  const { container } = source.getComponent('minecraft:inventory');
+  const { container } = player.getComponent('minecraft:inventory');
 
   /** @param {string} typeId */
   const spawn = (typeId) => {
     try {
-      const e = source.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
-      e.setRotation({ x: 0, y: source.getRotation().y });
+      const e = player.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });
+      e.setRotation({ x: 0, y: player.getRotation().y });
     } catch (e) {
       if (config.others.debug) console.error(e);
     }
@@ -107,27 +107,27 @@ export async function placeCheckD(ev) {
     RAILS.includes(block.typeId)
   ) {
     await Util.cancel(ev);
-    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, source);
+    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, player);
     spawn(item.typeId);
     
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
-      container.setItem(source.selectedSlotIndex);
+      container.setItem(player.selectedSlotIndex);
     } else {
       item.amount--;
-      container.setItem(source.selectedSlotIndex, item);
+      container.setItem(player.selectedSlotIndex, item);
     }
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
     await Util.cancel(ev);
-    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, source);
+    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, player);
     spawn('minecraft:chest_boat');
     if (gameMode === GameMode.creative) return;
     if (item.amount === 1) {
-      container.setItem(source.selectedSlotIndex);
+      container.setItem(player.selectedSlotIndex);
     } else {
       item.amount--;
-      container.setItem(source.selectedSlotIndex, item);
+      container.setItem(player.selectedSlotIndex, item);
     }
   }
 }

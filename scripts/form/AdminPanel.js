@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode, InputPermissionCategory } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -305,8 +305,8 @@ export class AdminPanel {
     }
     
     if (freeze !== _freeze) {
-      target.inputPermissions.movementEnabled = !freeze;
-      target.inputPermissions.cameraEnabled = !freeze;
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freeze);
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freeze);
       if (freeze) this.ac.frozenPlayerMap.set(target.id, target.location);
         else this.ac.frozenPlayerMap.delete(target.id);
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);

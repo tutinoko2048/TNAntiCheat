@@ -40,11 +40,11 @@ export class CommandOrigin {
   broadcast(message) {
     const overworld = world.getDimension('overworld');
     config.logger.sendws
-      ? overworld.runCommandAsync(`say "${message}"`)
+      ? overworld.runCommand(`say "${message}"`)
       : world.sendMessage(message);
     if (this.isServerOrigin()) console.warn(message);
     if (config.logger.emitScriptEvent !== '') {
-      system.scriptEvent(config.logger.emitScriptEvent, message);
+      system.sendScriptEvent(config.logger.emitScriptEvent, message);
     }
   }
 }
@@ -95,7 +95,7 @@ export class ServerCommandOrigin extends CommandOrigin {
   send(message) {
     console.warn(message);
     if (config.logger.emitScriptEvent !== '') {
-      system.scriptEvent(config.logger.emitScriptEvent, message);
+      system.sendScriptEvent(config.logger.emitScriptEvent, message);
     }
   }
 }

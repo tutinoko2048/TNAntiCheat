@@ -8,7 +8,7 @@ const MAX_REACH_THRESHOLD = 30;
 export function reachA(ev) { // attacking
   if (!config.reachA.state) return;
   const { damagingEntity: attacker, hitEntity } = ev;
-  if (!hitEntity?.isValid() || !(attacker instanceof Player) || Util.isCreative(attacker) || Util.isOP(attacker)) return;
+  if (!hitEntity?.isValid || !(attacker instanceof Player) || Util.isCreative(attacker) || Util.isOP(attacker)) return;
   if (
     (config.reachA.excludeCustomEntities && !hitEntity.typeId.startsWith('minecraft:')) ||
     config.reachA.excludeEntities.includes(hitEntity.typeId)
@@ -38,27 +38,27 @@ export function reachA(ev) { // attacking
   }
 }
 
-/** @param {import('@minecraft/server').ItemUseOnBeforeEvent} ev */
+/** @param {import('@minecraft/server').PlayerPlaceBlockBeforeEvent} ev */
 export function reachB(ev) { // placement
   if (!config.reachB.state) return;
-  const { source, block } = ev;
+  const { player, block } = ev;
   
-  if (!(source instanceof Player) || Util.isCreative(source) || Util.isOP(source)) return;
-  const distance = Util.distance(source.getHeadLocation(), block.location);
+  if (!Util.isCreative(player) || Util.isOP(player)) return;
+  const distance = Util.distance(player.getHeadLocation(), block.location);
   if (config.reachB.maxReach < distance && distance < MAX_REACH_THRESHOLD) {
-    const deltaLoc = (source.lastLocation && Util.distance(source.location, source.lastLocation)) ?? 0;
+    const deltaLoc = (player.lastLocation && Util.distance(player.location, player.lastLocation)) ?? 0;
     if (deltaLoc < config.reachB.maxReach + 1) {
       if (config.reachB.cancel) ev.cancel = true;
 
-      source.reachBCount ??= 0;
-      source.reachBCount++;
-      if (config.reachB.flagCount === -1 || source.reachBCount <= config.reachB.flagCount) {
-        source.flagQueue = `Reach/B >> §c${source.name}§r §7[${source.reachBCount}] (d: ${distance.toFixed(1)})§r§ `;
+      player.reachBCount ??= 0;
+      player.reachBCount++;
+      if (config.reachB.flagCount === -1 || player.reachBCount <= config.reachB.flagCount) {
+        player.flagQueue = `Reach/B >> §c${player.name}§r §7[${player.reachBCount}] (d: ${distance.toFixed(1)})§r§ `;
       }
-      if (config.reachB.flagCount !== -1 && source.reachBCount > config.reachB.flagCount) {
+      if (config.reachB.flagCount !== -1 && player.reachBCount > config.reachB.flagCount) {
         Util.flag(
-          source, 'Reach/B', config.reachB.punishment,
-          `長いリーチの設置を検知しました §7(count: ${source.reachBCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r§ `
+          player, 'Reach/B', config.reachB.punishment,
+          `長いリーチの設置を検知しました §7(count: ${player.reachBCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r§ `
         )
       }
     }
