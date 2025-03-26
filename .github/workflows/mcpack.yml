@@ -35,6 +35,7 @@ jobs:
 
       - name: Make Archive
         run: |
+          echo "Creating archive: ${fileName}"
           zip -r "${fileName}" ./ -x "*.git*" "*node_modules*" "package-lock.json" ".eslintrc.json" "tsconfig.json" "CONTRIBUTING.md"
 
       - name: Upload Release Asset
@@ -43,6 +44,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: "./${fileName}"
-          asset_name: "${fileName}"
+          asset_path: "./${{ env.fileName }}"
+          asset_name: "${{ env.fileName }}"
           asset_content_type: application/zip
