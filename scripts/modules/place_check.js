@@ -92,7 +92,6 @@ export async function placeCheckD(ev) {
   if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
   const { container } = player.getComponent('minecraft:inventory');
 
-  /** @param {string} typeId */
   const spawn = (typeId) => {
     try {
       const e = player.dimension.spawnEntity(typeId, { x: loc.x, y: loc.y + 1, z: loc.z });

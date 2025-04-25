@@ -223,8 +223,8 @@ export class AdminPanel {
 
     const form = new UI.ModalFormData();
     form.title(`Transfer Item [${item.typeId}]`);
-    form.dropdown('転送先 / Target', players.map(p => p.name), 0);
-    form.toggle('アイテムを複製 / Duplicate item', false);
+    form.dropdown('転送先 / Target', players.map(p => p.name), { defaultValueIndex: 0 });
+    form.toggle('アイテムを複製 / Duplicate item', { defaultValue: false });
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return await this.showInventory(source);
 
@@ -266,8 +266,8 @@ export class AdminPanel {
     const _admin = Permissions.has(player, PermissionType.Admin);
     const form = new UI.ModalFormData();
     form.title('Manage Permissions')
-      .toggle('§l§eBuilder§r - クリエイティブを許可します', _builder)
-      .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', _admin);
+      .toggle('§l§eBuilder§r - クリエイティブを許可します', { defaultValue: _builder })
+      .toggle('§l§aAdmin (OP)§r - アンチチートの管理権限です', { defaultValue: _admin });
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return;
     const [ builder, admin ] = /** @type {boolean[]} */ (formValues);
@@ -290,8 +290,8 @@ export class AdminPanel {
     const _freeze = this.ac.frozenPlayerMap.has(target.id);
     const form = new UI.ModalFormData();
     form.title('Manage Abilities');
-    form.toggle('ミュート / Mute', _mute);
-    form.toggle('フリーズ / Freeze', _freeze);
+    form.toggle('ミュート / Mute', { defaultValue: _mute });
+    form.toggle('フリーズ / Freeze', { defaultValue: _freeze });
     const { formValues, canceled } = await form.show(this.player);
     if (canceled) return;
     const [ mute, freeze ] = formValues;
@@ -348,8 +348,8 @@ export class AdminPanel {
     const form = new UI.ModalFormData();
     form.title(`Ban >> ${target.name}`);
     form.textField('理由 / Reason', 'reason');
-    form.dropdown('単位 / Unit', timeUnits.map(u => u.name), 0);
-    form.slider('長さ / Duration', 1, 60, 1);
+    form.dropdown('単位 / Unit', timeUnits.map(u => u.name), { defaultValueIndex: 0 });
+    form.slider('長さ / Duration', 1, 60);
     
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return await this.playerInfo(target);

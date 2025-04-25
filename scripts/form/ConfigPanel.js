@@ -166,10 +166,10 @@ export class ConfigPanel {
       form.textField(
         typeof key === 'number' ? `[${key}]` : String(key),
         `[${add ? 'new value' : typeof value}]`,
-        String(value ?? '')
+        { defaultValue: String(value ?? '') }
       );
     }
-    if (showDelete) form.toggle('§c値を削除する', false);
+    if (showDelete) form.toggle('§c値を削除する', { defaultValue: false });
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return { reopen: true };
     
@@ -196,7 +196,7 @@ export class ConfigPanel {
   async editToggle(value, key, ref, { title, deletable }) {
     const form = new UI.ModalFormData().title(title);
     form.toggle(key, value);
-    if (deletable) form.toggle('§c値を削除する', false);
+    if (deletable) form.toggle('§c値を削除する', { defaultValue: false });
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return { reopen: true };
     

@@ -82,7 +82,7 @@ export async function confirmForm(player, { title = '確認', body, yes = 'OK', 
 export async function textInput(player, options) {
   const form = new UI.ModalFormData();
   if ('title' in options) form.title(options.title);
-  form.textField(options.label, options.placeholder, options.defaultValue);
+  form.textField(options.label, options.placeholder, { defaultValue: options.defaultValue });
   if (options.allowDelete) form.toggle('値を削除する / Delete value');
   const { canceled, formValues } = await form.show(player);
   if (canceled) return { canceled: true, value: undefined }
