@@ -152,6 +152,14 @@ export class ConfigPanel {
     }
   }
   
+  /**
+   * 
+   * @param {any} value 
+   * @param {keyof typeof DROPDOWNS} key 
+   * @param {any} ref 
+   * @param {any} param3 
+   * @returns 
+   */
   async editText(value, key, ref, { add = false, isNumber = false, title, deletable = false }) {
     const showDelete = deletable && !add;
     const useDropdown = Object.keys(DROPDOWNS).includes(key);
@@ -160,7 +168,7 @@ export class ConfigPanel {
       form.dropdown(
         key,
         DROPDOWNS[key].map(x => `${x.value} §l§7${x.desc ?? ''}`),
-        DROPDOWNS[key].findIndex(x => x.value === value)
+        { defaultValueIndex: DROPDOWNS[key].findIndex(x => x.value === value) }
       );
     } else {
       form.textField(
@@ -195,7 +203,7 @@ export class ConfigPanel {
   
   async editToggle(value, key, ref, { title, deletable }) {
     const form = new UI.ModalFormData().title(title);
-    form.toggle(key, value);
+    form.toggle(key, { defaultValue: value });
     if (deletable) form.toggle('§c値を削除する', { defaultValue: false });
     const { canceled, formValues } = await form.show(this.player);
     if (canceled) return { reopen: true };

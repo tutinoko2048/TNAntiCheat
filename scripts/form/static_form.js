@@ -43,6 +43,7 @@ export const FORMS = {
     .button('戻る / Return', Icons.returnBtn)
 }
 
+/** @type {Record<'punishment' | 'mode' | 'defaultGamemode', { value: string, desc?: string }[]>} */
 export const DROPDOWNS = {
   punishment: [
     { value: 'ban', desc: 'プレイヤーをBANします' },
