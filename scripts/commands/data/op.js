@@ -1,28 +1,35 @@
-import config from '../../config.js';
+import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { PermissionType, Permissions } from '../../util/Permissions';
-import { CommandError } from '../CommandError.js';
-import { Command } from '../Command.js';
+import config from '../../config.js';
 
-const opCommand = new Command({
-  name: 'op',
-  description: 'TN-AntiCheatの管理者権限を取得します',
-  args: [ '[name: playerName]' ],
-  aliases: [ 'operator' ],
-  permission: (player) => player.isOp() || (config.others.fixBDS && Permissions.has(player, PermissionType.Admin))
-}, (origin, args) => {
-  const targetName = Util.parsePlayerName(args[0]);
-  if (origin.isServerOrigin() && !targetName) throw new CommandError('対象のプレイヤーを指定してください');
-  
-  const sender = origin.isPlayerOrigin() ? origin.sender : null;
-  const target = targetName ? Util.getPlayerByName(targetName) : sender;
-  
-  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
-  if (!target.isOp() && !config.others.fixBDS) throw new CommandError(`プレイヤー ${target.name} の権限が不足しています`);
-  if (Util.isOP(target)) throw new CommandError(`${target.name} は既に権限を持っています`);
-  Permissions.add(target, PermissionType.Admin);
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §e${target.name} に管理者権限を与えました`));
-  Util.writeLog({ type: 'command.op', message: `Executed by ${origin.name}` }, target);
-});
+export default () => {
+  commandHandler.register({
+    name: 'tn:op',
+    description: 'TN-AntiCheatの管理者権限を付与します',
+    permission: (origin) => {
+      const player = origin.getPlayer();
+      return player?.isOp() || (config.others.fixBDS && Permissions.has(player, PermissionType.Admin));
+    },
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-export default opCommand;
+    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+
+    const target = params.target[0];
+    if (!target.isOp() && !config.others.fixBDS) return failure(`プレイヤー ${target.name} の権限が不足しています`);
+    if (Util.isOP(target)) return failure(`${target.name} は既に権限を持っています`);
+
+    system.run(() => {
+      Permissions.add(target, PermissionType.Admin);
+      Util.notify(`§7${origin.getName()} >> ${target.name} に管理者権限を与えました`);
+      Util.writeLog({ type: 'command.op', message: `Executed by ${origin.getName()}` }, target);
+    });
+
+    return CustomCommandStatus.Success;
+  }, {
+    target: CustomCommandParamType.PlayerSelector,
+  });
+};

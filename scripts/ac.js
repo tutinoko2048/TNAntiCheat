@@ -1,5 +1,4 @@
-import { world, system, Player, ScriptEventSource, EntityVariantComponent } from '@minecraft/server';
-import { CommandManager } from './commands/CommandManager';
+import { world, system, Player, EntityVariantComponent } from '@minecraft/server';
 import { BanManager } from './util/BanManager';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { PermissionType, Permissions } from './util/Permissions';
@@ -9,6 +8,8 @@ import { Util } from './util/util';
 import { updateConfig, updateDynamicProperty } from './util/update_scripts';
 import { events } from './lib/events/index.js';
 import { getTPS } from './util/tps';
+import { commandHandler } from './lib/exports';
+import { COMMANDS } from './commands';
 
 import config from './config.js';
 import * as modules from './modules/index';
@@ -24,7 +25,7 @@ export class TNAntiCheat {
     this.startTime = Date.now();
     this.#isEnabled;
     
-    this.commandManager = new CommandManager(this);
+    commandHandler.options.alwaysShowMessage = true;
     
     /** @type {Map<string, import('@minecraft/server').Vector3>} */
     this.frozenPlayerMap = new Map();
@@ -36,6 +37,14 @@ export class TNAntiCheat {
       if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
       this.#register(sourceEntity);
     }, { namespaces: [ 'ac' ] });
+
+    this.#loadSlashCommands();
+  }
+
+  #loadSlashCommands() {
+    for (const command of COMMANDS) {
+      command(this);
+    }
   }
 
   #onWorldLoad() {
@@ -215,23 +224,23 @@ export class TNAntiCheat {
       if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
     });
     
-    system.afterEvents.scriptEventReceive.subscribe(ev => {
-      const { id, sourceEntity, message, sourceType } = ev;
-      if (id !== 'ac:command') return;
-      if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
-        this.commandManager.handle({ sender: sourceEntity, message }, true);
+    // system.afterEvents.scriptEventReceive.subscribe(ev => {
+    //   const { id, sourceEntity, message, sourceType } = ev;
+    //   if (id !== 'ac:command') return;
+    //   if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
+    //     this.commandManager.handle({ sender: sourceEntity, message }, true);
         
-      } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
-        this.commandManager.handleFromServer({ message });
-      }
-    }, {
-      namespaces: [ 'ac' ]
-    });
+    //   } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
+    //     this.commandManager.handleFromServer({ message });
+    //   }
+    // }, {
+    //   namespaces: [ 'ac' ]
+    // });
   }
   
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #handleChat(ev) {
-    if (this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
+    // if (this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
     
     !modules.spammerC(ev) &&
     !modules.spammerA(ev) &&

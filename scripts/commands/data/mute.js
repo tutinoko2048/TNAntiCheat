@@ -1,39 +1,40 @@
+import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { CommandError } from '../CommandError';
-import { Command } from '../Command';
 import { BanManager } from '../../util/BanManager';
+import { adminPermission } from '../utils';
 
-const muteCommand = new Command({
-  name: 'mute',
-  description: 'プレイヤーをミュートします',
-  args: [ '[name: playerName] [value: boolean]' ],
-  aliases: [ 'muto', 'myuto' ],
-  permission: (player) => Util.isOP(player)
-}, (origin, args) => {
-  const [ _targetName, value ] = args;
-  const targetName = Util.parsePlayerName(_targetName, origin.isPlayerOrigin() && origin.sender);
-  if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
+export default () => {
+  commandHandler.register({
+    name: 'tn:mute',
+    description: 'プレイヤーをミュートします',
+    permission: adminPermission,
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-  const sender = origin.isPlayerOrigin() ? origin.sender : null;
-  const target = targetName ? Util.getPlayerByName(targetName) : sender;
-  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
-  const muteState = value ? toBoolean(value) : !BanManager.isMuted(target);
-  
-  const err = () => { throw new CommandError(`${target.name} のミュートに失敗しました (Education Editionがオフになっている可能性があります)`) }
-  const res = BanManager.setMuted(target, muteState);
-  if (!res) err();
-  
-  origin.broadcast(Util.decorate(`§7${origin.name} >> ${target.name}§r§7 のミュートを ${muteState} に設定しました`));
-  if (muteState) Util.notify('§o§eあなたはミュートされています', target);
-  Util.writeLog({ type: 'command.mute', message: `MuteState: ${muteState}\nExecuted by ${origin.name}` }, target);
+    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
 
-});
+    const target = params.target[0];
+    const muteState = params.value ?? !BanManager.isMuted(target);
 
-function toBoolean(str) {
-  if (typeof str !== 'string') throw new CommandError('Boolean (true|false)を入力してください');
-  if (str.toLowerCase() === 'true') return true;
-  else if (str.toLowerCase() === 'false') return false;
-  else throw new CommandError('Boolean(true|false)を入力してください');
-}
-
-export default muteCommand;
+    system.run(() => {
+      const success = BanManager.setMuted(target, muteState);
+      if (!success) return origin.sendMessage('操作に失敗しました (Education Editionがオフになっている可能性があります)');
+      
+      origin.sendMessage(
+        muteState ? '§o§eあなたはミュートされています' : '§o§eあなたのミュートは解除されました'
+      );
+      Util.notify(`§7${origin.getName()} >> ${target.name}§r§7 のミュートを ${muteState} に設定しました`);
+      Util.writeLog({
+        type: 'command.mute',
+        message: `MuteState: ${muteState}\nExecuted by ${origin.getName()}`
+      }, target);
+    });
+      
+    return CustomCommandStatus.Success;
+  }, {
+    target: CustomCommandParamType.PlayerSelector,
+    value: [CustomCommandParamType.Boolean],
+  });
+};

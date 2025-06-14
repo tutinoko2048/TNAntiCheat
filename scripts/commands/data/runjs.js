@@ -1,6 +1,6 @@
 /* eslint no-unused-vars: 0 */
 
-import { Command } from '../Command';
+import { CommandPermissionLevel, CustomCommandStatus } from '@minecraft/server';
 import { Util } from '../../util/util';
 import * as mc from '@minecraft/server';
 const { world, system } = mc;
@@ -10,19 +10,50 @@ import unbanQueue from '../../unban_queue.js';
 import { DataManager } from '../../util/DataManager';
 import { format } from '../../lib/formatter/main';
 import { BanManager } from '../../util/BanManager';
+import { commandHandler } from '../../lib/exports';
 
-const runjsCommand = new Command({
-  name: 'runjs',
-  description: 'debug command.',
-  aliases: [ 'eval' ],
-  args: [ '<code: string>' ],
-  permission: (player) => Util.isOP(player)
-}, (origin, args) => {
-  const self = origin.isPlayerOrigin() ? origin.sender : null;
-  const print = (...args) => origin.send(inspect(...args));
-  
-  eval(args.join(' '));
-});
+export default () => {
+  commandHandler.register({
+    name: 'tn:runjs',
+    description: 'debug command.',
+    aliases: [ 'tn:eval' ],
+    permission: CommandPermissionLevel.Host,
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
+    
+    const player = origin.getPlayer();
+    const context = {
+      world,
+      system,
+      origin,
+      player,
+      self: player,
+      print: (...args) => origin.sendMessage(inspect(...args)),
+      log: console.log.bind(console),
+      warn: console.warn.bind(console),
+      error: console.error.bind(console),
+      config,
+      unbanQueue,
+      DataManager,
+      BanManager,
+      Permissions,
+      Util,
+    };
+    
+    const func = new Function(Object.keys(context).join(', '), params.code);
+    system.run(async () => {
+      try {
+        await func(...Object.values(context));
+      } catch (error) {
+        origin.sendMessage(`§cEvalError: ${error.message}`);
+      }
+    });
+    
+    return CustomCommandStatus.Success;
+  }, {
+    code: mc.CustomCommandParamType.String,
+  });
+}
 
 function inspect(...args) {
   const message = args.map(v => {
@@ -33,5 +64,3 @@ function inspect(...args) {
   }).join(' ');
   return message;
 }
-
-export default runjsCommand;

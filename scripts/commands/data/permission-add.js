@@ -1,36 +1,41 @@
 import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
-import { commandHandler, failure } from '../../lib/exports';
+import { Permissions } from '../../util/Permissions';
 import { Util } from '../../util/util';
-import { PermissionType, Permissions } from '../../util/Permissions';
+import { commandHandler, failure } from '../../lib/exports';
 import { adminPermission } from '../utils';
+import { PermissionEnum } from '../enums';
 
 export default () => {
   commandHandler.register({
-    name: 'tn:deop',
-    description: '管理者権限を削除します',
+    name: 'tn:permissionadd',
+    description: 'プレイヤーの権限を追加します',
     permission: adminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
-
+    
     if (params.target.length === 0) return failure('セレクターに合う対象がありません');
     if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
-
+    
     const target = params.target[0];
+    const permissionType = params.permission;
 
-    if (!Util.isOP(target)) return failure(`${target.name} は権限を持っていません`);
-
+    if (Permissions.has(target, permissionType)) {
+      return failure(`${target.name} は既に ${permissionType} を既に持っています`);
+    }
+    
     system.run(() => {
-      Permissions.remove(target, PermissionType.Admin);
-      
-      Util.notify(`§7${origin.getName()} >> ${target.name} の管理者権限を削除しました`);
+      Permissions.add(target, permissionType);
+
+      Util.notify(`§a${target.name} に ${permissionType} 権限を付与しました`);
       Util.writeLog({
-        type: 'command.deop',
-        message: `Executed by ${origin.getName()}`,
+        type: 'permission.add', 
+        message: `Permission "${permissionType}" has been added`,
       }, target);
     });
-
+      
     return CustomCommandStatus.Success;
   }, {
     target: CustomCommandParamType.PlayerSelector,
+    permission: PermissionEnum,
   });
-};
+}

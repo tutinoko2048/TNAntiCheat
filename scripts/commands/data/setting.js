@@ -1,17 +1,22 @@
-import { Util } from '../../util/util';
+import { CustomCommandStatus, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
+import { adminPermission } from '../utils';
 import { AdminPanel } from '../../form/AdminPanel';
-import { Command } from '../Command';
-import { CommandError } from '../CommandError';
 
-const settingCommand = new Command({
-  name: 'setting',
-  description: '管理者用パネルを表示します',
-  args: [ '' ],
-  aliases: [ 'settings', 'seting' ],
-  permission: (player) => Util.isOP(player)
-}, (origin, _, manager) => {
-  if (origin.isPlayerOrigin()) new AdminPanel(manager.ac, origin.sender).show(true);
-  else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
-});
-
-export default settingCommand;
+/** @param {import('../../ac').TNAntiCheat} ac */
+export default (ac) => {
+  commandHandler.register({
+    name: 'tn:setting',
+    description: '管理者用パネルを表示します',
+    permission: adminPermission,
+  }, (_, origin) => {
+    const player = origin.getPlayer();
+    if (!player) return failure('このコマンドはここでは実行できません');
+    
+    system.run(() => {
+      new AdminPanel(ac, player).show();
+    });
+    
+    return CustomCommandStatus.Success;
+  }, {});
+}

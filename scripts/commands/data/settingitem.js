@@ -1,20 +1,26 @@
+import { CustomCommandStatus, system } from '@minecraft/server';
 import { Util } from '../../util/util';
 import { AdminPanel } from '../../form/AdminPanel';
-import { Command } from '../Command';
-import { CommandError } from '../CommandError';
+import { commandHandler, failure } from '../../lib/exports';
+import { adminPermission } from '../utils';
 
-const itemCommand = new Command({
-  name: 'settingitem',
-  description: '管理者用パネルを表示するためのアイテムを取得します',
-  args: [ '' ],
-  aliases: [ 'item', 'wand', 'setingitem', 'adminitem', 'panelitem', 'configitem' ],
-  permission: (player) => Util.isOP(player)
-}, (origin) => {
-  if (origin.isPlayerOrigin()) {
-    origin.sender.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());
-    Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます', origin.sender);
+export default () => {
+  commandHandler.register({
+    name: 'tn:settingitem',
+    description: '管理者用パネルを表示するためのアイテムを取得します',
+    aliases: [ 'tn:wand' ],
+    permission: adminPermission,
+  }, (_, origin) => {
+    if (origin.isPlayer()) {
+      const player = origin.getPlayer(true);
+      if (!player) return failure('このコマンドはここでは実行できません');
+      
+      system.run(() => {
+        player.getComponent('minecraft:inventory').container.addItem(AdminPanel.getPanelItem());
+        Util.notify('アイテムを取得しました。右クリック/長押しで管理者用パネルを開けます', player);
+      });
+    }
     
-  } else if (origin.isServerOrigin()) throw new CommandError('Serverからは実行できません');
-});
-
-export default itemCommand;
+    return CustomCommandStatus.Success;
+  }, {});
+}

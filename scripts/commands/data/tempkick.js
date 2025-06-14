@@ -1,23 +1,41 @@
+import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { CommandError } from '../CommandError';
-import { Command } from '../Command';
+import { adminPermission } from '../utils';
 
-const tempkickCommand = new Command({
-  name: 'tempkick',
-  description: 'プレイヤーを強制退出させます(復帰可能なkick)',
-  args: [ '<name: playerName> [reason: string]' ],
-  aliases: [ 'disconnect' ],
-  permission: (player) => Util.isOP(player),
-}, (origin, args) => {
-  const [ _playerName, reason = '-' ] = args;
-  if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
-  const playerName = Util.parsePlayerName(_playerName, origin.isPlayerOrigin() && origin.sender);
-  
-  const player = Util.getPlayerByName(playerName);
-  if (!player) throw new CommandError(`プレイヤー: ${playerName} が見つかりませんでした`);
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §rプレイヤー: §c${player.name}§r をtempkickしました(再参加できます)\n§7Reason: §r${reason}`));
-  Util.writeLog({ type: 'command.tempkick', message: `Tempkicked by ${origin.name}\nReason: ${reason}` }, player);
-  Util.disconnect(player);
-});
+export default () => {
+  commandHandler.register(
+    {
+      name: 'tn:tempkick',
+      description: 'プレイヤーを強制退出させます(復帰可能)',
+      aliases: ['tn:disconnect'],
+      permission: adminPermission,
+    },
+    (params, origin) => {
+      if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-export default tempkickCommand;
+      if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+      if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+
+      const target = params.target[0];
+      const reason = params.reason;
+
+      if (Util.isHost(target)) return failure('ホストを強制退出させることはできません');
+
+      system.run(() => {
+        Util.disconnect(target);
+
+        Util.writeLog({
+          type: 'command.tempkick',
+          message: `Tempkicked by ${origin.getName()}\n§7Reason: §r${reason ?? '-'}`,
+        }, target);
+      });
+
+      return CustomCommandStatus.Success;
+    },
+    {
+      target: CustomCommandParamType.PlayerSelector,
+      reason: [CustomCommandParamType.String],
+    }
+  );
+};

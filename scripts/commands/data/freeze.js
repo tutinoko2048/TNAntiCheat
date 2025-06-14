@@ -1,39 +1,42 @@
-import { InputPermissionCategory } from '@minecraft/server';
+import { CustomCommandParamType, CustomCommandStatus, InputPermissionCategory, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { CommandError } from '../CommandError';
-import { Command } from '../Command';
+import { adminPermission } from '../utils';
 
-const freezeCommand =  new Command({
-  name: 'freeze',
-  description: 'プレイヤーを移動できなく(フリーズ状態に)します',
-  args: [ '[name: playerName] [value: boolean]' ],
-  aliases: [],
-  permission: (player) => Util.isOP(player)
-}, (origin, args, handler) => {
-  const [ _targetName, value ] = args;
-  const targetName = Util.parsePlayerName(_targetName, origin.isPlayerOrigin() && origin.sender);
-  if (!targetName && origin.isServerOrigin()) throw new CommandError('対象のプレイヤーを指定してください');
-  
-  const sender = origin.isPlayerOrigin() ? origin.sender : null;
-  const target = targetName ? Util.getPlayerByName(targetName) : sender;
-  if (!target) throw new CommandError(`プレイヤー ${targetName} が見つかりませんでした`);
-  
-  const freezeState = value ? toBoolean(value) : !handler.ac.frozenPlayerMap.has(target.id);
-  target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freezeState);
-  target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freezeState);
-  if (freezeState) handler.ac.frozenPlayerMap.set(target.id, target.location);
-    else handler.ac.frozenPlayerMap.delete(target.id);
+/** @param {import('../../ac').TNAntiCheat} ac */
+export default function(ac) {
+  commandHandler.register({
+    name: 'tn:freeze',
+    description: 'プレイヤーを移動できなく(フリーズ状態に)します',
+    permission: adminPermission,
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §a${target.name} のフリーズを ${freezeState} に設定しました`));
-  if (freezeState) Util.notify('§o§eあなたはフリーズされています', target);
-  Util.writeLog({ type: 'command.freeze', message: `FreezeState: ${freezeState}\nExecuted by ${origin.name}` }, target);
-});
-
-function toBoolean(str) {
-  if (typeof str !== 'string') throw new CommandError('Boolean(true|false)を入力してください');
-  if (str.toLowerCase() === 'true') return true;
-  else if (str.toLowerCase() === 'false') return false;
-  else throw new CommandError('Boolean(true|false)を入力してください');
+    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+    
+    const target = params.target[0];
+    const freezeState = params.value ?? !ac.frozenPlayerMap.has(target.id);
+    
+    system.run(() => {
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, freezeState);
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, freezeState);
+      if (freezeState) ac.frozenPlayerMap.set(target.id, target.location);
+      else ac.frozenPlayerMap.delete(target.id);
+      
+      origin.sendMessage(
+        freezeState ? '§o§eあなたはフリーズされています' : '§o§eあなたのフリーズは解除されました'
+      );
+      Util.notify(`§7${origin.getName()} >> ${target.name} のフリーズを ${freezeState} に設定しました`);
+      Util.writeLog({
+        type: 'command.freeze',
+        message: `FreezeState: ${freezeState}\nExecuted by ${origin.getName()}`
+      }, target);
+    });
+    
+    return CustomCommandStatus.Success;
+  }, {
+    target: CustomCommandParamType.PlayerSelector,
+    value: [CustomCommandParamType.Boolean]
+  });
 }
-
-export default freezeCommand;

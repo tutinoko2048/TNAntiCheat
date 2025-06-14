@@ -12,21 +12,17 @@ const MODULE_EXCLUDE_LIST = ['flyA']
 
 export class ConfigPanel {
   /**
-   * @param {import('../ac').TNAntiCheat} ac 
    * @param {import('@minecraft/server').Player} player 
-   * @param {boolean} [busy] 
    */
-  constructor(ac, player, busy) {
-    this.ac = ac;
+  constructor(player) {
     this.player = player;
-    if (Util.isOP(player)) this.selectModule(busy).catch(e => console.error(e, e.stack));
+    if (Util.isOP(player)) this.selectModule().catch(e => console.error(e, e.stack));
   }
   
   /**
-   * @param {boolean} [busy] 
    * @param {string} [message]
    */
-  async selectModule(busy, message) {
+  async selectModule(message) {
     let body = '編集したいConfigを選択してください';
     if (message) body = `§o${message}§r\n\n${body}`;
     const form = new ActionForm()
@@ -41,9 +37,7 @@ export class ConfigPanel {
       form.button(`${color}§l${moduleName}§r${desc}`, null, moduleName);
     }
     form.button('§l§c初期設定に戻す', Icons.reset, '.reset');
-    const { canceled, button } = busy
-      ? await Util.showFormToBusy(this.player, form) // from chat
-      : await form.show(this.player);
+    const { canceled, button } = await form.show(this.player);
     if (canceled) return;
     
     if (button.id === '.reset') {
@@ -56,7 +50,7 @@ export class ConfigPanel {
       DataManager.resetAll();
       Util.notify('§a全ての設定をリセットしました', this.player);
       Util.writeLog({ type: 'config.resetAll', message: `全ての設定をリセットしました` }, this.player);
-      return await this.selectModule(false, `§a全ての設定をリセットしました`);
+      return await this.selectModule(`§a全ての設定をリセットしました`);
     }
     const moduleName = /** @type {string} */ (button.id);
     const diff = {};
@@ -70,7 +64,7 @@ export class ConfigPanel {
       DataManager.patch(config[moduleName], diff);
       DataManager.update(moduleName, diff);
     }
-    if (res.reopen) await this.selectModule(false, res.message);
+    if (res.reopen) await this.selectModule(res.message);
   }
   
   /** @returns {Promise<{ reopen?: boolean, edited?: boolean, message?: string }>} */

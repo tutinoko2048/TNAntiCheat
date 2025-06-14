@@ -1,25 +1,38 @@
+import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { CommandError } from '../CommandError';
-import { Command } from '../Command';
+import { adminPermission } from '../utils';
 
-const kickCommand = new Command({
-  name: 'kick',
-  description: 'プレイヤーをKickします',
-  args: [ '<name: playerName> [reason: string]' ],
-  aliases: [],
-  permission: (player) => Util.isOP(player)
-}, (origin, args) => {
-  const [ _playerName, reason = '-' ] = args;
-  if (!_playerName) throw new CommandError('プレイヤー名を入力してください');
-  const playerName = Util.parsePlayerName(_playerName);
-  
-  const player = Util.getPlayerByName(playerName);
-  if (!player) throw new CommandError(`プレイヤー ${playerName} が見つかりませんでした`);
-  if (origin.isPlayerOrigin() && origin.sender.name === player.name) throw new CommandError('自分をkickすることはできません');
-  Util.kick(player, `Reason: ${reason}`);
-  
-  origin.broadcast(Util.decorate(`§7${origin.name} >> §fプレイヤー: §c${player.name}§r をkickしました\n§7Reason: §r${reason}`));
-  Util.writeLog({ type: 'command.kick', message: `Kicked by ${origin.name}\nReason: ${reason}` }, player);
-});
+export default () => {
+  commandHandler.register({
+    name: 'tn:kick',
+    description: 'プレイヤーをKickします',
+    permission: adminPermission,
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-export default kickCommand;
+    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+
+    const target = params.target[0];
+    const reason = params.reason;
+
+    if (Util.isHost(target)) return failure('ホストをKickすることはできません');
+
+    system.run(() => {
+      const success = Util.kick(target, `Reason: ${reason}`);
+      if (!success) return origin.sendMessage('§cKickに失敗しました');
+      
+      Util.notify(`§7${origin.getName()} >> §fプレイヤー: §c${target.name}§r をkickしました\n§7Reason: §r${reason}`);
+      Util.writeLog({
+        type: 'command.kick',
+        message: `Kicked by ${origin.getName()}\nReason: ${reason}`,
+      }, target);
+    });
+
+    return CustomCommandStatus.Success;
+  }, {
+    target: CustomCommandParamType.PlayerSelector,
+    reason: [CustomCommandParamType.String],
+  });
+};

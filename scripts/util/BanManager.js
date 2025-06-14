@@ -17,8 +17,8 @@ export class BanManager {
   static kick(player, reason = '', isBan, force = true) {
     if (config.others.customKickMessage) reason += `\n${config.others.customKickMessage}`;
 
-    const { successCount } = player.dimension.runCommand(
-      `kick "${player.name}" §l${isBan ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`
+    const { successCount } = player.runCommand(
+      `kick @s §l${isBan ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`
     );
     const success = successCount > 0;
     if (!success && force) player.triggerEvent('tn:kick');

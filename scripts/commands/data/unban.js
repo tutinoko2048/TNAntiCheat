@@ -1,31 +1,36 @@
-import { Util } from '../../util/util';
-import { Command } from '../Command';
-import { manageUnbanQueue } from '../../form/AdminPanel';
+import { CustomCommandParamType, CustomCommandStatus } from '@minecraft/server';
+import { commandHandler, failure } from '../../lib/exports';
 import { BanManager } from '../../util/BanManager';
+import { Util } from '../../util/util';
+import { adminPermission } from '../utils';
 
-const unbanCommand = new Command({
-  name: 'unban',
-  description: 'プレイヤーのBanを解除します',
-  args: [ '', '<name: playerName>' ],
-  aliases: [ 'pardon' ],
-  permission: (player) => Util.isOP(player)
-}, (origin, args) => {
-  const [ _playerName ] = args;
-  
-  if (_playerName) {
-    const playerName = Util.parsePlayerName(_playerName);
+export default () => {
+  commandHandler.register({
+    name: 'tn:unban',
+    description: 'プレイヤーのBanを解除します',
+    aliases: ['tn:pardon'],
+    permission: adminPermission,
+  }, (params, origin) => {
+    if (!origin.isSendable()) return CustomCommandStatus.Failure;
+
+    const playerName = params.playerName;
+    if (!playerName) return failure('プレイヤー名を指定してください');
+
+    const queue = BanManager.getUnbanQueue();
+    const existing = queue.find(entry => entry.name === playerName);
+    
+    if (existing) return failure(`${playerName} は既にunbanキューに存在します`);
+
     BanManager.addUnbanQueue(playerName);
-    origin.broadcast(Util.decorate(`§7${origin.name} >> §r${playerName}§r をunbanのリストに追加しました`));
-    Util.writeLog({ type: 'unban.add', playerName, message: `source: command\nExecuted by ${origin.name}` });
-  } else {
-    if (origin.isPlayerOrigin()) {
-      manageUnbanQueue(origin.sender, true).catch(e => console.error(e, e.stack));
-    }
-    if (origin.isServerOrigin()) {
-      const names = BanManager.getUnbanQueue().map(entry => `- ${entry.name}`);
-      origin.send(`UnbanQueue List (${names.length})\n${names.join('\n')}`)
-    }
-  }
-});
+    
+    Util.writeLog({
+      type: 'command.unban',
+      message: `Added to unban queue by ${origin.getName()}`,
+      playerName
+    });
 
-export default unbanCommand;
+    return CustomCommandStatus.Success;
+  }, {
+    playerName: CustomCommandParamType.String,
+  });
+};

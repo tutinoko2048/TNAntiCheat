@@ -142,7 +142,6 @@ export class Util {
   /** @param {Player} player */
   static isOP(player) {
     return (
-      player?.typeId === 'minecraft:player' &&
       (player.isOp() || config.others.fixBDS) &&
       Permissions.has(player, PermissionType.Admin)
     );

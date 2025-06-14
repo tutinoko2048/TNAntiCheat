@@ -38,12 +38,12 @@ export class AdminPanel {
     this.player = player;
   }
   
-  show(busy) {
-    if (Util.isOP(this.player)) this.main(busy).catch(e => console.error(e, e.stack));
+  show() {
+    if (Util.isOP(this.player)) this.main().catch(e => console.error(e, e.stack));
       else Util.notify('§c権限がありません', this.player)
   }
   
-  async main(busy) {
+  async main() {
     const info = [
       'TN-AntiCheatの管理者用パネルです\n',
       '§l§b--- World Info ---',
@@ -53,9 +53,7 @@ export class AdminPanel {
       `§l§7TPS: §r${getTPS().toFixed(1)}`,
     ].join('§r\n');
     const form = FORMS.main().body(`${info}\n `);
-    const { selection, canceled } = busy
-      ? await Util.showFormToBusy(this.player, form)
-      : await form.show(this.player);
+    const { selection, canceled } = await form.show(this.player);
     if (canceled) return;
     if (selection === 0) return await this.playerList();
     if (selection === 1) return await this.showEntities();
@@ -424,7 +422,7 @@ export class AdminPanel {
   }
   
   async configPanel() {
-    new ConfigPanel(this.ac, this.player, false);
+    new ConfigPanel(this.player);
   }
   
   async actionLogs() {

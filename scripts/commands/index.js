@@ -1,42 +1,43 @@
-import helpCommand from "./data/help";
-import opCommand from "./data/op";
-import deopCommand from "./data/deop";
-import versionCommand from "./data/version";
-import settingCommand from "./data/setting";
-import settingitemCommand from "./data/settingitem";
-import kickCommand from "./data/kick";
-import tempkickCommand from "./data/tempkick";
-import banCommand from "./data/ban";
-import muteCommand from "./data/mute";
-import aboutCommand from "./data/about";
-import tpsCommand from "./data/tps";
-import permissionCommand from "./data/permission";
-import unbanCommand from "./data/unban";
-import moduleCommand from "./data/module";
-import configCommand from "./data/config";
-import freezeCommand from "./data/freeze";
-import statusCommand from "./data/status";
-// import runjsCommand from "./data/runjs";
+// import helpCommand from "./data/help";
+import OP from "./data/op";
+import DEOP from "./data/deop";
+import VERSION from "./data/version";
+import SETTING from "./data/setting";
+import SETTINGITEM from "./data/settingitem";
+import KICK from "./data/kick";
+import TEMPKICK from "./data/tempkick";
+import BAN from "./data/ban";
+import MUTE from "./data/mute";
+import ABOUT from "./data/about";
+import TPS from "./data/tps";
+import PERMISSION_ADD from "./data/permission-add";
+import PERMISSION_REMOVE from "./data/permission-remove";
+import UNBAN from "./data/unban";
+import MODULE from "./data/module";
+import CONFIG from "./data/config";
+import FREEZE from "./data/freeze";
+import STATUS from "./data/status";
+// import RUNJS from "./data/runjs";
 
-/** @type {import('./Command').Command[]} */
+/** @type {((ac?: import('../ac').TNAntiCheat) => void)[]} */
 export const COMMANDS = [
-  helpCommand,
-  opCommand,
-  deopCommand,
-  versionCommand,
-  settingCommand,
-  settingitemCommand,
-  kickCommand,
-  tempkickCommand,
-  banCommand,
-  muteCommand,
-  aboutCommand,
-  tpsCommand,
-  permissionCommand,
-  unbanCommand,
-  moduleCommand,
-  configCommand,
-  freezeCommand,
-  statusCommand,
-  // runjsCommand, // for debug
+  OP,
+  DEOP,
+  VERSION,
+  SETTING,
+  SETTINGITEM,
+  KICK,
+  TEMPKICK,
+  BAN,
+  MUTE,
+  ABOUT,
+  TPS,
+  PERMISSION_ADD,
+  PERMISSION_REMOVE,
+  UNBAN,
+  MODULE,
+  CONFIG,
+  FREEZE,
+  STATUS,
+  //RUNJS, // for debug
 ];
