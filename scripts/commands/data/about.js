@@ -5,8 +5,8 @@ import { VERSION, DISCORD_URL } from '../../util/constants';
 export default () => {
   commandHandler.register({
     name: 'tn:about',
-    description: 'このアドオンに関する情報を表示します',
-    permission: CommandPermissionLevel.Any,
+    description: '§6このアドオンに関する情報を表示します',
+    permissionLevel: CommandPermissionLevel.Any,
   }, (_, origin) => {
     if (!origin.isSendable()) return failure('このコマンドはここでは実行できません');
     

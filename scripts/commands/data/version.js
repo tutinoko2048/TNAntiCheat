@@ -5,8 +5,8 @@ import { commandHandler } from '../../lib/exports';
 export default () => {
   commandHandler.register({
     name: 'tn:version',
-    description: 'アドオンのバージョンを表示します',
-    permission: CommandPermissionLevel.Any,
+    description: '§6アドオンのバージョンを表示します',
+    permissionLevel: CommandPermissionLevel.Any,
   }, () => {
     return {
       status: CustomCommandStatus.Success,

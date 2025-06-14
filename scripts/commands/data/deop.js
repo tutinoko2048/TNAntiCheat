@@ -1,21 +1,28 @@
-import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { CustomCommandParamType, CustomCommandStatus, Player, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { PermissionType, Permissions } from '../../util/Permissions';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:deop',
-    description: '管理者権限を削除します',
-    permission: adminPermission,
+    description: '§a管理者権限を削除します',
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
-    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
-
-    const target = params.target[0];
+    /** @type {Player} */
+    let target;
+    if (params.target) {
+      if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+      if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+      target = params.target[0];
+    } else {
+      const player = origin.getPlayer();
+      if (!player) return failure('対象のプレイヤーを指定してください');
+      target = player;
+    }
 
     if (!Util.isOP(target)) return failure(`${target.name} は権限を持っていません`);
 
@@ -31,6 +38,6 @@ export default () => {
 
     return CustomCommandStatus.Success;
   }, {
-    target: CustomCommandParamType.PlayerSelector,
+    target: [CustomCommandParamType.PlayerSelector],
   });
 };

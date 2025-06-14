@@ -1,13 +1,13 @@
 import { CustomCommandStatus } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import config from '../../config.js';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:module',
-    description: 'モジュール一覧を表示します',
-    permission: adminPermission,
+    description: '§aモジュール一覧を表示します',
+    permission: AdminPermission,
   }, (_, origin) => {
     if (!origin.isSendable()) return failure('このコマンドはここでは実行できません');
 
@@ -16,8 +16,8 @@ export default () => {
       status: CustomCommandStatus.Success,
       message: [
         '§lModules',
-        ...modules.map(m => `- ${m}: ${config[m].state ? '§o§aEnabled§r' : '§o§cDisabled§r'}`),
-      ].join('\n')
+        ...modules.map(m => `- ${m}: ${config[m].state ? '§o§aEnabled' : '§o§cDisabled'}`),
+      ].join('§r\n')
     };
   }, {});
 }

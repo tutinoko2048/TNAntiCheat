@@ -141,10 +141,7 @@ export class Util {
   
   /** @param {Player} player */
   static isOP(player) {
-    return (
-      (player.isOp() || config.others.fixBDS) &&
-      Permissions.has(player, PermissionType.Admin)
-    );
+    return Permissions.has(player, PermissionType.Admin);
   }
   
   /** @param {Player} player */
@@ -207,22 +204,22 @@ export class Util {
   
   /** @param {Player} player */
   static isSurvival(player) {
-    return player.getGameMode() === GameMode.survival;
+    return player.getGameMode() === GameMode.Survival;
   }
   
   /** @param {Player} player */
   static isCreative(player) {
-    return player.getGameMode() === GameMode.creative;
+    return player.getGameMode() === GameMode.Creative;
   }
   
   /** @param {Player} player */
   static isAdventure(player) {
-    return player.getGameMode() === GameMode.adventure;
+    return player.getGameMode() === GameMode.Adventure;
   }
   
   /** @param {Player} player */
   static isSpectator(player) {
-    return player.getGameMode() === GameMode.spectator;
+    return player.getGameMode() === GameMode.Spectator;
   }
   
   static cloneObject(obj) {

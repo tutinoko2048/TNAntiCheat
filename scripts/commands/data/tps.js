@@ -5,8 +5,8 @@ import { commandHandler } from '../../lib/exports';
 export default () => {
   commandHandler.register({
     name: 'tn:tps',
-    description: 'TPSを表示します',
-    permission: CommandPermissionLevel.Any,
+    description: '§6TPSを表示します',
+    permissionLevel: CommandPermissionLevel.Any,
   }, () => {
     const tps = getTPS();
     return {

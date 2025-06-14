@@ -1,4 +1,4 @@
-/** command-handler v10 **/
+/** command-handler v11 **/
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandSource, CustomCommandStatus, Player, system, world } from "@minecraft/server";
 
 //#region src/enum.ts
@@ -163,9 +163,10 @@ var CommandHandler = class {
 						break;
 					default: throw new Error(`Unknown command origin type: ${_origin.sourceType}`);
 				}
-				if (typeof command.permission === "function") {
-					const customPermissionResult = command.permission(origin);
-					if (customPermissionResult !== true) return failure(typeof customPermissionResult === "boolean" ? this.options.customPermissionError : customPermissionResult.error);
+				if ("permission" in command) {
+					const onVerify = typeof command.permission === "function" ? command.permission : command.permission.onVerify;
+					const verifiedResult = onVerify(origin);
+					if (verifiedResult !== true) return failure(typeof verifiedResult === "boolean" ? this.options.customPermissionError : verifiedResult.error);
 				}
 				const parsedParams = {};
 				for (const [i, paramInput] of params$1.entries()) {
@@ -182,17 +183,21 @@ var CommandHandler = class {
 				};
 				return onResult(typeof result === "number" ? { status: result } : result);
 			};
+			let permissionLevel;
+			if ("permission" in command) if (typeof command.permission === "function") permissionLevel = CommandPermissionLevel.Any;
+			else permissionLevel = command.permission.permissionLevel ?? CommandPermissionLevel.Any;
+			else permissionLevel = command.permissionLevel;
 			registry.registerCommand({
 				name: command.name,
 				description: command.description,
-				permissionLevel: typeof command.permission === "function" ? CommandPermissionLevel.Any : command.permission,
+				permissionLevel,
 				mandatoryParameters: mandatoryParams,
 				optionalParameters: optionalParams
 			}, commandCallback);
 			for (const alias of command.aliases ?? []) registry.registerCommand({
 				name: alias.includes(":") ? alias : `${command.name.split(":")[0]}:${alias}`,
 				description: command.description,
-				permissionLevel: typeof command.permission === "function" ? CommandPermissionLevel.Any : command.permission,
+				permissionLevel,
 				mandatoryParameters: mandatoryParams,
 				optionalParameters: optionalParams
 			}, commandCallback);

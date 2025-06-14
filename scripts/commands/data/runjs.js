@@ -15,9 +15,9 @@ import { commandHandler } from '../../lib/exports';
 export default () => {
   commandHandler.register({
     name: 'tn:runjs',
-    description: 'debug command.',
+    description: '§ddebug command.',
     aliases: [ 'tn:eval' ],
-    permission: CommandPermissionLevel.Host,
+    permissionLevel: CommandPermissionLevel.Host,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
     

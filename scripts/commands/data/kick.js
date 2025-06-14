@@ -1,13 +1,13 @@
 import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:kick',
-    description: 'プレイヤーをKickします',
-    permission: adminPermission,
+    description: '§aプレイヤーをKickします',
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 

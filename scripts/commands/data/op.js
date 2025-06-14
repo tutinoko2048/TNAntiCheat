@@ -1,25 +1,34 @@
-import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
+import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, Player, PlayerPermissionLevel, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { PermissionType, Permissions } from '../../util/Permissions';
-import config from '../../config.js';
 
 export default () => {
   commandHandler.register({
     name: 'tn:op',
-    description: 'TN-AntiCheatの管理者権限を付与します',
-    permission: (origin) => {
-      const player = origin.getPlayer();
-      return player?.isOp() || (config.others.fixBDS && Permissions.has(player, PermissionType.Admin));
+    description: '§aTN-AntiCheatの管理者権限を付与します',
+    permission: {
+      permissionLevel: CommandPermissionLevel.Admin,
+      onVerify: (origin) => {
+        return origin.isServer() || origin.getPlayer()?.playerPermissionLevel === PlayerPermissionLevel.Operator;
+      }
     },
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
-    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+    /** @type {Player} */
+    let target;
+    if (params.target) {
+      if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+      if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+      target = params.target[0];
+    } else {
+      const player = origin.getPlayer();
+      if (!player) return failure('対象のプレイヤーを指定してください');
+      target = player;
+    }
 
-    const target = params.target[0];
-    if (!target.isOp() && !config.others.fixBDS) return failure(`プレイヤー ${target.name} の権限が不足しています`);
+    // if (!target.isOp() && !config.others.fixBDS) return failure(`プレイヤー ${target.name} の権限が不足しています`);
     if (Util.isOP(target)) return failure(`${target.name} は既に権限を持っています`);
 
     system.run(() => {
@@ -30,6 +39,6 @@ export default () => {
 
     return CustomCommandStatus.Success;
   }, {
-    target: CustomCommandParamType.PlayerSelector,
+    target: [CustomCommandParamType.PlayerSelector],
   });
 };

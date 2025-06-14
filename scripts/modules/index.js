@@ -1,4 +1,4 @@
-import { world, system, Player } from '@minecraft/server';
+import { world, system, Player, PlayerPermissionLevel, CommandPermissionLevel, InputButton } from '@minecraft/server';
 import { Util } from '../util/util';
 import { PermissionType, Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -124,11 +124,13 @@ export function debugView(p) {
   const vel = p.getVelocity();
   const mainHand = p.getComponent('minecraft:inventory').container.getItem(p.selectedSlotIndex)?.typeId;
   const cps = getCPS(p);
+  const isJumping = p.inputInfo.getButtonState(InputButton.Jump);
   
   p.onScreenDisplay.setActionBar([
-    `[${p.name}] tps: ${getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.isOp())}`,
-`slot: ${fmt(p.selectedSlotIndex)}, hand: ${fmt(mainHand)}`,
-    `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, cps: ${fmt(cps?.toFixed(1))}`,
+    `[${p.name}] tps: ${getTPS().toFixed(1)}, op: ${fmt(Util.isOP(p))}, op(mc): ${fmt(p.playerPermissionLevel === PlayerPermissionLevel.Operator)} (${CommandPermissionLevel[p.commandPermissionLevel]})`,
+    `platform: ${p.clientSystemInfo.platformType} (${p.inputInfo.lastInputModeUsed})`,
+    `slot: ${fmt(p.selectedSlotIndex)}, hand: ${fmt(mainHand)}`,
+    `sneaking: ${fmt(p.isSneaking)}, onGround: ${fmt(p.isOnGround)}, flying: ${fmt(p.isFlying)}, jumping: ${fmt(isJumping)}, cps: ${fmt(cps?.toFixed(1))}`,
     `location: [${loc.x.toFixed(4)}, ${loc.y.toFixed(4)}, ${loc.z.toFixed(4)}]`,
     `rotation: [${rot.x.toFixed(2)}, ${rot.y.toFixed(2)}], velocity: [${vel.x.toFixed(2)}, ${vel.y.toFixed(2)}, ${vel.z.toFixed(2)}]`
   ].join('\n'));

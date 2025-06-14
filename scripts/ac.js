@@ -9,7 +9,7 @@ import { updateConfig, updateDynamicProperty } from './util/update_scripts';
 import { events } from './lib/events/index.js';
 import { getTPS } from './util/tps';
 import { commandHandler } from './lib/exports';
-import { COMMANDS } from './commands';
+import { COMMANDS } from './commands/index';
 
 import config from './config.js';
 import * as modules from './modules/index';
@@ -26,6 +26,7 @@ export class TNAntiCheat {
     this.#isEnabled;
     
     commandHandler.options.alwaysShowMessage = true;
+    commandHandler.options.customPermissionError = "このコマンドを実行する権限がありません";
     
     /** @type {Map<string, import('@minecraft/server').Vector3>} */
     this.frozenPlayerMap = new Map();

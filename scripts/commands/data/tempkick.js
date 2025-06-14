@@ -1,15 +1,15 @@
 import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register(
     {
       name: 'tn:tempkick',
-      description: 'プレイヤーを強制退出させます(復帰可能)',
+      description: '§aプレイヤーを強制退出させます(復帰可能)',
       aliases: ['tn:disconnect'],
-      permission: adminPermission,
+      permission: AdminPermission,
     },
     (params, origin) => {
       if (!origin.isSendable()) return CustomCommandStatus.Failure;

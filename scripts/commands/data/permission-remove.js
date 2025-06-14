@@ -2,14 +2,14 @@ import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/
 import { Permissions } from '../../util/Permissions';
 import { Util } from '../../util/util';
 import { commandHandler, failure } from '../../lib/exports';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 import { PermissionEnum } from '../enums';
 
 export default () => {
   commandHandler.register({
     name: 'tn:permissionremove',
-    description: 'プレイヤーの権限を削除します',
-    permission: adminPermission,
+    description: '§aプレイヤーの権限を削除します',
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
     

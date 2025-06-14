@@ -20,8 +20,8 @@
   "homepage": "https://github.com/tutinoko2048/TNAntiCheat/blob/main/README.md",
   "devDependencies": {
     "@eslint/js": "^9.16.0",
-    "@minecraft/server": "2.0.0-beta.1.21.80-stable",
-    "@minecraft/server-ui": "2.0.0-beta.1.21.80-stable",
+    "@minecraft/server": "2.1.0-beta.1.21.90-preview.28",
+    "@minecraft/server-ui": "2.1.0-beta.1.21.90-preview.28",
     "@types/eslint": "^9.6.1",
     "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.31.0",

@@ -1,26 +1,34 @@
-import { CustomCommandParamType, CustomCommandStatus, InputPermissionCategory, system } from '@minecraft/server';
+import { CustomCommandParamType, CustomCommandStatus, InputPermissionCategory, Player, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 /** @param {import('../../ac').TNAntiCheat} ac */
 export default function(ac) {
   commandHandler.register({
     name: 'tn:freeze',
-    description: 'プレイヤーを移動できなく(フリーズ状態に)します',
-    permission: adminPermission,
+    description: '§aプレイヤーを移動できなく(フリーズ状態に)します',
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-    if (params.target.length === 0) return failure('セレクターに合う対象がありません');
-    if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+    /** @type {Player} */
+    let target;
+    if (params.target) {
+      if (params.target.length === 0) return failure('セレクターに合う対象がありません');
+      if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
+      target = params.target[0];
+    } else {
+      const player = origin.getPlayer();
+      if (!player) return failure('対象のプレイヤーを指定してください');
+      target = player;
+    }
     
-    const target = params.target[0];
     const freezeState = params.value ?? !ac.frozenPlayerMap.has(target.id);
     
     system.run(() => {
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, freezeState);
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, freezeState);
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freezeState); // freeze is true so inputs should be false (disabled)
+      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freezeState);
       if (freezeState) ac.frozenPlayerMap.set(target.id, target.location);
       else ac.frozenPlayerMap.delete(target.id);
       
@@ -36,7 +44,7 @@ export default function(ac) {
     
     return CustomCommandStatus.Success;
   }, {
-    target: CustomCommandParamType.PlayerSelector,
+    target: [CustomCommandParamType.PlayerSelector],
     value: [CustomCommandParamType.Boolean]
   });
 }

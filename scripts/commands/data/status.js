@@ -4,7 +4,7 @@ import { Util } from '../../util/util';
 import { getCPS } from '../../modules/combat';
 import { BanManager } from '../../util/BanManager';
 import { commandHandler, failure, success } from '../../lib/exports';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 /**
  * @typedef {import('@minecraft/server').DimensionLocation} DimensionLocation
@@ -14,9 +14,9 @@ import { adminPermission } from '../utils';
 export default function() {
   commandHandler.register({
     name: 'tn:status',
-    description: '指定したプレイヤーに関する情報を表示します',
+    description: '§a指定したプレイヤーに関する情報を表示します',
     aliases: [ 'tn:stat' ],
-    permission: adminPermission,
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
     

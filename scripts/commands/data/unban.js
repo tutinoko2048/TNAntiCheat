@@ -2,14 +2,14 @@ import { CustomCommandParamType, CustomCommandStatus } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { BanManager } from '../../util/BanManager';
 import { Util } from '../../util/util';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:unban',
-    description: 'プレイヤーのBanを解除します',
+    description: '§aプレイヤーのBanを解除します',
     aliases: ['tn:pardon'],
-    permission: adminPermission,
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 

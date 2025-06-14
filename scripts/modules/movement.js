@@ -3,7 +3,7 @@ import { Util } from '../util/util';
 import config from '../config.js';
 import { createPlayerCache } from '../util/PlayerCache';
 
-const excluded = [GameMode.creative, GameMode.spectator];
+const excluded = [GameMode.Creative, GameMode.Spectator];
 
 const cacheLength = 5;
 

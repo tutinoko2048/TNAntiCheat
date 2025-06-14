@@ -1,13 +1,13 @@
 import { CustomCommandStatus, system } from '@minecraft/server';
 import { ConfigPanel } from '../../form/ConfigPanel';
 import { commandHandler, failure } from '../../lib/exports';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:config',
-    description: 'ConfigPanelを表示します',
-    permission: adminPermission,
+    description: '§aConfigPanelを表示します',
+    permission: AdminPermission,
   }, (_, origin) => {
     const player = origin.getPlayer();
     if (!player) return failure('このコマンドはここでは実行できません');

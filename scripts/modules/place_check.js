@@ -89,7 +89,7 @@ export async function placeCheckD(ev) {
   const loc = block.location;
   if (!config.placeCheckD.state || Util.isOP(player)) return;
   const gameMode = player.getGameMode();
-  if (config.placeCheckD.excludeCreative && gameMode === GameMode.creative) return;
+  if (config.placeCheckD.excludeCreative && gameMode === GameMode.Creative) return;
   const { container } = player.getComponent('minecraft:inventory');
 
   const spawn = (typeId) => {
@@ -106,10 +106,10 @@ export async function placeCheckD(ev) {
     RAILS.includes(block.typeId)
   ) {
     await Util.cancel(ev);
-    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, player);
+    if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, player);
     spawn(item.typeId);
     
-    if (gameMode === GameMode.creative) return;
+    if (gameMode === GameMode.Creative) return;
     if (item.amount === 1) {
       container.setItem(player.selectedSlotIndex);
     } else {
@@ -119,9 +119,9 @@ export async function placeCheckD(ev) {
     
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
     await Util.cancel(ev);
-    if (gameMode === GameMode.adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, player);
+    if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, player);
     spawn('minecraft:chest_boat');
-    if (gameMode === GameMode.creative) return;
+    if (gameMode === GameMode.Creative) return;
     if (item.amount === 1) {
       container.setItem(player.selectedSlotIndex);
     } else {

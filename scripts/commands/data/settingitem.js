@@ -2,14 +2,14 @@ import { CustomCommandStatus, system } from '@minecraft/server';
 import { Util } from '../../util/util';
 import { AdminPanel } from '../../form/AdminPanel';
 import { commandHandler, failure } from '../../lib/exports';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:settingitem',
-    description: '管理者用パネルを表示するためのアイテムを取得します',
+    description: '§a管理者用パネルを表示するためのアイテムを取得します',
     aliases: [ 'tn:wand' ],
-    permission: adminPermission,
+    permission: AdminPermission,
   }, (_, origin) => {
     if (origin.isPlayer()) {
       const player = origin.getPlayer(true);

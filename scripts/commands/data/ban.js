@@ -2,13 +2,13 @@ import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/
 import { commandHandler, Duration, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { BanManager } from '../../util/BanManager';
-import { adminPermission } from '../utils';
+import { AdminPermission } from '../utils';
 
 export default () => {
   commandHandler.register({
     name: 'tn:ban',
-    description: 'プレイヤーをBanします',
-    permission: adminPermission,
+    description: '§aプレイヤーをBanします',
+    permission: AdminPermission,
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
