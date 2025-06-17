@@ -6,12 +6,12 @@ import { AdminPanel } from './form/AdminPanel';
 import { VERSION, PropertyIds } from './util/constants';
 import { Util } from './util/util';
 import { updateConfig, updateDynamicProperty } from './util/update_scripts';
-import { events } from './lib/events/index.js';
 import { getTPS } from './util/tps';
 import { commandHandler } from './lib/exports';
 import { COMMANDS } from './commands/index';
 
 import config from './config.js';
+import { events } from './events.js';
 import * as modules from './modules/index';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
@@ -28,11 +28,10 @@ export class TNAntiCheat {
     commandHandler.options.alwaysShowMessage = true;
     commandHandler.options.customPermissionError = "このコマンドを実行する権限がありません";
     
-    /** @type {Map<string, import('@minecraft/server').Vector3>} */
-    this.frozenPlayerMap = new Map();
-    
     // load system
-    events.worldLoad.subscribe(() => this.#onWorldLoad());
+    Util.awaitWorldLoad()
+      .then(() => this.#onWorldLoad())
+      .catch(e => console.error(e, e.stack));
     
     system.afterEvents.scriptEventReceive.subscribe(({ id, sourceEntity }) => {
       if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
@@ -40,6 +39,10 @@ export class TNAntiCheat {
     }, { namespaces: [ 'ac' ] });
 
     this.#loadSlashCommands();
+  }
+
+  get events() {
+    return events;
   }
 
   #loadSlashCommands() {
@@ -108,8 +111,8 @@ export class TNAntiCheat {
         modules.debugView(player);
         
         try {
-          if (this.frozenPlayerMap.has(player.id)) {
-            player.teleport(this.frozenPlayerMap.get(player.id));
+          if (BanManager.isFrozen(player)) {
+            player.teleport(BanManager.getFrozenLocation(player));
             player.addEffect('weakness', 20*1, { amplifier: 255, showParticles: false });
           }
         } catch (e) {
@@ -147,7 +150,7 @@ export class TNAntiCheat {
         !modules.reachC(ev)
       );
       if (safe && Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) ev.cancel = true;
-      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
     });
     
     world.beforeEvents.chatSend.subscribe(ev => this.#handleChat(ev));
@@ -161,7 +164,7 @@ export class TNAntiCheat {
       modules.placeCheckD(ev);
       
       modules.getBlock(ev);
-      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
     });
 
     world.beforeEvents.playerPlaceBlock.subscribe(ev => {
@@ -186,15 +189,11 @@ export class TNAntiCheat {
         else new AdminPanel(this, source).show();
         return;
       }
-      if (this.frozenPlayerMap.has(source.id)) ev.cancel = true;
+      if (BanManager.isFrozen(source)) ev.cancel = true;
     });
     
     world.afterEvents.playerSpawn.subscribe(ev => {
       if (ev.initialSpawn) this.#handleJoin(ev.player);
-    });
-    
-    world.afterEvents.playerLeave.subscribe(ev => {
-      this.frozenPlayerMap.delete(ev.playerId);
     });
     
     world.afterEvents.itemReleaseUse.subscribe(ev => {
@@ -218,11 +217,11 @@ export class TNAntiCheat {
     // });
 
     world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
-      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
     });
 
     world.beforeEvents.playerInteractWithEntity.subscribe(ev => {
-      if (this.frozenPlayerMap.has(ev.player.id)) ev.cancel = true;
+      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
     });
     
     // system.afterEvents.scriptEventReceive.subscribe(ev => {

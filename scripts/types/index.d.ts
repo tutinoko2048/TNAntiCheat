@@ -1,7 +1,8 @@
 import * as mc from '@minecraft/server';
 import { PropertyIds } from '../util/constants';
 
-export * from './Config'
+export * from './Config';
+export * from './events';
 
 interface DynamicPropertyTypes {
   [PropertyIds.ban]: boolean;
