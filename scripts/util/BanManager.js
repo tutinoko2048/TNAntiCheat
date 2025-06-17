@@ -19,10 +19,10 @@ export class BanManager {
    * @returns {boolean} kickに成功したかどうか
    */
   static kick(player, reason = '', isBan, force = true) {
-    if (config.others.customKickMessage) reason += `\n${config.others.customKickMessage}`;
+    if (config.others.customKickMessage) reason += ` ${config.others.customKickMessage}`;
 
     const { successCount } = player.runCommand(
-      `kick @s §l${isBan ? '§cBanned§r' : 'Kicked'} by TN-AntiCheat§r\n${reason}`
+      `kick @s "[TN-AntiCheat] ${reason}"`
     );
     const success = successCount > 0;
     if (!success && force) player.triggerEvent('tn:kick');

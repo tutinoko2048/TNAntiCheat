@@ -323,7 +323,7 @@ export class AdminPanel {
     const reason = /** @type {string} */ (formValues[0]);
     const message = `§7Reason: ${reason || '-'}`;
 
-    const res = BanManager.kick(target, message, false, false);
+    const res = BanManager.kick(target, `reason=${reason || 'null'}`, false, false);
     if (!res) return Util.notify('§ckickに失敗しました', this.player);
     Util.notify(`§7${this.player.name} >> §c${target.name}§r をkickしました\n${message}`);
     Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}\n${message}` }, target);

@@ -47,7 +47,11 @@ export function banCheck(player) {
       type: 'disconnect.ban',
       message: `接続を拒否しました\n${message}`
     }, player);
-    return Util.kick(player, message, true);
+    return Util.kick(
+      player,
+      `reason=${reason ?? 'banned'}${expireAt ? `, expireAt=${Util.getTime(expireAt, true)}` : ''}`,
+      true
+    );
   }
 }
 

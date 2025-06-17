@@ -27,13 +27,17 @@ export default () => {
       const ms = Duration.toMS(duration);
       if (ms > 0) {
         expireAt = Date.now() + ms;
-        expireAtMessage = `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`;
+        expireAtMessage = `${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`;
       }
     }
-    const message = [`§7Reason: §r${reason ?? '-'}`, expireAtMessage].filter(Boolean).join('\n');
+    const message = [`§7Reason: §r${reason ?? '-'}`, `§7ExpireAt: §r${expireAtMessage}`].filter(Boolean).join('\n');
 
     system.run(() => {
-      const success = BanManager.ban(target, { reason, message, expireAt });
+      const success = BanManager.ban(target, {
+        reason,
+        expireAt,
+        message: `reason=${reason ?? 'null'}${expireAtMessage ? `, expireAt=${expireAtMessage}` : ''}`
+      });
       if (!success) return origin.sendMessage('§cBanに失敗しました');
 
       Util.notify(`§7${origin.getName()} >> ${target.name} をbanしました\n${message}`);
