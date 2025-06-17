@@ -2,7 +2,7 @@ import { world, EquipmentSlot, CustomCommandParamType, CustomCommandStatus } fro
 import { PermissionType, Permissions } from '../../util/Permissions';
 import { Util } from '../../util/util';
 import { getCPS } from '../../modules/combat';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 import { commandHandler, failure, success } from '../../lib/exports';
 import { AdminPermission } from '../utils';
 
@@ -58,7 +58,7 @@ export default function() {
       `§7ID: §f${target.id}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
       `§7CPS: §f${cps}`,
-      `§7isMuted: ${bool(BanManager.isMuted(target))}`,
+      `§7isMuted: ${bool(ModerationManager.isMuted(target))}`,
       `§7isFrozen: ${bool(false)}`, // AC instance needed for frozenPlayerMap
       // target.flyACount ? `§7§oFly/A count: §r${target.flyACount}` : null,
       target.speedACount ? `§7§oSpeed/A count: §r${target.speedACount}` : null,

@@ -2,7 +2,7 @@ import { CustomCommandParamType, CustomCommandStatus, Player, system } from '@mi
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { AdminPermission } from '../utils';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 
 export default function() {
   commandHandler.register({
@@ -24,10 +24,10 @@ export default function() {
       target = player;
     }
     
-    const freezeState = params.value ?? !BanManager.isFrozen(target);
+    const freezeState = params.value ?? !ModerationManager.isFrozen(target);
     
     system.run(() => {
-      BanManager.setFrozen(target, freezeState);
+      ModerationManager.setFrozen(target, freezeState);
       
       origin.sendMessage(
         freezeState ? '§o§eあなたはフリーズされています' : '§o§eあなたのフリーズは解除されました'

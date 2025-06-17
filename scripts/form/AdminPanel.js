@@ -8,7 +8,7 @@ import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
 import { ActionForm } from '../lib/form/index';
 import { editLore, editNameTag } from './ItemEditor';
-import { BanManager } from '../util/BanManager';
+import { ModerationManager } from '../util/ModerationManager';
 import { Duration } from '../lib/duration/main';
 import { getTPS } from '../util/tps';
 
@@ -99,8 +99,8 @@ export class AdminPanel {
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
-      `§7isFrozen: ${bool(BanManager.isFrozen(target))}`,
-      `§7isMuted: ${bool(BanManager.isMuted(target))}`
+      `§7isFrozen: ${bool(ModerationManager.isFrozen(target))}`,
+      `§7isMuted: ${bool(ModerationManager.isMuted(target))}`
     ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo().body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
     const { selection, canceled } = await form.show(this.player);
@@ -284,8 +284,8 @@ export class AdminPanel {
   
   /** @param {Player} target */
   async manageAbility(target) {
-    const _mute = BanManager.isMuted(target);
-    const _freeze = BanManager.isFrozen(target);
+    const _mute = ModerationManager.isMuted(target);
+    const _freeze = ModerationManager.isFrozen(target);
     const form = new UI.ModalFormData();
     form.title('Manage Abilities');
     form.toggle('ミュート / Mute', { defaultValue: _mute });
@@ -295,7 +295,7 @@ export class AdminPanel {
     const [ mute, freeze ] = formValues;
     
     if (mute !== _mute) {
-      const res = BanManager.setMuted(target, /** @type {boolean} */(mute));
+      const res = ModerationManager.setMuted(target, /** @type {boolean} */(mute));
       if (!res) return Util.notify(`§c${target.name}§r§c のミュートに失敗しました (Education Editionがオフになっている可能性があります)`, this.player);
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のミュートを ${mute} に設定しました`);
       if (mute) Util.notify('§o§eあなたはミュートされています', target);
@@ -303,7 +303,7 @@ export class AdminPanel {
     }
     
     if (freeze !== _freeze) {
-      BanManager.setFrozen(target, /** @type {boolean} */ (freeze));
+      ModerationManager.setFrozen(target, /** @type {boolean} */ (freeze));
 
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);
       if (freeze) Util.notify('§o§eあなたはフリーズされています', target);
@@ -323,7 +323,7 @@ export class AdminPanel {
     const reason = /** @type {string} */ (formValues[0]);
     const message = `§7Reason: ${reason || '-'}`;
 
-    const res = BanManager.kick(target, `reason=${reason || 'null'}`, false, false);
+    const res = ModerationManager.kick(target, `reason=${reason || 'null'}`, false, false);
     if (!res) return Util.notify('§ckickに失敗しました', this.player);
     Util.notify(`§7${this.player.name} >> §c${target.name}§r をkickしました\n${message}`);
     Util.writeLog({ type: 'panel.kick', message: `Kicked by ${this.player.name}\n${message}` }, target);
@@ -360,7 +360,7 @@ export class AdminPanel {
       isPermanent ? null : `§7ExpireAt: §r${Util.getTime(expireAt, true)} (${Util.formatDuration(ms)})`
     ].filter(Boolean).join('\n');
 
-    BanManager.ban(target, {
+    ModerationManager.ban(target, {
       reason, message,
       expireAt: isPermanent ? undefined : expireAt,
       forceKick: false
@@ -497,7 +497,7 @@ export class AdminPanel {
  * @arg {boolean} [fromChat]
  */
 export async function manageUnbanQueue(player, fromChat) {
-  const queue = BanManager.getUnbanQueue();
+  const queue = ModerationManager.getUnbanQueue();
   queue.sort((entry) => entry.source === 'property' ? -1 : 1); // property優先
   
   const form = new ActionForm();
@@ -520,7 +520,7 @@ export async function manageUnbanQueue(player, fromChat) {
     const { canceled, formValues } = await form.show(player);
     const targetName = /** @type {string} */ (formValues[0]);
     if (canceled || !targetName) return await manageUnbanQueue(player);
-    BanManager.addUnbanQueue(targetName);
+    ModerationManager.addUnbanQueue(targetName);
     Util.notify(`§7${player.name} >> §r${targetName}§r をunbanのリストに追加しました`);
     Util.writeLog({ type: 'unban.add', playerName: targetName, message: `Executed by ${player.name}` });
     
@@ -533,7 +533,7 @@ export async function manageUnbanQueue(player, fromChat) {
       body: `本当に §l§c${entry.name}§r をUnbanQueueから削除しますか？`
     });
     if (!res) return await manageUnbanQueue(player);
-    BanManager.removeUnbanQueue(entry.name);
+    ModerationManager.removeUnbanQueue(entry.name);
     Util.notify(`§7${player.name} >> §r${entry.name} §7(${entry.source})§r をUnbanQueueから削除しました`);
     Util.writeLog({ type: 'unban.remove', playerName: entry.name, message: `Executed by ${player.name}` });
   }

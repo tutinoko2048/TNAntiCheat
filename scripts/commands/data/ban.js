@@ -1,7 +1,7 @@
 import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
 import { commandHandler, Duration, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 import { AdminPermission } from '../utils';
 
 export default () => {
@@ -33,7 +33,7 @@ export default () => {
     const message = [`§7Reason: §r${reason ?? '-'}`, `§7ExpireAt: §r${expireAtMessage}`].filter(Boolean).join('\n');
 
     system.run(() => {
-      const success = BanManager.ban(target, {
+      const success = ModerationManager.ban(target, {
         reason,
         expireAt,
         message: `reason=${reason ?? 'null'}${expireAtMessage ? `, expireAt=${expireAtMessage}` : ''}`
