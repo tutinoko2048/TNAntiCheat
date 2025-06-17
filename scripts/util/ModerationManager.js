@@ -10,7 +10,7 @@ import { events } from '../events.js';
 /** @type {WeakMap<Player, import('@minecraft/server').Vector3>} */
 const frozenPlayerMap = new WeakMap();
 
-export class BanManager {
+export class ModerationManager {
   /**
    * @param {Player} player 
    * @param {string} [reason] 
@@ -47,7 +47,7 @@ export class BanManager {
       player.setDynamicProperty(PropertyIds.banExpireAt, options.expireAt);
     }
 
-    const result = BanManager.kick(player, options.message || options.reason, true, options.forceKick ?? true);
+    const result = ModerationManager.kick(player, options.message || options.reason, true, options.forceKick ?? true);
 
     events.playerBan.emit({ player, reason: options.reason, expireAt: options.expireAt });
 
@@ -60,7 +60,7 @@ export class BanManager {
     player.setDynamicProperty(PropertyIds.ban);
     player.setDynamicProperty(PropertyIds.banReason);
     player.setDynamicProperty(PropertyIds.banExpireAt);
-    BanManager.removeUnbanQueue(player.name);
+    ModerationManager.removeUnbanQueue(player.name);
 
     events.playerUnbanSuccess.emit({ player });
   }
@@ -106,9 +106,9 @@ export class BanManager {
    * @returns {UnbanQueueEntry[]}
    */
   static addUnbanQueue(playerName) {
-    const queue = BanManager.getUnbanQueue();
+    const queue = ModerationManager.getUnbanQueue();
     queue.push({ name: playerName, source: 'property' });
-    const result = BanManager.setUnbanQueue(queue);
+    const result = ModerationManager.setUnbanQueue(queue);
 
     events.playerUnbanAdd.emit({ playerName });
 
@@ -120,8 +120,8 @@ export class BanManager {
    * @returns {UnbanQueueEntry[]}
    */
   static removeUnbanQueue(playerName) {
-    const queue = BanManager.getUnbanQueue();
-    const result = BanManager.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
+    const queue = ModerationManager.getUnbanQueue();
+    const result = ModerationManager.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
 
     events.playerUnbanRemove.emit({ playerName });
 

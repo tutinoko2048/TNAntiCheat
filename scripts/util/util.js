@@ -3,7 +3,7 @@ import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
 import { events } from '../events.js';
 import { PermissionType, Permissions } from './Permissions';
-import { BanManager } from './BanManager';
+import { ModerationManager } from './ModerationManager.js';
 import { Duration } from '../lib/duration/main';
 
 /** @enum {'ban'|'kick'|'tempkick'|'notify'|'none'} */
@@ -78,7 +78,7 @@ export class Util {
       resetCount(player);
       return false;
     }
-    return BanManager.ban(player, {
+    return ModerationManager.ban(player, {
       reason: type,
       message: `${type ? `type=${type}, ` : ''}reason=${reason}`
     });
@@ -97,7 +97,7 @@ export class Util {
       return false;
     }
     
-    const success = BanManager.kick(player, reason, ban);
+    const success = ModerationManager.kick(player, reason, ban);
     if (!success) console.warn('Kickに失敗したため強制退出させました');
     return success;
   }

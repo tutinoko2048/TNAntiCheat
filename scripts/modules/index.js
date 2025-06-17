@@ -5,7 +5,7 @@ import config from '../config.js';
 import { PropertyIds } from '../util/constants';
 import { AdminPanel } from '../form/AdminPanel';
 import { getCPS } from './combat';
-import { BanManager } from '../util/BanManager';
+import { ModerationManager } from '../util/ModerationManager';
 import { getTPS } from '../util/tps';
 
 export * from './item_check';
@@ -22,16 +22,16 @@ export * as scaffold from './scaffold';
  * @returns {boolean} banしたかどうか
  */
 export function banCheck(player) {
-  const unbanQueue = BanManager.getUnbanQueue();
+  const unbanQueue = ModerationManager.getUnbanQueue();
   
-  if (BanManager.isBanned(player)) { // ban by DP, tag, name, id
+  if (ModerationManager.isBanned(player)) { // ban by DP, tag, name, id
     const expireAt = player.getDynamicProperty(PropertyIds.banExpireAt);
     const isInQueue = unbanQueue.some(entry => entry.name === player.name);
     if (
       isInQueue ||
       expireAt && expireAt - Date.now() < 0
     ) {
-      BanManager.unban(player);
+      ModerationManager.unban(player);
       Util.notify(`§o§7Unbanned${isInQueue ? '' : '(expired)'}: ${player.name}`);
       return;
     }

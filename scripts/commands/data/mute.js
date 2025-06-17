@@ -1,7 +1,7 @@
 import { CustomCommandParamType, CustomCommandStatus, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 import { AdminPermission } from '../utils';
 
 export default () => {
@@ -16,10 +16,10 @@ export default () => {
     if (params.target.length > 1) return failure('セレクターに合う対象が多すぎます');
 
     const target = params.target[0];
-    const muteState = params.value ?? !BanManager.isMuted(target);
+    const muteState = params.value ?? !ModerationManager.isMuted(target);
 
     system.run(() => {
-      const success = BanManager.setMuted(target, muteState);
+      const success = ModerationManager.setMuted(target, muteState);
       if (!success) return origin.sendMessage('操作に失敗しました (Education Editionがオフになっている可能性があります)');
       
       origin.sendMessage(

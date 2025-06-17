@@ -1,6 +1,6 @@
 import { CustomCommandParamType, CustomCommandStatus } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 import { Util } from '../../util/util';
 import { AdminPermission } from '../utils';
 
@@ -16,12 +16,12 @@ export default () => {
     const playerName = params.playerName;
     if (!playerName) return failure('プレイヤー名を指定してください');
 
-    const queue = BanManager.getUnbanQueue();
+    const queue = ModerationManager.getUnbanQueue();
     const existing = queue.find(entry => entry.name === playerName);
     
     if (existing) return failure(`${playerName} は既にunbanキューに存在します`);
 
-    BanManager.addUnbanQueue(playerName);
+    ModerationManager.addUnbanQueue(playerName);
     
     Util.writeLog({
       type: 'command.unban',

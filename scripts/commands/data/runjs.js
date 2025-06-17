@@ -9,7 +9,7 @@ import config from '../../config.js';
 import unbanQueue from '../../unban_queue.js';
 import { DataManager } from '../../util/DataManager';
 import { format } from '../../lib/formatter/main';
-import { BanManager } from '../../util/BanManager';
+import { ModerationManager } from '../../util/ModerationManager';
 import { commandHandler } from '../../lib/exports';
 
 export default () => {
@@ -35,7 +35,7 @@ export default () => {
       config,
       unbanQueue,
       DataManager,
-      BanManager,
+      ModerationManager: BanManager,
       Permissions,
       Util,
     };

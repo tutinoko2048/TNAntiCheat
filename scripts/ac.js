@@ -1,5 +1,5 @@
 import { world, system, Player, EntityVariantComponent } from '@minecraft/server';
-import { BanManager } from './util/BanManager';
+import { ModerationManager } from './util/ModerationManager';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { PermissionType, Permissions } from './util/Permissions';
 import { AdminPanel } from './form/AdminPanel';
@@ -111,8 +111,8 @@ export class TNAntiCheat {
         modules.debugView(player);
         
         try {
-          if (BanManager.isFrozen(player)) {
-            player.teleport(BanManager.getFrozenLocation(player));
+          if (ModerationManager.isFrozen(player)) {
+            player.teleport(ModerationManager.getFrozenLocation(player));
             player.addEffect('weakness', 20*1, { amplifier: 255, showParticles: false });
           }
         } catch (e) {
@@ -150,7 +150,7 @@ export class TNAntiCheat {
         !modules.reachC(ev)
       );
       if (safe && Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) ev.cancel = true;
-      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
+      if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
     
     world.beforeEvents.chatSend.subscribe(ev => this.#handleChat(ev));
@@ -164,7 +164,7 @@ export class TNAntiCheat {
       modules.placeCheckD(ev);
       
       modules.getBlock(ev);
-      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
+      if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
       if (Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) {
         ev.cancel = true;
         system.run(() => new AdminPanel(this, ev.player).show());
@@ -193,7 +193,7 @@ export class TNAntiCheat {
         else new AdminPanel(this, source).show();
         return;
       }
-      if (BanManager.isFrozen(source)) ev.cancel = true;
+      if (ModerationManager.isFrozen(source)) ev.cancel = true;
     });
     
     world.afterEvents.playerSpawn.subscribe(ev => {
@@ -221,11 +221,11 @@ export class TNAntiCheat {
     // });
 
     world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
-      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
+      if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
 
     world.beforeEvents.playerInteractWithEntity.subscribe(ev => {
-      if (BanManager.isFrozen(ev.player)) ev.cancel = true;
+      if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
     
     // system.afterEvents.scriptEventReceive.subscribe(ev => {
@@ -259,7 +259,7 @@ export class TNAntiCheat {
     if (banned) return;
     modules.xuidBanCheck();
     
-    if (BanManager.isMuted(player)) {
+    if (ModerationManager.isMuted(player)) {
       const res = Util.runCommandSafe('ability @s mute true', player);
       if (res) Util.notify(`§7あなたはミュートされています`, player);
     }
@@ -281,7 +281,7 @@ export class TNAntiCheat {
   
   /** @returns {import('./types').UnbanQueueEntry[]} */
   getUnbanQueue() {
-    return BanManager.getUnbanQueue();
+    return ModerationManager.getUnbanQueue();
   }
   
   /** @return {typeof config} */
