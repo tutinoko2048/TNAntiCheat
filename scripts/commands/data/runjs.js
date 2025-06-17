@@ -35,7 +35,7 @@ export default () => {
       config,
       unbanQueue,
       DataManager,
-      ModerationManager: BanManager,
+      ModerationManager,
       Permissions,
       Util,
     };
