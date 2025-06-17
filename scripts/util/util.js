@@ -80,7 +80,7 @@ export class Util {
     }
     return BanManager.ban(player, {
       reason: type,
-      message: `${type ? `§7Type: §c${type}§r\n` : ''}§7Reason: §r${reason}§r`
+      message: `${type ? `type=${type}, ` : ''}reason=${reason}`
     });
   }
 

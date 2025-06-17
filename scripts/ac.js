@@ -165,6 +165,10 @@ export class TNAntiCheat {
       
       modules.getBlock(ev);
       if (BanManager.isFrozen(ev.player)) ev.cancel = true;
+      if (Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) {
+        ev.cancel = true;
+        system.run(() => new AdminPanel(this, ev.player).show());
+      }
     });
 
     world.beforeEvents.playerPlaceBlock.subscribe(ev => {
