@@ -2,8 +2,9 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 8
-export default /** @type {import('./types').IConfig} */ ({
+// configVersion: 9
+/** @type {import('./types').IConfig} */
+export default {
   permission: {
     admin: { // 全ての検知から除外される権限
       encrypt: true, // タグを難読化して不正に権限を取られにくくする
@@ -274,9 +275,9 @@ export default /** @type {import('./types').IConfig} */ ({
     flagCount: 20 // この回数以上検知されるとFlag (-1で無制限)
   },
   creative: { // クリエイティブになったら検知
-    state: true,
+    state: false,
     punishment: "notify",
-    defaultGamemode: "adventure" // クリエを検知した時に設定するGamemode
+    defaultGamemode: "Adventure" // クリエを検知した時に設定するGamemode
   },
   speedA: { // 速すぎる移動を検知 (ベータ)
     state: true,
@@ -337,4 +338,4 @@ export default /** @type {import('./types').IConfig} */ ({
       name: "TPS" // スコアの名前
     }
   }
-});
+};

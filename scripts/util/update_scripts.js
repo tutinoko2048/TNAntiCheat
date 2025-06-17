@@ -27,6 +27,11 @@ export function updateConfig() {
     data.logger.shortName = data.others.shortName;
     delete data.others.shortName;
   }
+
+  if (typeof data.creative?.defaultGamemode === 'string') {
+    // convert adventure to Adventure
+    data.creative.defaultGamemode = data.creative.defaultGamemode[0].toUpperCase() + data.creative.defaultGamemode.slice(1);
+  }
   
   DataManager.save(data);
 }

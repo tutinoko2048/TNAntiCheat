@@ -146,7 +146,7 @@ export class Util {
   
   /** @param {Player} player */
   static isHost(player) {
-    return player.id === '-206158430207';
+    return player.id === '-4294967295';
   }
     
   /**

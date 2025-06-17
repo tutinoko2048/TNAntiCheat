@@ -449,6 +449,7 @@ export class AdminPanel {
   async logDetail(log) {
     const body = [
       `[§l${log.punishment?'§c':''}${log.type}§r] §7- ${Util.getTime(log.createdAt)}§r`,
+      ' ',
       log.playerName ? `§7プレイヤー名: §r${log.playerName}§r` : null,
       log.playerId ? `§7プレイヤーID: §r${log.playerId}` : null,
       log.punishment ? `§7警告タイプ: §r${log.punishment}§r` : null,

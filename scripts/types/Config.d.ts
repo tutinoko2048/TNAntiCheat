@@ -12,7 +12,7 @@ interface EntityCounterModule extends IModule {
 }
 
 interface CreativeModule extends IModule {
-  defaultGamemode: mc.GameMode[keyof mc.GameMode];
+  defaultGamemode: keyof typeof mc.GameMode;
 }
 
 interface ItemListModule {
@@ -69,7 +69,7 @@ interface PermissionModule {
   ban: PermissionRole & { xuids: string[] };
 }
 
-export type IConfig = {
+export interface IConfig {
   permission: PermissionModule;
   command: {
     prefix: string;
