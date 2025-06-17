@@ -1,10 +1,14 @@
-import { world, Player } from '@minecraft/server';
+import { world, Player, InputPermissionCategory } from '@minecraft/server';
 import { PropertyIds } from './constants'
 import config from '../config';
 import { PermissionType, Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
+import { events } from '../events.js';
 
 /** @typedef {import('../types').UnbanQueueEntry} UnbanQueueEntry */
+
+/** @type {WeakMap<Player, import('@minecraft/server').Vector3>} */
+const frozenPlayerMap = new WeakMap();
 
 export class BanManager {
   /**
@@ -22,6 +26,9 @@ export class BanManager {
     );
     const success = successCount > 0;
     if (!success && force) player.triggerEvent('tn:kick');
+
+    if (!isBan) events.playerKick.emit({ player, reason });
+    
     return success;
   }
 
@@ -39,8 +46,12 @@ export class BanManager {
     if (options.expireAt !== undefined) {
       player.setDynamicProperty(PropertyIds.banExpireAt, options.expireAt);
     }
-    
-    return BanManager.kick(player, options.message || options.reason, true, options.forceKick ?? true);
+
+    const result = BanManager.kick(player, options.message || options.reason, true, options.forceKick ?? true);
+
+    events.playerBan.emit({ player, reason: options.reason, expireAt: options.expireAt });
+
+    return result;
   }
 
   /** @param {Player} player */
@@ -50,6 +61,8 @@ export class BanManager {
     player.setDynamicProperty(PropertyIds.banReason);
     player.setDynamicProperty(PropertyIds.banExpireAt);
     BanManager.removeUnbanQueue(player.name);
+
+    events.playerUnbanSuccess.emit({ player });
   }
 
   /**
@@ -95,7 +108,11 @@ export class BanManager {
   static addUnbanQueue(playerName) {
     const queue = BanManager.getUnbanQueue();
     queue.push({ name: playerName, source: 'property' });
-    return BanManager.setUnbanQueue(queue);
+    const result = BanManager.setUnbanQueue(queue);
+
+    events.playerUnbanAdd.emit({ playerName });
+
+    return result;
   }
 
   /**
@@ -104,7 +121,11 @@ export class BanManager {
    */
   static removeUnbanQueue(playerName) {
     const queue = BanManager.getUnbanQueue();
-    return BanManager.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
+    const result = BanManager.setUnbanQueue(queue.filter(entry => entry.name !== playerName));
+
+    events.playerUnbanRemove.emit({ playerName });
+
+    return result;
   }
 
   /**
@@ -121,10 +142,46 @@ export class BanManager {
    * @param {boolean} [temporary]
    * @returns {boolean}
    */
-  static setMuted(player, state, temporary) {
+  static setMuted(player, state, temporary = false) {
     const res = player.runCommand(`ability @s mute ${state}`);
     const success = res.successCount > 0;
     if (!temporary && success) player.setDynamicProperty(PropertyIds.mute, state);
+
+    events.playerMuteUpdate.emit({ player, currentValue: state, isTemporary: temporary });
+    
     return success;
+  }
+
+  /**
+   * @param {Player} player 
+   * @returns {boolean}
+   */
+  static isFrozen(player) {
+    return frozenPlayerMap.has(player);
+  }
+
+  /**
+   * @param {Player} player 
+   * @param {boolean} state
+   */
+  static setFrozen(player, state) {
+    player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !state); // freeze is true so inputs should be false (disabled)
+    player.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !state);
+    
+    if (state) {
+      frozenPlayerMap.set(player, player.location);
+    } else {
+      frozenPlayerMap.delete(player);
+    }
+
+    events.playerFreezeUpdate.emit({ player, currentValue: state });
+  }
+
+  /**
+   * @param {Player} player
+   * @return {import('@minecraft/server').Vector3 | undefined}
+   */
+  static getFrozenLocation(player) {
+    return frozenPlayerMap.get(player);
   }
 }

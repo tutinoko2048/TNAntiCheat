@@ -1,9 +1,10 @@
 import { world, system, Player, GameMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import config from '../config.js';
+import { events } from '../events.js';
 import { PermissionType, Permissions } from './Permissions';
-import { BanManager } from './BanManager.js';
-import { Duration } from '../lib/duration/main.js';
+import { BanManager } from './BanManager';
+import { Duration } from '../lib/duration/main';
 
 /** @enum {'ban'|'kick'|'tempkick'|'notify'|'none'} */
 export const PunishmentType = /** @type {const} */ ({
@@ -61,6 +62,8 @@ export class Util {
       
       Util.writeLog({ playerName: player.name, playerId: player.id, type, punishment, message });
     }
+
+    events.playerFlagged.emit({ player, type, punishment, message });
   }
   
   /**
@@ -107,6 +110,8 @@ export class Util {
       return;
     }
     player.triggerEvent('tn:kick');
+
+    events.playerTempKick.emit({ player });
   }
   
   /**
@@ -127,6 +132,8 @@ export class Util {
       if (config.logger.emitScriptEvent !== '') {
         system.sendScriptEvent(config.logger.emitScriptEvent, result);
       }
+      
+      events.notify.emit(result);
     }
   }
   
@@ -163,6 +170,8 @@ export class Util {
       content.playerId ??= player.id;
     }
     world.logs.push(content);
+
+    events.actionLogCreate.emit(content);
   }
   
   static safeString(str, length) {
@@ -373,6 +382,21 @@ export class Util {
    */
   static floorVector(vec) {
     return { x: Math.floor(vec.x), y: Math.floor(vec.y), z: Math.floor(vec.z) };
+  }
+
+  /** @returns {Promise<void>} */
+  static awaitWorldLoad() {
+    return new Promise(resolve => {
+      const callback = world.afterEvents.worldLoad.subscribe(() => {
+        const run = system.runInterval(() => {
+          if (world.getPlayers().length > 0) {
+            resolve();
+            system.clearRun(run);
+            world.afterEvents.worldLoad.unsubscribe(callback);      
+          }
+        })
+      });
+    })
   }
 }
 /** @arg {Player} player */

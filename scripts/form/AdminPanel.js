@@ -1,4 +1,4 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode, InputPermissionCategory } from '@minecraft/server';
+import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -99,7 +99,7 @@ export class AdminPanel {
       `§7Health: §f${Math.floor(currentValue)} / ${effectiveMax}`,
       `§7Permission: §f${perm(target)}`,
       target.joinedAt ? `§7JoinedAt: §f${Util.getTime(target.joinedAt)}` : null,
-      `§7isFrozen: ${bool(this.ac.frozenPlayerMap.has(target.id))}`,
+      `§7isFrozen: ${bool(BanManager.isFrozen(target))}`,
       `§7isMuted: ${bool(BanManager.isMuted(target))}`
     ].filter(Boolean).join('\n');
     const form = FORMS.playerInfo().body(`${message ? `${message}§r\n\n` : ''}${info}\n `);
@@ -285,7 +285,7 @@ export class AdminPanel {
   /** @param {Player} target */
   async manageAbility(target) {
     const _mute = BanManager.isMuted(target);
-    const _freeze = this.ac.frozenPlayerMap.has(target.id);
+    const _freeze = BanManager.isFrozen(target);
     const form = new UI.ModalFormData();
     form.title('Manage Abilities');
     form.toggle('ミュート / Mute', { defaultValue: _mute });
@@ -303,10 +303,8 @@ export class AdminPanel {
     }
     
     if (freeze !== _freeze) {
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freeze);
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freeze);
-      if (freeze) this.ac.frozenPlayerMap.set(target.id, target.location);
-        else this.ac.frozenPlayerMap.delete(target.id);
+      BanManager.setFrozen(target, /** @type {boolean} */ (freeze));
+
       Util.notify(`§7${this.player.name}§r§7 >> ${target.name} のフリーズを ${freeze} に設定しました`);
       if (freeze) Util.notify('§o§eあなたはフリーズされています', target);
       Util.writeLog({ type: 'panel.freeze', message: `FreezeState: ${freeze}\nExecuted by ${this.player.name}` }, target);

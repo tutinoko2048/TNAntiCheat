@@ -1,10 +1,10 @@
-import { CustomCommandParamType, CustomCommandStatus, InputPermissionCategory, Player, system } from '@minecraft/server';
+import { CustomCommandParamType, CustomCommandStatus, Player, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { AdminPermission } from '../utils';
+import { BanManager } from '../../util/BanManager';
 
-/** @param {import('../../ac').TNAntiCheat} ac */
-export default function(ac) {
+export default function() {
   commandHandler.register({
     name: 'tn:freeze',
     description: '§aプレイヤーを移動できなく(フリーズ状態に)します',
@@ -24,13 +24,10 @@ export default function(ac) {
       target = player;
     }
     
-    const freezeState = params.value ?? !ac.frozenPlayerMap.has(target.id);
+    const freezeState = params.value ?? !BanManager.isFrozen(target);
     
     system.run(() => {
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !freezeState); // freeze is true so inputs should be false (disabled)
-      target.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !freezeState);
-      if (freezeState) ac.frozenPlayerMap.set(target.id, target.location);
-      else ac.frozenPlayerMap.delete(target.id);
+      BanManager.setFrozen(target, freezeState);
       
       origin.sendMessage(
         freezeState ? '§o§eあなたはフリーズされています' : '§o§eあなたのフリーズは解除されました'

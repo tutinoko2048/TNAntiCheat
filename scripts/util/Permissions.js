@@ -1,4 +1,5 @@
 import config from '../config.js';
+import { events } from '../events.js';
 import { encode } from './secret';
 
 /** @typedef {import('@minecraft/server').Player} Player */
@@ -21,6 +22,8 @@ export class Permissions {
   static add(player, permission) {
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
     player.addTag(this.getTagString(player, permission));
+
+    events.playerPermissionAdd.emit({ player, permission });
   }
   
   /**
@@ -30,6 +33,8 @@ export class Permissions {
   static remove(player, permission) {
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
     player.removeTag(this.getTagString(player, permission));
+
+    events.playerPermissionRemove.emit({ player, permission });
   }
   
   /**

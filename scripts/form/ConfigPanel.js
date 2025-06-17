@@ -7,6 +7,7 @@ import { description } from '../util/config_description';
 import { DataManager } from '../util/DataManager';
 import { DROPDOWNS, confirmForm } from './static_form';
 import { canAdd } from '../util/config_setting';
+import { events } from '../events.js';
 
 const MODULE_EXCLUDE_LIST = ['flyA']
 
@@ -191,6 +192,7 @@ export class ConfigPanel {
       ref[key] = newValue;
       Util.notify(`§e${title} を §f${newValue} §eに設定しました`, this.player);
       Util.writeLog({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
+      events.configUpdate.emit({ key: title, newValue, oldValue: value });
     }
     return { edited, reopen: true }
   }
@@ -209,6 +211,7 @@ export class ConfigPanel {
       ref[key] = newValue;
       Util.notify(`§e${title} を §f${newValue} §eに設定しました`, this.player);
       Util.writeLog({ type: 'config.edit', message: `§e${title} を §f${newValue} §eに設定しました` }, this.player);
+      events.configUpdate.emit({ key: title, newValue, oldValue: value });
     }
     return { edited, reopen: true }
   }
@@ -236,6 +239,7 @@ export class ConfigPanel {
     }
     Util.notify(`§e${title}.${key} を §f${value} §eに設定しました`, this.player);
     Util.writeLog({ type: 'config.edit', message: `§e${title}.${key} を §f${value} §eに設定しました` }, this.player);
+    events.configUpdate.emit({ key: title, newValue: value, oldValue: undefined });
     return { key, value }
   }
 }
