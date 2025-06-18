@@ -3,3 +3,4 @@ node_modules/
 dist/
 .codesandbox
 yarn.lock
+pnpm-lock.yaml
