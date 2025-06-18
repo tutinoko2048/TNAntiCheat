@@ -17,6 +17,7 @@ import MODULE from "./data/module";
 import CONFIG from "./data/config";
 import FREEZE from "./data/freeze";
 import STATUS from "./data/status";
+import HELP from "./data/help";
 // import RUNJS from "./data/runjs";
 
 /** @type {((ac?: import('../ac').TNAntiCheat) => void)[]} */
@@ -39,5 +40,6 @@ export const COMMANDS = [
   CONFIG,
   FREEZE,
   STATUS,
+  HELP,
   //RUNJS, // for debug
 ];
