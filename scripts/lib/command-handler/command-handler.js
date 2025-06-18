@@ -1,4 +1,4 @@
-/** command-handler v11 **/
+/** command-handler v12 **/
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandSource, CustomCommandStatus, Player, system, world } from "@minecraft/server";
 
 //#region src/enum.ts
@@ -119,6 +119,7 @@ var CommandHandler = class {
 		alwaysShowMessage: true,
 		customPermissionError: "You do not have permission to execute this command."
 	};
+	isRegistered = false;
 	constructor() {
 		system.beforeEvents.startup.subscribe(this.onStartup.bind(this));
 	}
@@ -187,6 +188,7 @@ var CommandHandler = class {
 			if ("permission" in command) if (typeof command.permission === "function") permissionLevel = CommandPermissionLevel.Any;
 			else permissionLevel = command.permission.permissionLevel ?? CommandPermissionLevel.Any;
 			else permissionLevel = command.permissionLevel;
+			command.permissionLevel = permissionLevel;
 			registry.registerCommand({
 				name: command.name,
 				description: command.description,
@@ -202,6 +204,7 @@ var CommandHandler = class {
 				optionalParameters: optionalParams
 			}, commandCallback);
 		}
+		this.isRegistered = true;
 	}
 	register(command, callback, params) {
 		const data = {
@@ -218,6 +221,12 @@ var CommandHandler = class {
 		const commandEnum = new CommandEnum(name, enumValues);
 		this.enums.set(name, commandEnum);
 		return commandEnum;
+	}
+	getAvailableCommands(permissionLevel = CommandPermissionLevel.Any) {
+		if (!this.isRegistered) throw new Error("This method can only be called after startup event");
+		const commands = [];
+		for (const { command } of this.commands) if ("permissionLevel" in command && command.permissionLevel <= permissionLevel) commands.push(command);
+		return commands;
 	}
 };
 function enumKeys(e) {

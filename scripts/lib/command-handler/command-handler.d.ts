@@ -1,4 +1,4 @@
-/** command-handler v11 **/
+/** command-handler v12 **/
 import { Block, BlockType, CommandPermissionLevel, CustomCommandOrigin, CustomCommandParamType, CustomCommandResult, CustomCommandStatus, Dimension, Entity, ItemType, Player, Vector3 } from "@minecraft/server";
 
 //#region src/enum.d.ts
@@ -104,11 +104,15 @@ declare class CommandHandler {
     alwaysShowMessage: boolean;
     customPermissionError: string;
   };
+  private isRegistered;
   constructor();
   private onStartup;
   register<PARAMS extends CommandParams>(command: Command, callback: CommandCallback<PARAMS>, params: PARAMS): CommandRegistrationData;
   createEnum<const T extends string[]>(name: NamespacedString, values: T): CommandEnum<T[number]>;
   createEnum<T extends Record<string, string | number>>(name: NamespacedString, values: T): CommandEnum<T[keyof T]>;
+  getAvailableCommands(permissionLevel?: CommandPermissionLevel): (Command & {
+    permissionLevel: CommandPermissionLevel;
+  })[];
 }
 declare const commandHandler: CommandHandler;
 declare const createEnum: {
