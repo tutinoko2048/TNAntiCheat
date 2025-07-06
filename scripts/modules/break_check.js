@@ -1,6 +1,6 @@
 import { Util } from '../util/util';
 import config from '../config.js';
-import { Block } from '@minecraft/server';
+import { Block, system } from '@minecraft/server';
 import { getTPS } from '../util/tps';
 
 /** @param {import('@minecraft/server').Player} player */
@@ -71,7 +71,10 @@ export function instaBreak(ev) {
   if (config.instaBreak.detect.includes(block.typeId)) {
     if (config.instaBreak.cancel) ev.cancel = true;
     
-    Util.flag(player, 'InstaBreak', config.instaBreak.punishment, `InstaBreakの使用を検知しました (§c${block.typeId}§r) §7[${block.x}, ${block.y}, ${block.z}]`);
+    const { x, y, z, typeId } = block;
+    system.run(() => {
+      Util.flag(player, 'InstaBreak', config.instaBreak.punishment, `InstaBreakの使用を検知しました (§c${typeId}§r) §7[${x}, ${y}, ${z}]`);
+    });
     return true;
   }
 }

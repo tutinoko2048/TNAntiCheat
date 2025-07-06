@@ -1,4 +1,4 @@
-import { Player } from '@minecraft/server';
+import { Player, system } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 
@@ -56,10 +56,12 @@ export function reachB(ev) { // placement
         player.flagQueue = `Reach/B >> §c${player.name}§r §7[${player.reachBCount}] (d: ${distance.toFixed(1)})§r§ `;
       }
       if (config.reachB.flagCount !== -1 && player.reachBCount > config.reachB.flagCount) {
-        Util.flag(
-          player, 'Reach/B', config.reachB.punishment,
-          `長いリーチの設置を検知しました §7(count: ${player.reachBCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r§ `
-        )
+        system.run(() => {
+          Util.flag(
+            player, 'Reach/B', config.reachB.punishment,
+            `長いリーチの設置を検知しました §7(count: ${player.reachBCount}, d: ${distance.toFixed(2)}, dLoc: ${deltaLoc.toFixed(1)})§r§ `
+          );
+        });
       }
     }
   }
