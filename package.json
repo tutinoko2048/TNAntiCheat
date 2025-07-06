@@ -1,6 +1,6 @@
 {
   "name": "tn-anticheat",
-  "version": "3.22.0",
+  "version": "3.22.1",
   "description": "Anti-cheat addon with ScriptAPI / For Multiplayer, Realms, Servers / Recommended Japanese",
   "main": "scripts/index.js",
   "type": "module",
