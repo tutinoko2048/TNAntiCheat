@@ -92,6 +92,12 @@ export function namespoof(player) {
   if (!config.namespoof.state) return;
   if (player.name.length > config.namespoof.maxLength) // 長い名前対策
     Util.flag(player, 'Namespoof', config.namespoof.punishment, `長すぎる名前を検知しました`);
+  
+  // 許可された文字のチェック（英数字と空白のみ許可）
+  const allowedRegex = /^[a-zA-Z0-9 ]+$/;
+  if (!allowedRegex.test(player.name)) { // player.nameTagが推奨？
+    Util.flag(player, 'Namespoof', config.namespoof.punishment, '許可されていない文字を含む名前を検知しました');
+  }
 }
 
 /** @param {Player} player */
