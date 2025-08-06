@@ -2,7 +2,6 @@
 import globals from 'globals';
 import eslintPlugin from '@eslint/js';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
-// @ts-expect-error
 import importPlugin from 'eslint-plugin-import';
 
 /** @type {import('eslint').Linter.Config[]} */
