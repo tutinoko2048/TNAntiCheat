@@ -6,11 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        isRealms:
-          - false
-          - true
     steps:
       - uses: actions/checkout@v4
 
@@ -18,14 +13,6 @@ jobs:
         run: |
           npm i --save-dev @actions/core 
           npm i --save-dev @actions/github 
-      - name: Additional Setup for Realms
-        if: ${{ matrix.isRealms == true }}
-        run: |
-          # scripts/config.js の fixBDS を true に書き換え
-          sed -i 's/fixBDS:\s*false/fixBDS: true/g' scripts/config.js
-
-          # パック名を変更
-          sed -i 's/\("name": "TN-AntiCheat v[^"]*\)"/\1-realms"/' manifest.json
 
       - name: Get Pack Name
         id: get-name
