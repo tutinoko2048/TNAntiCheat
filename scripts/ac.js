@@ -1,4 +1,4 @@
-import { world, system, Player, EntityVariantComponent } from '@minecraft/server';
+import { world, system, Player, EntityVariantComponent, CommandPermissionLevel } from '@minecraft/server';
 import { ModerationManager } from './util/ModerationManager';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { PermissionType, Permissions } from './util/Permissions';
@@ -66,9 +66,11 @@ export class TNAntiCheat {
   #register(player) {
     if (world.getDynamicProperty(PropertyIds.isRegistered)) return player.sendMessage('TNAC is already registered!');
     Permissions.add(player, PermissionType.Admin);
+    // Realmsの場合はデフォルトの権限レベルが GameDirectors のため Admin に変更
+    if (player.commandPermissionLevel === CommandPermissionLevel.GameDirectors) player.commandPermissionLevel = CommandPermissionLevel.Admin;
     world.setDynamicProperty(PropertyIds.isRegistered, true);
     this.#enable();
-    player.sendMessage('§aAdmin権限が付与されました。"!help" でコマンド一覧を表示します');
+    player.sendMessage('§aAdmin権限が付与されました。"/tn:help" でコマンド一覧を表示します');
   }
   
   #enable() {
