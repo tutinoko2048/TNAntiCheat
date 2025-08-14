@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 9
+// configVersion: 10
 /** @type {import('./types').IConfig} */
 export default {
   permission: {
@@ -26,12 +26,6 @@ export default {
       xuids: [] // banするプレイヤーのxuid
       // xuidでbanとは: https://twitter.com/tutinoko_kusaa/status/1587356291734773760
     }
-  },
-  command: {
-    prefix: "!",
-    
-    /** (試験的) Bedrock Serverのコンソールからscriptevent経由でのコマンドの実行を許可します */
-    enableConsole: false
   },
   itemList: {
     ban: [
@@ -326,7 +320,6 @@ export default {
   others: {
     adminPanel: "minecraft:stick", // 管理者用パネルを呼び出すためのアイテム
     debug: false,
-    fixBDS: false, // Realmsで使う場合はオンにしてください
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用
     customKickMessage: "", // キック時に表示する追加のメッセージ

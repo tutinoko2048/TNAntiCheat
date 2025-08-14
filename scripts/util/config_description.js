@@ -17,11 +17,6 @@ export const description = {
     ids: 'ID(Form上で見られます)でプレイヤーを指定',
     xuids: 'xuidでプレイヤーを指定'
   },
-  command: {
-    desc: 'コマンド関係の設定',
-    prefix: 'prefix(コマンドの先頭につける文字)',
-    enableConsole: 'サーバーのコンソールからのコマンドの実行を許可する'
-  },
   itemList: {
     desc: 'アイテム系のモジュールで使用する禁止アイテムの設定',
     ban: 'このアイテムを使用/所持したプレイヤーはBANされます',
@@ -229,7 +224,7 @@ export const description = {
   others: {
     adminPanel: '管理者用パネルを呼び出すためのアイテム',
     debug: 'ログを表示 デバッグ用',
-    fixBDS: 'BDSのOP検知のバグ回避用',
+    // fixBDS: 'BDSのOP検知のバグ回避用',
     blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます',
     timezoneOffset: 'timezone offset',
     

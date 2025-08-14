@@ -71,10 +71,6 @@ interface PermissionModule {
 
 export interface IConfig {
   permission: PermissionModule;
-  command: {
-    prefix: string;
-    enableConsole: boolean;
-  };
   itemList: ItemListModule;
   nuker: IModule;
   namespoof: IModule;
