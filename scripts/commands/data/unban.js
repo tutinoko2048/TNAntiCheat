@@ -19,7 +19,7 @@ export default () => {
     const queue = ModerationManager.getUnbanQueue();
     const existing = queue.find(entry => entry.name === playerName);
     
-    if (existing) return failure(`${playerName} は既にunbanキューに存在します`);
+    if (existing) return failure(`${playerName} は既にunbanリストに存在します`);
 
     ModerationManager.addUnbanQueue(playerName);
     
@@ -29,7 +29,10 @@ export default () => {
       playerName
     });
 
-    return CustomCommandStatus.Success;
+    return {
+      status: CustomCommandStatus.Success,
+      message: `${playerName} をunbanリストに追加しました`
+    };
   }, {
     playerName: CustomCommandParamType.String,
   });

@@ -66,7 +66,7 @@ export class TNAntiCheat {
   #register(player) {
     if (world.getDynamicProperty(PropertyIds.isRegistered)) return player.sendMessage('TNAC is already registered!');
     Permissions.add(player, PermissionType.Admin);
-    // Realmsの場合はデフォルトの権限レベルが GameDirectors のため Admin に変更
+    // BDSではデフォルトの権限レベルが GameDirectors のため Admin に変更
     if (player.commandPermissionLevel === CommandPermissionLevel.GameDirectors) player.commandPermissionLevel = CommandPermissionLevel.Admin;
     world.setDynamicProperty(PropertyIds.isRegistered, true);
     this.#enable();
@@ -95,6 +95,8 @@ export class TNAntiCheat {
       if (!(system.currentTick % 20)) modules.notify();
       
       for (const player of world.getPlayers()) {
+      if (!(system.currentTick % 20)) modules.updatePermissionLevel(player);
+        
         if (!player.isMoved) modules.checkMoving(player);
         if (player.wasGliding && !player.isGliding) player.stopGlideAt = Date.now();
         

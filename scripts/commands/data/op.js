@@ -8,7 +8,7 @@ export default () => {
     name: 'tn:op',
     description: '§aTN-AntiCheatの管理者権限を付与します',
     permission: {
-      permissionLevel: CommandPermissionLevel.GameDirectors,
+      permissionLevel: CommandPermissionLevel.Admin,
       onVerify: (origin) => {
         return origin.isServer() || origin.getPlayer()?.playerPermissionLevel === PlayerPermissionLevel.Operator;
       }
@@ -33,8 +33,6 @@ export default () => {
 
     system.run(() => {
       Permissions.add(target, PermissionType.Admin);
-      // Realmsの場合はデフォルトの権限レベルが GameDirectors のため Admin に変更
-      if (target.commandPermissionLevel === CommandPermissionLevel.GameDirectors) target.commandPermissionLevel = CommandPermissionLevel.Admin;
       Util.notify(`§7${origin.getName()} >> ${target.name} に管理者権限を与えました`);
       Util.writeLog({ type: 'command.op', message: `Executed by ${origin.getName()}` }, target);
     });

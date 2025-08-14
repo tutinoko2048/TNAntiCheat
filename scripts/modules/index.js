@@ -120,6 +120,16 @@ export function getBlock(ev) {
   });
 }
 
+/**
+ * BDSとRealmsではデフォルトの権限レベルが GameDirectors のため、Admin に変更する
+ * @param {Player} player 
+ */
+export function updatePermissionLevel(player) {
+  if (Util.isOP(player) && player.commandPermissionLevel === CommandPermissionLevel.GameDirectors) {
+    player.commandPermissionLevel = CommandPermissionLevel.Admin;
+  }
+}
+
 /** @param {Player} p */
 export function debugView(p) {
   if (!p.hasTag('ac:debug')) return;
