@@ -31,9 +31,5 @@
   "overrides": {
     "@minecraft/server": "$@minecraft/server"
   },
-  "pnpm": {
-    "overrides": {
-      "@minecraft/server": "$@minecraft/server"
-    }
-  }
+  "packageManager": "bun@1.3.1"
 }
