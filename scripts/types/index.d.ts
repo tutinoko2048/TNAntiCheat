@@ -26,6 +26,7 @@ export interface EntityCheckEntry {
 
 declare module '@minecraft/server' {
   interface World {
+    loadedAt?: number;
     arrowSpawnCount?: number;
     cmdSpawnCount?: number;
     entityCheck?: Record<string, EntityCheckEntry>;
@@ -65,7 +66,7 @@ declare module '@minecraft/server' {
     reachACount?: number;
     reachBCount?: number;
     reachCCount?: number;
-    scaffoldCount?: number;                                                                                                                                
+    scaffoldCount?: number;
 
     flagQueue?: string;
 

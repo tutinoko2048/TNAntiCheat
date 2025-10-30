@@ -47,7 +47,13 @@ export const Icons = /** @type {const} */ ({
   member: 'textures/ui/permissions_member_star'
 });
 
-export const panelItem = {
+export const panelItem_old = {
   nameTag: '§r§f[§aTN-AntiCheat§f] 管理者用パネルを開く',
   lore: 'TNAC_AdminPanel' // 50文字以内にすること (1.20.20~)
 }
+
+export const panelItem = {
+  typeId: 'tn:admin_panel',
+  nameTag: '§r§f[§aTN-AntiCheat§f] 管理者用パネルを開く',
+  lore: '§r§7[interact] 右クリックで開く§8'
+};

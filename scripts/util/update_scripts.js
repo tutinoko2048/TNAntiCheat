@@ -32,7 +32,11 @@ export function updateConfig() {
     // convert adventure to Adventure
     data.creative.defaultGamemode = data.creative.defaultGamemode[0].toUpperCase() + data.creative.defaultGamemode.slice(1);
   }
-  
+
+  if (typeof data.others?.adminPanel === 'string') {
+    delete data.others.adminPanel;
+  }
+
   DataManager.save(data);
 }
 

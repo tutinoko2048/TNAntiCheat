@@ -2,7 +2,7 @@
   punishment: ban | kick | tempkick | notify | none
 */
 
-// configVersion: 10
+// configVersion: 11
 /** @type {import('./types').IConfig} */
 export default {
   permission: {
@@ -318,7 +318,6 @@ export default {
     emitScriptEvent: ''
   },
   others: {
-    adminPanel: "minecraft:stick", // 管理者用パネルを呼び出すためのアイテム
     debug: false,
     blockCopy: true, // 管理者アイテムでブロックをスニーク+タップするとコピーできます
     timezoneOffset: +9, // 時刻表示用

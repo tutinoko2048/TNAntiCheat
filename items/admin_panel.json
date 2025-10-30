@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:item": {
+    "description": {
+      "identifier": "tn:admin_panel"
+    },
+    "components": {
+      "minecraft:icon": "stick",
+      "minecraft:glint": true,
+      "minecraft:interact_button": true,
+      "minecraft:max_stack_size": 1,
+      "minecraft:can_destroy_in_creative": false,
+      "minecraft:hand_equipped": true,
+      "tn:admin_panel": {}
+    }
+  }
+}

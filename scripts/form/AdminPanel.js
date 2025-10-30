@@ -1,8 +1,8 @@
-import { world, ItemStack, ItemTypes, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
+import { world, ItemStack, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
-import { Icons, panelItem } from '../util/constants';
+import { Icons, panelItem, panelItem_old } from '../util/constants';
 import { FORMS, confirmForm } from './static_form';
 import { PermissionType, Permissions } from '../util/Permissions';
 import { ConfigPanel } from './ConfigPanel';
@@ -29,12 +29,10 @@ const EditItemAction = /** @type {const} */ ({
 
 export class AdminPanel {
   /**
-   * @param {import('../ac').TNAntiCheat} ac 
    * @param {Player} player 
    */
-  constructor(ac, player) {
+  constructor(player) {
     if (!(player instanceof Player)) throw TypeError('Argument "player" must be a player instance');
-    this.ac = ac;
     this.player = player;
   }
   
@@ -48,7 +46,7 @@ export class AdminPanel {
       'TN-AntiCheatの管理者用パネルです\n',
       '§l§b--- World Info ---',
       `§l§7現在時刻: §r${Util.getTime()}`,
-      `§l§7ワールド経過時間: §r${Util.parseMS(Date.now() - this.ac.startTime)}`,
+      `§l§7ワールド経過時間: §r${Util.parseMS(Date.now() - world.loadedAt)}`,
       `§l§7プレイヤー数: §r${world.getPlayers().length}`,
       `§l§7TPS: §r${getTPS().toFixed(1)}`,
     ].join('§r\n');
@@ -470,14 +468,16 @@ export class AdminPanel {
     if (canceled) return;
     if (selection === 0) return await this.main();
   }
-  
+
   static getPanelItem() {
-    const item =  new ItemStack(ItemTypes.get(config.others.adminPanel), 1);
+    const item =  new ItemStack(panelItem.typeId, 1);
     item.nameTag = panelItem.nameTag;
-    item.setLore([ Util.hideString(panelItem.lore) ]);
+    item.setLore([panelItem.lore]);
+    item.keepOnDeath = true;
+    item.setDynamicProperty('isPanelItem', true);
     return item;
   }
-  
+
   /**
    * @arg {ItemStack} [item]
    * @returns {boolean}
@@ -485,9 +485,21 @@ export class AdminPanel {
   static isPanelItem(item) {
     if (!item) return false;
     return (
+      item.typeId === panelItem.typeId &&
+      item.getDynamicProperty('isPanelItem') === true
+    );
+  }
+
+  /**
+   * @arg {ItemStack} [item]
+   * @returns {boolean}
+   */
+  static isPanelItem_old(item) {
+    if (!item) return false;
+    return (
       item.typeId === config.others.adminPanel &&
-      item.nameTag === panelItem.nameTag &&
-      item.getLore()[0] === Util.hideString(panelItem.lore)
+      item.nameTag === panelItem_old.nameTag &&
+      item.getLore()[0] === Util.hideString(panelItem_old.lore)
     );
   }
 }

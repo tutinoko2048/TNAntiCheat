@@ -222,7 +222,7 @@ export const description = {
     sendws: 'メッセージをsayで出力します (discord-mcbe用)',
   },
   others: {
-    adminPanel: '管理者用パネルを呼び出すためのアイテム',
+    // adminPanel: '管理者用パネルを呼び出すためのアイテム',
     debug: 'ログを表示 デバッグ用',
     // fixBDS: 'BDSのOP検知のバグ回避用',
     blockCopy: '管理者アイテムでブロックをスニーク+タップするとコピーできます',

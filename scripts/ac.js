@@ -13,6 +13,7 @@ import { COMMANDS } from './commands/index';
 import config from './config.js';
 import { events } from './events.js';
 import * as modules from './modules/index';
+import { AdminPanelComponent } from './components/AdminPanelComponent';
 
 const entityOption = { entityTypes: [ 'minecraft:player' ] };
 
@@ -22,7 +23,7 @@ export class TNAntiCheat {
   
   constructor() {
     console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
-    this.startTime = Date.now();
+    world.loadedAt = Date.now();
     this.#isEnabled;
     
     commandHandler.options.alwaysShowMessage = true;
@@ -37,6 +38,8 @@ export class TNAntiCheat {
       if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
       this.#register(sourceEntity);
     }, { namespaces: [ 'ac' ] });
+
+    system.beforeEvents.startup.subscribe(this.#onStartup.bind(this));
 
     this.#loadSlashCommands();
   }
@@ -76,8 +79,8 @@ export class TNAntiCheat {
   #enable() {
     if (this.#isEnabled) throw new Error('TN-AntiCheat has already enabled');
     this.#isEnabled = true;
-    
-    console.warn(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - this.startTime} ms)`);
+
+    console.warn(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - world.loadedAt} ms)`);
     world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています§r');
     
     this.#loadConfig();
@@ -169,10 +172,6 @@ export class TNAntiCheat {
       
       modules.getBlock(ev);
       if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
-      if (Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) {
-        ev.cancel = true;
-        system.run(() => new AdminPanel(this, ev.player).show());
-      }
     });
 
     world.beforeEvents.playerPlaceBlock.subscribe(ev => {
@@ -186,17 +185,8 @@ export class TNAntiCheat {
     });
     
     world.beforeEvents.itemUse.subscribe(async ev => {
-      const { itemStack, source } = ev;
-      if (
-        Util.isOP(source) &&
-        AdminPanel.isPanelItem(itemStack)
-      ) {
-        await Util.cancel(ev);
-        const target = source.getEntitiesFromViewDirection({ maxDistance: 24 })[0];
-        if (target?.entity instanceof Player) new AdminPanel(this, source).playerInfo(target.entity);
-        else new AdminPanel(this, source).show();
-        return;
-      }
+      const { source } = ev;
+
       if (ModerationManager.isFrozen(source)) ev.cancel = true;
     });
     
@@ -282,7 +272,12 @@ export class TNAntiCheat {
     DataManager.patch(config, data);
     if (config.others.debug) console.warn('[debug] loaded Config data');
   }
-  
+
+  /** @param {import('@minecraft/server').StartupEvent} ev */
+  #onStartup(ev) {
+    ev.itemComponentRegistry.registerCustomComponent(AdminPanelComponent.componentName, new AdminPanelComponent());
+  }
+
   /** @returns {import('./types').UnbanQueueEntry[]} */
   getUnbanQueue() {
     return ModerationManager.getUnbanQueue();
