@@ -1,4 +1,7 @@
 {
   "git.branchProtection": ["main"],
-  "eslint.useFlatConfig": true
+  "eslint.useFlatConfig": true,
+  "files.associations": {
+    "*.json": "jsonc"
+  }
 }
