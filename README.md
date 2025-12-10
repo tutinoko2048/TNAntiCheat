@@ -6,13 +6,11 @@
 MinecraftBE用のチート対策/ワールド管理アドオンです。  
   
 [ダウンロードはこちらから](https://github.com/tutinoko2048/TNAntiCheat/releases/latest)
-  
-![img1](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/hasitem.jpeg)  
-  
-![img2](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/kick.jpeg)  
-  
-![img3](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/ban.jpeg)  
-  
+
+![kick](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/kick.jpeg)
+![ban](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/ban.jpeg)
+![panel](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/player_info.gif)
+
 > [!NOTE]  
 > 質問やアップデート情報はこちらから！！  
 > https://discord.gg/XGR8FcCeFc  
@@ -28,13 +26,13 @@ __このときワールドの設定から `"ベータ API"` と `"Education Edit
 Q. アドオン入れたのに何も反応しません  
 A. 上の [使い方](#使い方) の手順に従ってください。ワールドの試験的設定をオンにし忘れてることが多いです。  
 また、アドオン内部のファイルを編集した場合は構文エラーが出ている可能性もあります。
-*[Bedrock ServerまたはRealmで使用する方はこちらもお読みください](#BDS)*
+<!-- *[Bedrock ServerまたはRealmで使用する方はこちらもお読みください](#BDS)* -->
 
 Q. 運営だけ検知から除外したいです  
-A. opコマンドを使いましょう。`!op [プレイヤー名]`で指定したプレイヤーにadminの権限を与えることができます。
+A. opコマンドを使いましょう。`/tn:op [プレイヤー名]`で指定したプレイヤーにadminの権限を与えることができます。
 
 Q. 使えるコマンド一覧は？  
-A. ワールド内で`!help`してみてください。各コマンドの詳細は`!help <コマンド名>`で見られます。
+A. `/tn:help`コマンドで確認できます。
 
 ## Modules
 <details><summary><bold>モジュール一覧を表示</bold></summary>
@@ -112,18 +110,17 @@ Scaffoldの使用を検知
 
 ## その他の機能
 - Command  
-コマンド一覧は `!help` でチェックしてみよう！  
-scripteventコマンドからアドオンのコマンドを動かすこともできます  
-例: `/scriptevent ac:command settings`  
+コマンド一覧は `/tn:help` でチェックしてみよう！  
+<!-- scripteventコマンドからアドオンのコマンドを動かすこともできます  
+例: `/scriptevent ac:command settings`   -->
 
 - Ban/Unban  
 プレイヤーをbanできます。プレイヤー名やXUIDで指定することもできます。  
-banを解除したい場合は`unban`コマンドを使うか、アドオンフォルダ内の`unban_queue.js`に名前を入力してください。
+banを解除したい場合は`/unban`コマンドを使うか、アドオンフォルダ内の`unban_queue.js`に名前を入力してください。
 
 - Permission  
 プレイヤーごとの権限を管理できます。(`admin`, `builder`)  
-`permission`コマンドで追加や削除ができます。  
-例: `!permission add <権限名> <プレイヤー名>`  
+AdminPanelのプレイヤーの詳細画面から設定することができます。
   > [!TIP]  
   > builder権限をつけるとCreativeの検知から除外されます
 
@@ -134,11 +131,11 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
   
 <details><summary><strong>詳しい使い方はこちら</strong></summary>
 
-`!settings`コマンドや`!settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。  
+`/setting`コマンドや`/settingitem`コマンドで入手できるアイテムを使用することで画面を開くことができます。  
 プレイヤーやインベントリの管理ができます  
 プレイヤーに向けて棒(settingitem)を使うと
-![panel](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/panel.jpeg)  
-![player-info](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/player_info.jpeg)  
+![panel](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/panel.png)  
+![player-info](https://github.com/tutinoko2048/assets/raw/main/TN-AntiCheat/player_info.png)  
 </details>
 </ul>
 
@@ -150,6 +147,7 @@ banを解除したい場合は`unban`コマンドを使うか、アドオンフ�
 - Action Logs  
 検知ログやアンチチートの操作に関するログを表示します。保存するログの最大数はconfigの`logger/maxLogs`で変更できます   
 
+<!--
 ## BDS
 現在Bedrock ServerとRealmにはop関連の機能に~~バグ~~(そういう仕様のようです)があるため個別に対策する必要があります  
 - Bedrock Serverの場合  
@@ -161,6 +159,7 @@ op-permission-level=2
 ```
 - Realmの場合  
 config.jsを開き、`others` 内にある `fixBDS` をtrueに変更してください
+-->
 
 ## Acknowledgements
 - [Bedrock-OSS/bedrock-boost](https://github.com/Bedrock-OSS/bedrock-boost)
