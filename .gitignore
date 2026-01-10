@@ -4,4 +4,3 @@ dist/
 .codesandbox
 yarn.lock
 pnpm-lock.yaml
-bun.lock
