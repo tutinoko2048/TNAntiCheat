@@ -15,29 +15,32 @@ import { events } from './events.js';
 import * as modules from './modules/index';
 import { AdminPanelComponent } from './components/AdminPanelComponent';
 
-const entityOption = { entityTypes: [ 'minecraft:player' ] };
+const entityOption = { entityTypes: ['minecraft:player'] };
 
 export class TNAntiCheat {
   /** @type {boolean} */
   #isEnabled;
-  
+
   constructor() {
     console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
     world.loadedAt = Date.now();
     this.#isEnabled = false;
-    
+
     commandHandler.options.alwaysShowMessage = true;
-    commandHandler.options.customPermissionError = "このコマンドを実行する権限がありません";
-    
+    commandHandler.options.customPermissionError = 'このコマンドを実行する権限がありません';
+
     // load system
     Util.awaitWorldLoad()
       .then(() => this.#onWorldLoad())
-      .catch(e => console.error(e, e.stack));
-    
-    system.afterEvents.scriptEventReceive.subscribe(({ id, sourceEntity }) => {
-      if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
-      this.#register(sourceEntity);
-    }, { namespaces: [ 'ac' ] });
+      .catch((e) => console.error(e, e.stack));
+
+    system.afterEvents.scriptEventReceive.subscribe(
+      ({ id, sourceEntity }) => {
+        if (!(sourceEntity instanceof Player) || id !== 'ac:start') return;
+        this.#register(sourceEntity);
+      },
+      { namespaces: ['ac'] },
+    );
 
     system.beforeEvents.startup.subscribe(this.#onStartup.bind(this));
 
@@ -59,73 +62,78 @@ export class TNAntiCheat {
     if (world.getDynamicProperty(PropertyIds.isRegistered)) {
       try {
         this.#enable();
-      } catch (e) { console.error(e, e.stack) }
+      } catch (e) {
+        console.error(e, e.stack);
+      }
     } else {
       world.sendMessage('[§l§aTN-AntiCheat§r] 初めに §6/function start§f を実行してください');
     }
   }
-  
+
   /** @param {Player} player */
   #register(player) {
-    if (world.getDynamicProperty(PropertyIds.isRegistered)) return player.sendMessage('TNAC is already registered!');
+    if (world.getDynamicProperty(PropertyIds.isRegistered))
+      return player.sendMessage('TNAC is already registered!');
+
     Permissions.add(player, PermissionType.Admin);
+
     // BDSではデフォルトの権限レベルが GameDirectors のため Admin に変更
-    if (player.commandPermissionLevel === CommandPermissionLevel.GameDirectors) player.commandPermissionLevel = CommandPermissionLevel.Admin;
+    if (player.commandPermissionLevel === CommandPermissionLevel.GameDirectors)
+      player.commandPermissionLevel = CommandPermissionLevel.Admin;
+
     world.setDynamicProperty(PropertyIds.isRegistered, true);
     this.#enable();
     player.sendMessage('§aAdmin権限が付与されました。"/tn:help" でコマンド一覧を表示します');
   }
-  
+
   #enable() {
     if (this.#isEnabled) throw new Error('TN-AntiCheat has already enabled');
     this.#isEnabled = true;
 
     console.warn(`[TN-AntiCheat v${VERSION}] enabled (${Date.now() - world.loadedAt} ms)`);
     world.sendMessage('§7このワールドは TN-AntiCheat によって保護されています§r');
-    
+
     this.#loadConfig();
     checkPlayerJson();
-    
+
     Util.writeLog({ type: 'load', playerName: 'system', message: 'TNAC has enabled.' });
-    
-    system.runInterval(() => { 
+
+    system.runInterval(() => {
       if (config.entityCheckC.state) {
         world.arrowSpawnCount = 0;
         world.cmdSpawnCount = 0;
       }
       world.entityCheck ??= {};
-      
+
       if (!(system.currentTick % 20)) modules.notify();
-      
+
       for (const player of world.getPlayers()) {
-      if (!(system.currentTick % 20)) modules.updatePermissionLevel(player);
-        
+        if (!(system.currentTick % 20)) modules.updatePermissionLevel(player);
+
         if (!player.isMoved) modules.checkMoving(player);
         if (player.wasGliding && !player.isGliding) player.stopGlideAt = Date.now();
-        
+
         modules.itemCheck(player);
-        
         modules.nukerFlag(player);
-        modules.creative(player); 
+        modules.creative(player);
         modules.speedA(player);
-        // modules.flyA(player);
         modules.scaffold.updatePlayerData(player);
-        
+
         if (!(system.currentTick % 20)) modules.autoClickerCheck(player);
         if (!(system.currentTick % 50)) modules.flag(player); // prevent notification spam and causing lag
         if (!(system.currentTick % 100)) modules.banCheck(player); // tag check
-        
+
         modules.debugView(player);
-        
+
         try {
           if (ModerationManager.isFrozen(player)) {
             player.teleport(ModerationManager.getFrozenLocation(player));
-            player.addEffect('weakness', 20*1, { amplifier: 255, showParticles: false });
+            player.addEffect('weakness', 20 * 1, { amplifier: 255, showParticles: false });
           }
         } catch (e) {
           if (config.others.debug) console.error(e, e.stack);
         }
-        
+
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;
           player.dimensionSwitchedAt = Date.now();
@@ -138,104 +146,96 @@ export class TNAntiCheat {
 
       const tps = getTPS();
       if (!(system.currentTick % calcInterval(tps))) modules.entityCounter();
-      
+
       const tpsToScore = config.others.tpsToScore;
-      if (
-        tpsToScore.enabled &&
-        !(system.currentTick % tpsToScore.updateInterval)
-      ) {
-        const objective = world.scoreboard.getObjective(tpsToScore.objective)
-          ?? world.scoreboard.addObjective(tpsToScore.objective, tpsToScore.objective);
+      if (tpsToScore.enabled && !(system.currentTick % tpsToScore.updateInterval)) {
+        const objective =
+          world.scoreboard.getObjective(tpsToScore.objective) ??
+          world.scoreboard.addObjective(tpsToScore.objective, tpsToScore.objective);
         objective.setScore(tpsToScore.name, Math.round(tps));
       }
     });
-    
-    world.beforeEvents.playerBreakBlock.subscribe(ev => {
-      const safe = (
-        !modules.nukerBreak(ev) &&
-        !modules.instaBreak(ev) &&
-        !modules.reachC(ev)
-      );
+
+    world.beforeEvents.playerBreakBlock.subscribe((ev) => {
+      const safe = !modules.nukerBreak(ev) && !modules.instaBreak(ev) && !modules.reachC(ev);
       if (safe && Util.isOP(ev.player) && AdminPanel.isPanelItem(ev.itemStack)) ev.cancel = true;
       if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
-    
-    world.beforeEvents.chatSend.subscribe(ev => this.#handleChat(ev));
-    
-    world.afterEvents.entitySpawn.subscribe(ev => {
+
+    world.beforeEvents.chatSend.subscribe((ev) => this.#handleChat(ev));
+
+    world.afterEvents.entitySpawn.subscribe((ev) => {
       modules.entityCheck(ev.entity);
     });
-    
-    world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
+
+    world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
       modules.placeCheckA(ev);
       modules.placeCheckD(ev);
-      
+
       modules.getBlock(ev);
       if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
 
-    world.beforeEvents.playerPlaceBlock.subscribe(ev => {
+    world.beforeEvents.playerPlaceBlock.subscribe((ev) => {
       modules.reachB(ev);
     });
-    
-    world.afterEvents.playerPlaceBlock.subscribe(ev => {
+
+    world.afterEvents.playerPlaceBlock.subscribe((ev) => {
       modules.placeCheckB(ev);
       modules.placeCheckC(ev);
       modules.scaffold.onPlaceBlock(ev);
     });
-    
-    world.beforeEvents.itemUse.subscribe(async ev => {
+
+    world.beforeEvents.itemUse.subscribe(async (ev) => {
       const { source } = ev;
 
       if (ModerationManager.isFrozen(source)) ev.cancel = true;
     });
-    
-    world.afterEvents.playerSpawn.subscribe(ev => {
+
+    world.afterEvents.playerSpawn.subscribe((ev) => {
       if (ev.initialSpawn) this.#handleJoin(ev.player);
     });
-    
-    world.afterEvents.itemReleaseUse.subscribe(ev => {
+
+    world.afterEvents.itemReleaseUse.subscribe((ev) => {
       const { itemStack, source } = ev;
       if (itemStack?.typeId === 'minecraft:trident') source.threwTridentAt = Date.now();
     });
-    
-    world.afterEvents.entityHitEntity.subscribe(ev => {
+
+    world.afterEvents.entityHitEntity.subscribe((ev) => {
       modules.reachA(ev);
       modules.autoClickerAttack(ev);
-
     }, entityOption);
-    
-    // world.afterEvents.pistonActivate.subscribe(ev => {
-    //   if (!config.flyA.state || !config.flyA.detectPiston) return;
-    //   if (ev.isExpanding) {
-    //     const loc = ev.block.location;
-    //     const pushedPlayers = ev.dimension.getPlayers({ location: { ...loc, y: loc.y + 1 }, maxDistance: 3 });
-    //     pushedPlayers.forEach(p => p.pistonPushedAt = Date.now());
-    //   }
-    // });
 
-    world.beforeEvents.playerInteractWithBlock.subscribe(ev => {
+    world.beforeEvents.playerInteractWithBlock.subscribe((ev) => {
       if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
 
-    world.beforeEvents.playerInteractWithEntity.subscribe(ev => {
+    world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
       if (ModerationManager.isFrozen(ev.player)) ev.cancel = true;
     });
-    
-    // system.afterEvents.scriptEventReceive.subscribe(ev => {
-    //   const { id, sourceEntity, message, sourceType } = ev;
-    //   if (id !== 'ac:command') return;
-    //   if (sourceEntity instanceof Player && sourceType === ScriptEventSource.Entity) {
-    //     this.commandManager.handle({ sender: sourceEntity, message }, true);
-        
-    //   } else if (!sourceEntity && sourceType === ScriptEventSource.Server) {
-    //     this.commandManager.handleFromServer({ message });
-    //   }
-    // }, {
-    //   namespaces: [ 'ac' ]
-    // });
+
+    world.beforeEvents.entityHurt.subscribe((ev) => {
+      const attacker = ev.damageSource?.damagingEntity;
+      if (attacker instanceof Player && ModerationManager.isFrozen(attacker)) {
+        ev.cancel = true;
+      }
+    });
+
+    world.beforeEvents.entityItemPickup.subscribe(
+      (ev) => {
+        if (ev.entity instanceof Player && ModerationManager.isFrozen(ev.entity)) {
+          ev.cancel = true;
+        }
+      },
+      {
+        // only listen to players picking up items
+        entityFilter: {
+          type: 'minecraft:player',
+        },
+      },
+    );
   }
-  
+
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #handleChat(ev) {
     if (!modules.spammerC(ev)) {
@@ -244,7 +244,7 @@ export class TNAntiCheat {
       }
     }
   }
-  
+
   /** @param {Player} player */
   #handleJoin(player) {
     player.joinedAt = Date.now();
@@ -252,13 +252,13 @@ export class TNAntiCheat {
     const banned = modules.banCheck(player);
     if (banned) return;
     modules.xuidBanCheck();
-    
+
     if (ModerationManager.isMuted(player)) {
       const res = Util.runCommandSafe('ability @s mute true', player);
       if (res) Util.notify(`§7あなたはミュートされています`, player);
     }
   }
-  
+
   /** configをDPから読み込む */
   #loadConfig() {
     updateConfig(); // アプデ時のデータ移行処理
@@ -267,7 +267,7 @@ export class TNAntiCheat {
     const res = deleteDupe(data, config);
     if (res.length > 0) {
       DataManager.save(data);
-      if (config.others.debug)  console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
+      if (config.others.debug) console.warn(`[debug] deleteDupe: ${res.join(', ')}`);
     }
     DataManager.patch(config, data);
     if (config.others.debug) console.warn('[debug] loaded Config data');
@@ -275,35 +275,41 @@ export class TNAntiCheat {
 
   /** @param {import('@minecraft/server').StartupEvent} ev */
   #onStartup(ev) {
-    ev.itemComponentRegistry.registerCustomComponent(AdminPanelComponent.componentName, new AdminPanelComponent());
+    ev.itemComponentRegistry.registerCustomComponent(
+      AdminPanelComponent.componentName,
+      new AdminPanelComponent(),
+    );
   }
 
   /** @returns {import('./types').UnbanQueueEntry[]} */
   getUnbanQueue() {
     return ModerationManager.getUnbanQueue();
   }
-  
+
   /** @return {typeof config} */
   getConfig() {
     return config;
   }
-    
+
   /** @type {boolean} */
   get isEnabled() {
     return this.#isEnabled;
   }
 }
 
-system.beforeEvents.watchdogTerminate.subscribe(ev => {
+system.beforeEvents.watchdogTerminate.subscribe((ev) => {
   ev.cancel = true;
 });
 
-function checkPlayerJson() { // checks player.json conflict
+function checkPlayerJson() {
+  // checks player.json conflict
   /** @type {import('@minecraft/server').EntityVariantComponent} */
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant?.value !== 2048) {
     config.speedA.state = false;
-    Util.notify('§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました§r');
+    Util.notify(
+      '§cplayer.jsonが正しく読み込まれていないか、他のアドオンのものであるため一部の機能を無効化しました§r',
+    );
     if (config.others.debug) console.warn('[debug] disabled: Speed/A, tempkick');
   }
 }
