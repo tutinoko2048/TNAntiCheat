@@ -7,15 +7,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: |
-          npm i --save-dev @actions/core 
-          npm i --save-dev @actions/github 
+          bun install --frozen-lockfile
 
       - name: Get Pack Name
-        id: get-name
         run: |
           name=$(jq -r '.header.name' manifest.json | tr -d '"' | tr ' ' '_')
           echo "fileName=$name.mcpack" >> $GITHUB_ENV
@@ -23,14 +22,7 @@ jobs:
       - name: Make Archive
         run: |
           echo "Creating archive: ${fileName}"
-          zip -r "${fileName}" ./ -x "*.git*" "*node_modules*" "package-lock.json" ".eslintrc.json" "tsconfig.json" "CONTRIBUTING.md"
+          zip -r "${fileName}" ./ -x "*.git*" "*node_modules*" "bun.lock" ".oxlintrc.json" "tsconfig.json" "CONTRIBUTING.md"
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: "./${{ env.fileName }}"
-          asset_name: "${{ env.fileName }}"
-          asset_content_type: application/zip
+        run: gh release upload ${{ github.event.release.id }} "./${{ env.fileName }}" --clobber
