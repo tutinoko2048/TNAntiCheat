@@ -18,6 +18,7 @@ import CONFIG from "./data/config";
 import FREEZE from "./data/freeze";
 import STATUS from "./data/status";
 import HELP from "./data/help";
+import MONITOR from "./data/monitor";
 // import RUNJS from "./data/runjs";
 
 /** @type {((ac?: import('../ac').TNAntiCheat) => void)[]} */
@@ -41,5 +42,6 @@ export const COMMANDS = [
   FREEZE,
   STATUS,
   HELP,
+  MONITOR,
   //RUNJS, // for debug
 ];

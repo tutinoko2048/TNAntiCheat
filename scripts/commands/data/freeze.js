@@ -4,7 +4,7 @@ import { Util } from '../../util/util';
 import { AdminPermission } from '../utils';
 import { ModerationManager } from '../../util/ModerationManager';
 
-export default function() {
+export default () => {
   commandHandler.register({
     name: 'tn:freeze',
     description: '§aプレイヤーを移動できなく(フリーズ状態に)します',

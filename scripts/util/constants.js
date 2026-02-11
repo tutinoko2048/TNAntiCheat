@@ -11,6 +11,9 @@ export const PropertyIds = /** @type {const} */ ({
   ownerId: 'tn:ownerId',
   unbanQueue: 'tn:unbanQueue',
   isRegistered: 'tn:isRegistered',
+  monitoringTarget: 'monitor:target',
+  monitoringZoom: 'monitor:zoom',
+  monitoringPreviousGameMode: 'monitor:previousGameMode'
 });
 
 export const Icons = /** @type {const} */ ({

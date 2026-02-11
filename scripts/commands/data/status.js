@@ -11,7 +11,7 @@ import { AdminPermission } from '../utils';
  * @typedef {import('@minecraft/server').Vector3} Vector3
  */
 
-export default function() {
+export default () => {
   commandHandler.register({
     name: 'tn:status',
     description: '§a指定したプレイヤーに関する情報を表示します',

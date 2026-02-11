@@ -16,6 +16,7 @@ export * from './combat';
 export * from './break_check';
 export * from './movement';
 export * as scaffold from './scaffold';
+export * as monitor from './monitor';
 
 /** @typedef {import('@minecraft/server').Player} Player */
 

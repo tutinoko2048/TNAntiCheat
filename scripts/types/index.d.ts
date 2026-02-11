@@ -13,6 +13,9 @@ interface DynamicPropertyTypes {
   [PropertyIds.ownerId]: string;
   [PropertyIds.unbanQueue]: string;
   [PropertyIds.isRegistered]: boolean;
+  [PropertyIds.monitoringTarget]: string;
+  [PropertyIds.monitoringZoom]: number;
+  [PropertyIds.monitoringPreviousGameMode]: mc.GameMode;
 }
 
 export interface EntityCheckEntry {
@@ -98,4 +101,10 @@ export interface BanOptions {
 export interface UnbanQueueEntry {
   name: string;
   source: 'property' | 'file';
+}
+
+export interface MonitoringState {
+  target: mc.Player;
+  previousGameMode: mc.GameMode;
+  zoom: number;
 }

@@ -134,6 +134,8 @@ export class TNAntiCheat {
           if (config.others.debug) console.error(e, e.stack);
         }
 
+        modules.monitor.onTick(player);
+
         if (player.lastDimensionId !== player.dimension.id) {
           player.lastDimensionId = player.dimension.id;
           player.dimensionSwitchedAt = Date.now();

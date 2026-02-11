@@ -1,15 +1,18 @@
-import { world, InputPermissionCategory } from '@minecraft/server';
+import { world, InputPermissionCategory, GameMode, system, Player } from '@minecraft/server';
 import { PropertyIds } from './constants'
 import config from '../config';
 import { PermissionType, Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
 import { events } from '../events.js';
 
-/** @typedef {import('@minecraft/server').Player} Player */
 /** @typedef {import('../types').UnbanQueueEntry} UnbanQueueEntry */
+/** @typedef {import('../types').MonitoringState} MonitoringState */
 
 /** @type {WeakMap<Player, import('@minecraft/server').Vector3>} */
 const frozenPlayerMap = new WeakMap();
+
+/** @type {WeakMap<Player, MonitoringState>} */
+const monitoringMap = new WeakMap();
 
 export class ModerationManager {
   /**
@@ -168,7 +171,7 @@ export class ModerationManager {
   static setFrozen(player, state) {
     player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, !state); // freeze is true so inputs should be false (disabled)
     player.inputPermissions.setPermissionCategory(InputPermissionCategory.Camera, !state);
-    
+
     if (state) {
       frozenPlayerMap.set(player, player.location);
     } else {
@@ -185,4 +188,97 @@ export class ModerationManager {
   static getFrozenLocation(player) {
     return frozenPlayerMap.get(player);
   }
+
+  /**
+   * @param {Player} player 
+   * @param {Player} [target]
+   * @param {{ zoom?: number, previousGameMode?: GameMode }} [options]
+   */
+  static setMonitoringState(player, target, options = {}) {
+    if (target) {
+      const prevState = monitoringMap.get(player);
+
+      monitoringMap.set(player, {
+        target,
+        previousGameMode: options.previousGameMode ??(prevState ? prevState.previousGameMode : player.getGameMode()),
+        zoom: options.zoom ?? (prevState ? prevState.zoom : 5.0),
+      });
+
+      player.setGameMode(GameMode.Spectator);
+      player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, false);
+
+    } else {
+      const state = monitoringMap.get(player);
+
+      system.run(() => player.camera.clear());
+      player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, true);
+
+      if (state) {
+        player.setGameMode(state.previousGameMode);
+      }
+
+      monitoringMap.delete(player);
+    }
+  }
+
+  /**
+   * @param {Player} player 
+   * @return {MonitoringState | undefined}
+   */
+  static getMonitoringState(player) {
+    return monitoringMap.get(player);
+  }
+}
+
+world.afterEvents.worldLoad.subscribe(() => {
+  for (const player of world.getPlayers()) {
+    loadState(player);
+  }
+});
+
+world.afterEvents.playerSpawn.subscribe((ev) => {
+  if (ev.initialSpawn) loadState(ev.player);
+});
+
+system.beforeEvents.shutdown.subscribe(() => {
+  saveState();
+});
+
+function saveState() {
+  console.log('Saving monitoring states...');
+  for (const player of world.getPlayers()) {
+    const monitorState = ModerationManager.getMonitoringState(player);
+    if (monitorState) {
+      player.setDynamicProperty(PropertyIds.monitoringTarget, monitorState.target.id);
+      player.setDynamicProperty(PropertyIds.monitoringZoom, monitorState.zoom);
+      player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode, monitorState.previousGameMode);
+    }
+  }
+}
+
+/** @param {Player} player */
+function loadState(player) {
+  const targetId = player.getDynamicProperty(PropertyIds.monitoringTarget);
+  const zoom = player.getDynamicProperty(PropertyIds.monitoringZoom);
+  const previousGameMode = player.getDynamicProperty(PropertyIds.monitoringPreviousGameMode);
+
+  /** @type {import('@minecraft/server').Player | undefined} */
+  let target;
+  try {
+    const entity = world.getEntity(targetId);
+    if (entity instanceof Player) target = entity;
+  } catch {}
+
+  if (target) {
+    console.warn(`Restoring monitoring state for ${player.name} -> ${target.name}`);
+    ModerationManager.setMonitoringState(player, target, { zoom, previousGameMode });
+  } else {
+    player.camera.clear();
+    player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, true);
+    if (previousGameMode) player.setGameMode(previousGameMode);
+  }
+
+  player.setDynamicProperty(PropertyIds.monitoringTarget);
+  player.setDynamicProperty(PropertyIds.monitoringZoom);
+  player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode);
 }
