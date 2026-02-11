@@ -1,4 +1,4 @@
-import { world, system, Player, PlayerPermissionLevel, CommandPermissionLevel, InputButton } from '@minecraft/server';
+import { world, system, PlayerPermissionLevel, CommandPermissionLevel, InputButton } from '@minecraft/server';
 import { Util } from '../util/util';
 import { PermissionType, Permissions } from '../util/Permissions';
 import config from '../config.js';
@@ -16,6 +16,8 @@ export * from './combat';
 export * from './break_check';
 export * from './movement';
 export * as scaffold from './scaffold';
+
+/** @typedef {import('@minecraft/server').Player} Player */
 
 /**
  * @param {Player} player

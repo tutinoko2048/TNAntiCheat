@@ -1,6 +1,6 @@
 import { Util } from '../util/util';
 import config from '../config.js';
-import { Block, system } from '@minecraft/server';
+import { system } from '@minecraft/server';
 import { getTPS } from '../util/tps';
 
 /** @param {import('@minecraft/server').Player} player */
@@ -13,7 +13,7 @@ export function nukerFlag(player) {
   }
 }
 
-/** @param {Block} block */
+/** @param {import('@minecraft/server').Block} block */
 function hasContainer(block) {
   const blockIds = [
     'minecraft:barrel',

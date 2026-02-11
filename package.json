@@ -5,18 +5,14 @@
   "main": "scripts/index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint ./scripts && bun run typecheck",
+    "lint": "oxlint --type-aware ./scripts && bun run typecheck",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@eslint/js": "^9.32.0",
-    "@minecraft/server": "2.5.0-beta.1.21.132-stable",
-    "@minecraft/server-ui": "2.1.0-beta.1.21.132-stable",
-    "@types/eslint": "^9.6.1",
-    "eslint": "^9.32.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsdoc": "^62.0.0",
-    "globals": "^17.0.0",
+    "@minecraft/server": "2.6.0-beta.1.26.0-stable",
+    "@minecraft/server-ui": "2.1.0-beta.1.26.0-stable",
+    "oxlint": "^1.46.0",
+    "oxlint-tsgolint": "^0.12.0",
     "typescript": "^5.9.2"
   },
   "repository": {

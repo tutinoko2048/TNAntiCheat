@@ -1,4 +1,4 @@
-import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, Player, PlayerPermissionLevel, system } from '@minecraft/server';
+import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus, PlayerPermissionLevel, system } from '@minecraft/server';
 import { commandHandler, failure } from '../../lib/exports';
 import { Util } from '../../util/util';
 import { PermissionType, Permissions } from '../../util/Permissions';
@@ -16,7 +16,7 @@ export default () => {
   }, (params, origin) => {
     if (!origin.isSendable()) return CustomCommandStatus.Failure;
 
-    /** @type {Player} */
+    /** @type {import('@minecraft/server').Player} */
     let target;
     if (params.target) {
       if (params.target.length === 0) return failure('セレクターに合う対象がありません');

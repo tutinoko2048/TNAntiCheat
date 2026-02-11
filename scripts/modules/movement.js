@@ -1,4 +1,4 @@
-import { GameMode, EntityRidingComponent, Player } from '@minecraft/server';
+import { GameMode, EntityRidingComponent } from '@minecraft/server';
 import { Util } from '../util/util';
 import config from '../config.js';
 import { createPlayerCache } from '../util/PlayerCache';
@@ -13,7 +13,7 @@ const velocityCache = createPlayerCache(() => []);
 /** @type {Map<string, { dimension?: import('@minecraft/server').Dimension, location?: import('@minecraft/server').Vector3 }>} */
 const lastDataCache = createPlayerCache(() => ({}));
 
-/** @arg {Player} player */
+/** @arg {import('@minecraft/server').Player} player */
 export function speedA(player) {
   if (!config.speedA.state) return;
 
@@ -68,7 +68,7 @@ export function speedA(player) {
   velocities.length = 0;
 }
 
-/** @arg {Player} player */
+/** @arg {import('@minecraft/server').Player} player */
 export function checkMoving(player) {
   if (!player.lastLocation) {
     player.isMoved = true;

@@ -1,6 +1,6 @@
-import { world, PlayerPlaceBlockAfterEvent, Player } from '@minecraft/server';
+import { world } from '@minecraft/server';
 import config from '../config.js';
-import { Vec3 } from '../util/bedrock-boost/Vec3';
+import { Vec3 } from '../lib/bedrock-boost/Vec3';
 import { Util } from '../util/util';
 
 /** @typedef {import('@minecraft/server').Vector3} Vector3 */
@@ -24,7 +24,7 @@ const potentialScaffold = {};
 /** @type {Set<string>} */
 const types = new Set();
 
-/** @param {PlayerPlaceBlockAfterEvent} ev */
+/** @param {import('@minecraft/server').PlayerPlaceBlockAfterEvent} ev */
 export function onPlaceBlock(ev) {
   const { player, block } = ev;
 
@@ -78,7 +78,7 @@ export function onPlaceBlock(ev) {
 }
 
 /**
- * @param {PlayerPlaceBlockAfterEvent} ev
+ * @param {import('@minecraft/server').PlayerPlaceBlockAfterEvent} ev
  * @param {number} bps
  * @param {PlaceData} data
  */
@@ -180,7 +180,7 @@ function scaffold(ev, bps, data) {
 
 /**
  * @param {import('@minecraft/server').Block} block
- * @param {Player} player
+ * @param {import('@minecraft/server').Player} player
  */
 function scaffoldB(block, player) {
   const yDiff = block.location.y - player.location.y + 1;
@@ -203,7 +203,7 @@ world.afterEvents.playerLeave.subscribe(({ playerId }) => {
   delete potentialScaffold[playerId];
 });
 
-/** @param {Player} player */
+/** @param {import('@minecraft/server').Player} player */
 export function updatePlayerData(player) {
   if (!placeLog.has(player.id)) placeLog.set(player.id, []);
   const log = placeLog.get(player.id);

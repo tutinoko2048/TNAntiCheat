@@ -50,7 +50,10 @@ export function spammerB(ev) {
   sender.lastMsg = message;
 }
 
-/** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
+/**
+ * @param {import('@minecraft/server').ChatSendBeforeEvent} ev
+ * @returns {boolean} Return true if flagged
+ */
 export function spammerC(ev) {
   const { sender } = ev;
   if (!config.spammerC.state || Util.isOP(sender)) return;
