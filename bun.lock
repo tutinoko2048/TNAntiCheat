@@ -6,8 +6,8 @@
       "name": "tn-anticheat",
       "devDependencies": {
         "@eslint/js": "^9.32.0",
-        "@minecraft/server": "2.4.0-beta.1.21.120-stable",
-        "@minecraft/server-ui": "2.1.0-beta.1.21.120-stable",
+        "@minecraft/server": "2.6.0-beta.1.26.0-stable",
+        "@minecraft/server-ui": "2.1.0-beta.1.26.0-stable",
         "@types/eslint": "^9.6.1",
         "eslint": "^9.32.0",
         "eslint-plugin-import": "^2.32.0",
@@ -18,7 +18,7 @@
     },
   },
   "overrides": {
-    "@minecraft/server": "2.4.0-beta.1.21.120-stable",
+    "@minecraft/server": "2.6.0-beta.1.26.0-stable",
   },
   "packages": {
     "@es-joy/jsdoccomment": ["@es-joy/jsdoccomment@0.79.0", "", { "dependencies": { "@types/estree": "^1.0.8", "@typescript-eslint/types": "^8.52.0", "comment-parser": "1.4.1", "esquery": "^1.7.0", "jsdoc-type-pratt-parser": "~7.0.0" } }, "sha512-q/Nc241VsVRC5b1dgbsOI0fnWfrb1S9sdceFewpDHto4+4r2o6SSCpcY+Z+EdLdMPN6Nsj/PjlPcKag6WbU6XQ=="],
@@ -53,9 +53,9 @@
 
     "@minecraft/common": ["@minecraft/common@1.2.0", "", {}, "sha512-JdmEq4P3Z/FtoBzhLijFgMSVFnFRrUoLwY8DHHrgtFo0mfLTOLTB1RErYjLMsA6b7BGVNxkX/pfFRiH7QZ0XwQ=="],
 
-    "@minecraft/server": ["@minecraft/server@2.4.0-beta.1.21.120-stable", "", { "peerDependencies": { "@minecraft/common": "^1.2.0", "@minecraft/vanilla-data": ">=1.20.70" } }, "sha512-Yz4ZiIExjRQwOGMjp5R4ywpPSQnkctnfrG4zIFGPYaPXC7fASlPnHiTcqsLWLgjQCQsqg6NJoHdKewekuyfwrQ=="],
+    "@minecraft/server": ["@minecraft/server@2.6.0-beta.1.26.0-stable", "", { "peerDependencies": { "@minecraft/common": "^1.2.0", "@minecraft/vanilla-data": ">=1.20.70" } }, "sha512-I8GFHqE4LNnmI5FnCpCGjbURHbdzYJdZtJ9vqfjlJ8TkWKlrrJVQpIr6IDghG0jon1Zv0zMJUWprpo6wsedkVg=="],
 
-    "@minecraft/server-ui": ["@minecraft/server-ui@2.1.0-beta.1.21.120-stable", "", { "peerDependencies": { "@minecraft/common": "^1.0.0", "@minecraft/server": "^2.0.0 || ^2.4.0-beta.1.21.120-stable" } }, "sha512-DGSNr1Zm8yz0K20nQnHmtujyhHosat3H/szVrCeQQitV4q6bqQh8Rf5gnQoGqY9pEcfeJJKsl/H65h5UNxr7mA=="],
+    "@minecraft/server-ui": ["@minecraft/server-ui@2.1.0-beta.1.26.0-stable", "", { "peerDependencies": { "@minecraft/common": "^1.0.0", "@minecraft/server": "^2.0.0 || ^2.6.0-beta.1.26.0-stable" } }, "sha512-fhqI+CcMBj5YvaVz/yBZn+uL2/bjklC2tNjTVX4nO48MywN2gehTSkO+V6FqaKTsnEXJ7kPkXiSdBnsZ0KSfKw=="],
 
     "@minecraft/vanilla-data": ["@minecraft/vanilla-data@1.21.131", "", {}, "sha512-Ptw6t5mgyOODFmZxpZRRawjfhgcniGNf7kZqxV98RTAJi61tZ6wEMcI9muiWXw5yrNstYcTxJmqVjx1RaZKkxg=="],
 

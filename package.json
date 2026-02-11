@@ -10,8 +10,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@minecraft/server": "2.5.0-beta.1.21.132-stable",
-    "@minecraft/server-ui": "2.1.0-beta.1.21.132-stable",
+    "@minecraft/server": "2.6.0-beta.1.26.0-stable",
+    "@minecraft/server-ui": "2.1.0-beta.1.26.0-stable",
     "@types/eslint": "^9.6.1",
     "eslint": "^9.32.0",
     "eslint-plugin-import": "^2.32.0",
