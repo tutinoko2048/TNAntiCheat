@@ -78,6 +78,7 @@ export function entityCounter() {
   }
   
   for (const [typeId, count] of Object.entries(entities)) {
+    /** @type {number} */
     const maxCount = config.entityCounter.detect[typeId] ?? config.entityCounter.defaultCount;
     const canWarn = countCooltime[typeId] ? (Date.now() - countCooltime[typeId] > config.entityCounter.warnInterval * 50) : true; // 入力はtickだからmsに変換する 1tick=50ms
     if (maxCount !== -1 && count > maxCount && canWarn) {
@@ -91,6 +92,7 @@ export function entityCounter() {
   }
 }
 
+/** @param {string} typeId */
 function killEntity(typeId) {
   for (const e of overworld.getEntities({ type: typeId })) e.remove();
 }

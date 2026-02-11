@@ -167,6 +167,7 @@ export class ConfigPanel {
       );
     } else {
       form.textField(
+        /* oxlint-disable-next-line typescript/restrict-template-expressions */
         typeof key === 'number' ? `[${key}]` : String(key),
         `[${add ? 'new value' : typeof value}]`,
         { defaultValue: String(value ?? '') }
@@ -181,7 +182,7 @@ export class ConfigPanel {
     if (showDelete && formValues[1]) {
       newValue = undefined;
     
-    // @ts-ignore
+    // @ts-expect-error
     } else if (isNumber && isNaN(newValue)) {
       return { reopen: true, message: `§cTypeError: 数字を入力してください` };
     }

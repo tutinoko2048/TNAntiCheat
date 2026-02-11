@@ -40,6 +40,7 @@ export default () => {
       Util,
     };
     
+    /* oxlint-disable-next-line no-implied-eval */
     const func = new Function(Object.keys(context).join(', '), params.code);
     system.run(async () => {
       try {

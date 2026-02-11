@@ -125,9 +125,11 @@ export class Util {
     if (target instanceof Player) {
       target.sendMessage(result);
     } else {
-      config.logger.sendws
-        ? overworld.runCommand(`say "${result}"`)
-        : world.sendMessage(result);
+      if (config.logger.sendws) {
+        overworld.runCommand(`say "${result}"`);
+      } else {
+        world.sendMessage(result);
+      }
       
       if (config.logger.emitScriptEvent !== '') {
         system.sendScriptEvent(config.logger.emitScriptEvent, result);
@@ -336,7 +338,7 @@ export class Util {
       if (!success && config.others.debug) console.error('[CommandResult] successCount:', successCount);
       return success;
     } catch (e) {
-      if (config.others.debug) console.error(`[CommandError] ${e}\n${e.stack}`);
+      if (config.others.debug) console.error(`[CommandError] ${e.message}\n${e.stack}`);
       return false;
     }
   }

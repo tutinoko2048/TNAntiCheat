@@ -20,6 +20,7 @@ export class Permissions {
    * @param {PermissionType} permission
    */
   static add(player, permission) {
+    /* oxlint-disable-next-line typescript/restrict-template-expressions */
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
     player.addTag(this.getTagString(player, permission));
 
@@ -31,7 +32,9 @@ export class Permissions {
    * @param {PermissionType} permission
    */
   static remove(player, permission) {
+    /* oxlint-disable-next-line typescript/restrict-template-expressions */
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
+
     player.removeTag(this.getTagString(player, permission));
 
     events.playerPermissionRemove.emit({ player, permission });
@@ -43,7 +46,9 @@ export class Permissions {
    * @returns {boolean}
    */
   static has(player, permission) {
+    /* oxlint-disable-next-line typescript/restrict-template-expressions */
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
+
     return player.hasTag(this.getTagString(player, permission))
       || config.permission[permission].players?.includes(player.name)
       || config.permission[permission].ids?.includes(player.id)
@@ -55,8 +60,14 @@ export class Permissions {
    * @param {boolean} value 
    */
   static set(player, permission, value) {
+    /* oxlint-disable-next-line typescript/restrict-template-expressions */
     if (!this.isValid(permission)) throw new Error(`Received unknown permission: ${permission}`);
-    value ? this.add(player, permission) : this.remove(player, permission);
+
+    if (value) {
+      this.add(player, permission);
+    } else {
+      this.remove(player, permission);
+    }
   }
   
   /**

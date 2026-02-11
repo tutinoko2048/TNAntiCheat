@@ -1,4 +1,4 @@
-import { world, system, Player, EntityVariantComponent, CommandPermissionLevel } from '@minecraft/server';
+import { world, system, Player, CommandPermissionLevel } from '@minecraft/server';
 import { ModerationManager } from './util/ModerationManager';
 import { DataManager, deleteDupe } from './util/DataManager';
 import { PermissionType, Permissions } from './util/Permissions';
@@ -24,7 +24,7 @@ export class TNAntiCheat {
   constructor() {
     console.warn(`[TN-AntiCheat v${VERSION}] loaded`);
     world.loadedAt = Date.now();
-    this.#isEnabled;
+    this.#isEnabled = false;
     
     commandHandler.options.alwaysShowMessage = true;
     commandHandler.options.customPermissionError = "このコマンドを実行する権限がありません";
@@ -238,11 +238,11 @@ export class TNAntiCheat {
   
   /** @param {import('@minecraft/server').ChatSendBeforeEvent} ev */
   #handleChat(ev) {
-    // if (this.commandManager.isCommand(ev.message)) return this.commandManager.handle(ev);
-    
-    !modules.spammerC(ev) &&
-    !modules.spammerA(ev) &&
-    !modules.spammerB(ev);
+    if (!modules.spammerC(ev)) {
+      if (!modules.spammerA(ev)) {
+        modules.spammerB(ev);
+      }
+    }
   }
   
   /** @param {Player} player */
@@ -299,7 +299,7 @@ system.beforeEvents.watchdogTerminate.subscribe(ev => {
 });
 
 function checkPlayerJson() { // checks player.json conflict
-  /** @type {EntityVariantComponent} */
+  /** @type {import('@minecraft/server').EntityVariantComponent} */
   const variant = world.getAllPlayers()[0].getComponent('minecraft:variant');
   if (variant?.value !== 2048) {
     config.speedA.state = false;
@@ -308,6 +308,7 @@ function checkPlayerJson() { // checks player.json conflict
   }
 }
 
+/** @param {number} tps */
 function calcInterval(tps) {
   const interval = config.entityCounter.checkInterval;
   if (tps >= 15) return interval;

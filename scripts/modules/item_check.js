@@ -3,13 +3,13 @@
 import { Util } from '../util/util';
 import config from '../config.js';
 import { getItemPunishment, itemMessageBuilder, isSpawnEgg, isIllegalItem } from './util';
-import { EquipmentSlot, ItemStack, Player } from '@minecraft/server';
+import { EquipmentSlot, ItemStack } from '@minecraft/server';
 
 /** @typedef {{ flag: boolean, item?: ItemStack | undefined }} EnchantCheckResult */
 
 const ArmorSlots = [ EquipmentSlot.Head, EquipmentSlot.Chest, EquipmentSlot.Legs, EquipmentSlot.Feet ];
 
-/** @param {Player} player */
+/** @param {import('@minecraft/server').Player} player */
 export function itemCheck(player) {
   if (Util.isOP(player)) return;
   const { container } = player.getComponent('minecraft:inventory');
@@ -62,7 +62,7 @@ export function itemCheck(player) {
 
 /**
  * @param {ItemStack} item
- * @param {Player} player
+ * @param {import('@minecraft/server').Player} player
  * @returns {EnchantCheckResult | undefined}
  */
 function enchantCheck(item, player) {

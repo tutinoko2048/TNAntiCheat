@@ -1,4 +1,4 @@
-import { world, ItemStack, EquipmentSlot, Player, ScoreboardObjective, InputMode } from '@minecraft/server';
+import { world, ItemStack, EquipmentSlot, Player, InputMode } from '@minecraft/server';
 import * as UI from '@minecraft/server-ui';
 import { Util } from '../util/util';
 import config from '../config.js';
@@ -382,7 +382,7 @@ export class AdminPanel {
   /** @param {Player} target */
   async showScores(target) {
     const objectives = world.scoreboard.getObjectives();
-    /** @type {[ScoreboardObjective, number | undefined][]} */
+    /** @type {[import('@minecraft/server').ScoreboardObjective, number | undefined][]} */
     const entries = objectives.map(obj => [obj, Util.getScore(target, obj.id)]);
     entries.sort((a, b) => a[0].id.localeCompare(b[0].id));
     entries.sort((a, b) => (a[1] ?? 0) - (b[1] ?? 0));
@@ -520,7 +520,7 @@ export async function manageUnbanQueue(player, fromChat) {
       : '§o§cUnbanQueueに登録されているプレイヤーは居ません§r\n '
   );
   form.button('§lプレイヤーを追加 / Add player', Icons.plus, 'add');
-  for (const index in queue) form.button(queue[index].name, null, index);
+  for (const [index, entry] of queue.entries()) form.button(entry.name, null, index);
   
   const { canceled, button } = await (fromChat ? Util.showFormToBusy(player, form) : form.show(player));
   if (canceled) return;

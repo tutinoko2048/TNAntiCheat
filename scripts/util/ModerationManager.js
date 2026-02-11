@@ -1,10 +1,11 @@
-import { world, Player, InputPermissionCategory } from '@minecraft/server';
+import { world, InputPermissionCategory } from '@minecraft/server';
 import { PropertyIds } from './constants'
 import config from '../config';
 import { PermissionType, Permissions } from './Permissions';
 import unbanQueue from '../unban_queue.js';
 import { events } from '../events.js';
 
+/** @typedef {import('@minecraft/server').Player} Player */
 /** @typedef {import('../types').UnbanQueueEntry} UnbanQueueEntry */
 
 /** @type {WeakMap<Player, import('@minecraft/server').Vector3>} */

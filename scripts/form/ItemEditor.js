@@ -1,12 +1,11 @@
-import { Player, ItemStack } from '@minecraft/server';
 import { ActionForm } from '../lib/form/index';
 import { Icons } from '../util/constants';
 import { Util } from '../util/util';
 import { textInput } from './static_form';
 
 /**
- * @param {Player} player 
- * @param {ItemStack} item 
+ * @param {import('@minecraft/server').Player} player 
+ * @param {import('@minecraft/server').ItemStack} item 
  * @returns {Promise<boolean>} whether value has changed
  */
 export async function editNameTag(player, item) {
@@ -24,15 +23,15 @@ export async function editNameTag(player, item) {
 }
 
 /**
- * @param {Player} player 
- * @param {ItemStack} item 
+ * @param {import('@minecraft/server').Player} player 
+ * @param {import('@minecraft/server').ItemStack} item 
  */
 export async function editLore(player, item) {
   const lores = item.getLore();
 
   const form = new ActionForm();
   form.title(`Edit Lore [${item.typeId}]`);
-  for (const index in lores)
+  for (const [index] of lores.entries())
     form.button(`${index}\n"${Util.safeString(lores[index]?.replace(/\n/g, '\\n'), 28)}§r"`);
   if (lores.length < 20) form.button('値を追加 / Add value', Icons.plus, 'add');
 

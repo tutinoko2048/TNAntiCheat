@@ -16,7 +16,7 @@ export function placeCheckA(ev) {
 }
 
 /** @param {import('@minecraft/server').PlayerPlaceBlockAfterEvent} ev */
-export async function placeCheckB(ev) {
+export function placeCheckB(ev) {
   const { block, player } = ev;
   if (!config.placeCheckB.state || Util.isOP(player)) return;
   if (
@@ -84,7 +84,7 @@ const RAILS = [
 ];
 
 /** @param {import('@minecraft/server').PlayerInteractWithBlockBeforeEvent} ev */
-export async function placeCheckD(ev) {
+export function placeCheckD(ev) {
   const { player, itemStack: item, block } = ev;
   const loc = block.location;
   if (!config.placeCheckD.state || Util.isOP(player)) return;
@@ -100,33 +100,39 @@ export async function placeCheckD(ev) {
       if (config.others.debug) console.error(e);
     }
   }
-  
+
   if (
     config.placeCheckD.minecarts.includes(item?.typeId) &&
     RAILS.includes(block.typeId)
   ) {
-    await Util.cancel(ev);
-    if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, player);
-    spawn(item.typeId);
-    
-    if (gameMode === GameMode.Creative) return;
-    if (item.amount === 1) {
-      container.setItem(player.selectedSlotIndex);
-    } else {
-      item.amount--;
-      container.setItem(player.selectedSlotIndex, item);
-    }
-    
+    ev.cancel = true;
+
+    system.run(() => {
+      if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このトロッコは設置できません`, player);
+      spawn(item.typeId);
+
+      if (gameMode === GameMode.Creative) return;
+      if (item.amount === 1) {
+        container.setItem(player.selectedSlotIndex);
+      } else {
+        item.amount--;
+        container.setItem(player.selectedSlotIndex, item);
+      }
+    });
+
   } else if (config.placeCheckD.boats.includes(item?.typeId)) {
-    await Util.cancel(ev);
-    if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, player);
-    spawn('minecraft:chest_boat');
-    if (gameMode === GameMode.Creative) return;
-    if (item.amount === 1) {
-      container.setItem(player.selectedSlotIndex);
-    } else {
-      item.amount--;
-      container.setItem(player.selectedSlotIndex, item);
-    }
+    ev.cancel = true;
+
+    system.run(() => {
+      if (gameMode === GameMode.Adventure) return Util.notify(`§cPlaceCheck/D: このボートは設置できません`, player);
+      spawn('minecraft:chest_boat');
+      if (gameMode === GameMode.Creative) return;
+      if (item.amount === 1) {
+        container.setItem(player.selectedSlotIndex);
+      } else {
+        item.amount--;
+        container.setItem(player.selectedSlotIndex, item);
+      }
+    });
   }
 }
