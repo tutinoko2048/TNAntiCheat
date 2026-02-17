@@ -251,12 +251,18 @@ system.beforeEvents.shutdown.subscribe(() => {
 /** @param {Player} player */
 function saveState(player) {
   const monitorState = ModerationManager.getMonitoringState(player);
-  if (!monitorState) return;
 
-  // console.log(`[saveState] Saving monitoring state for ${player.name} -> ${monitorState.target.name}, previousGameMode: ${monitorState.previousGameMode}, zoom: ${monitorState.zoom}`);
-  player.setDynamicProperty(PropertyIds.monitoringTarget, monitorState.target.id);
-  player.setDynamicProperty(PropertyIds.monitoringZoom, monitorState.zoom);
-  player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode, monitorState.previousGameMode);
+  if (monitorState) {
+    // console.log(`[saveState] Saving monitoring state for ${player.name} -> ${monitorState.target.name}, previousGameMode: ${monitorState.previousGameMode}, zoom: ${monitorState.zoom}`);
+    player.setDynamicProperty(PropertyIds.monitoringTarget, monitorState.target.id);
+    player.setDynamicProperty(PropertyIds.monitoringZoom, monitorState.zoom);
+    player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode, monitorState.previousGameMode);
+  } else {
+    // console.log(`[saveState] No monitoring state to save for ${player.name}, clearing properties`);
+    player.setDynamicProperty(PropertyIds.monitoringTarget);
+    player.setDynamicProperty(PropertyIds.monitoringZoom);
+    player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode);
+  }
 }
 
 /** @param {Player} player */
