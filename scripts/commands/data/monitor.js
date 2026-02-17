@@ -20,8 +20,12 @@ export default () => {
       target = params.target[0];
     }
 
+    const player = origin.getPlayer();
+    if (target && target === player) {
+      return failure('自分自身を監視することはできません');
+    }
+
     system.run(() => {
-      const player = origin.getPlayer();
       if (target) {
         ModerationManager.setMonitoringState(origin.getPlayer(), target);
 

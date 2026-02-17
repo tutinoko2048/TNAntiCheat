@@ -29,7 +29,7 @@ export default () => {
     system.run(() => {
       ModerationManager.setFrozen(target, freezeState);
       
-      origin.sendMessage(
+      target.sendMessage(
         freezeState ? '§o§eあなたはフリーズされています' : '§o§eあなたのフリーズは解除されました'
       );
       Util.notify(`§7${origin.getName()} >> ${target.name} のフリーズを ${freezeState} に設定しました`);
