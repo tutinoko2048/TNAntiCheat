@@ -25,19 +25,19 @@ export default () => {
       if (target) {
         ModerationManager.setMonitoringState(origin.getPlayer(), target);
 
-        origin.sendMessage(`§7${origin.getName()} >> ${target.name} に視点を固定しました\n>> :_input_key.jump: でズームイン、:_input_key.sneak: でズームアウトできます`);
+        origin.sendMessage(`§7[Monitor] ${target.name} に視点を固定しました\n>> :_input_key.jump: でズームイン、 :_input_key.sneak: でズームアウトできます`);
         Util.writeLog({
           type: 'command.monitor',
-          message: `Monitored Target: ${target.name}\nExecuted by ${origin.getName()}`
+          message: `Monitoring target: ${target.name}\nExecuted by ${origin.getName()}`
         }, target);
 
       } else {
         ModerationManager.setMonitoringState(player);
 
-        origin.sendMessage(`§7${origin.getName()} >> 視点の固定を解除しました`);
+        origin.sendMessage(`§7[Monitor] 視点の固定を解除しました`);
         Util.writeLog({
           type: 'command.monitor',
-          message: `Monitoring Canceled\nExecuted by ${origin.getName()}`
+          message: `Monitoring canceled\nExecuted by ${origin.getName()}`
         });
       }
     });

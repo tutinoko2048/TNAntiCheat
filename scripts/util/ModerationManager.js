@@ -219,6 +219,8 @@ export class ModerationManager {
 
       monitoringMap.delete(player);
     }
+
+    saveState(player);
   }
 
   /**
@@ -241,19 +243,20 @@ world.afterEvents.playerSpawn.subscribe((ev) => {
 });
 
 system.beforeEvents.shutdown.subscribe(() => {
-  saveState();
+  for (const player of world.getPlayers()) {
+    saveState(player);
+  }
 });
 
-function saveState() {
-  console.log('Saving monitoring states...');
-  for (const player of world.getPlayers()) {
-    const monitorState = ModerationManager.getMonitoringState(player);
-    if (monitorState) {
-      player.setDynamicProperty(PropertyIds.monitoringTarget, monitorState.target.id);
-      player.setDynamicProperty(PropertyIds.monitoringZoom, monitorState.zoom);
-      player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode, monitorState.previousGameMode);
-    }
-  }
+/** @param {Player} player */
+function saveState(player) {
+  const monitorState = ModerationManager.getMonitoringState(player);
+  if (!monitorState) return;
+
+  // console.log(`[saveState] Saving monitoring state for ${player.name} -> ${monitorState.target.name}, previousGameMode: ${monitorState.previousGameMode}, zoom: ${monitorState.zoom}`);
+  player.setDynamicProperty(PropertyIds.monitoringTarget, monitorState.target.id);
+  player.setDynamicProperty(PropertyIds.monitoringZoom, monitorState.zoom);
+  player.setDynamicProperty(PropertyIds.monitoringPreviousGameMode, monitorState.previousGameMode);
 }
 
 /** @param {Player} player */
@@ -261,6 +264,9 @@ function loadState(player) {
   const targetId = player.getDynamicProperty(PropertyIds.monitoringTarget);
   const zoom = player.getDynamicProperty(PropertyIds.monitoringZoom);
   const previousGameMode = player.getDynamicProperty(PropertyIds.monitoringPreviousGameMode);
+  if (!targetId) return;
+
+  // console.log(`[loadState] Loading monitoring state of ${player.name}`);
 
   /** @type {import('@minecraft/server').Player | undefined} */
   let target;
@@ -270,9 +276,10 @@ function loadState(player) {
   } catch {}
 
   if (target) {
-    console.warn(`Restoring monitoring state for ${player.name} -> ${target.name}`);
+    // console.log(`[loadState] Restoring monitoring state for ${player.name} -> ${target.name}, previousGameMode: ${previousGameMode}, zoom: ${zoom}`);
     ModerationManager.setMonitoringState(player, target, { zoom, previousGameMode });
   } else {
+    // console.log(`[loadState] Target (${targetId}) not found for ${player.name}, clearing monitoring state`);
     player.camera.clear();
     player.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, true);
     if (previousGameMode) player.setGameMode(previousGameMode);

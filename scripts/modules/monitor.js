@@ -12,6 +12,7 @@ export function onTick(player) {
 
   if (!state.target.isValid) {
     ModerationManager.setMonitoringState(player);
+    player.sendMessage('§7[Monitor] プレイヤーが退出したため、視点の固定を解除しました');
     return;
   }
 
@@ -25,7 +26,7 @@ export function onTick(player) {
     location: center.add(delta),
     rotation: player.getRotation(),
     easeOptions: {
-      easeTime: 0.15,
+      easeTime: 0.1,
       easeType: EasingType.Linear
     }
   });
