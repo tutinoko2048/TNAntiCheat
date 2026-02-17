@@ -25,6 +25,6 @@ jobs:
           zip -r "${fileName}" ./ -x "*.git*" "*node_modules*" "bun.lock" ".oxlintrc.json" "tsconfig.json" "CONTRIBUTING.md"
 
       - name: Upload Release Asset
-        run: gh release upload ${{ github.event.release.id }} "./${{ env.fileName }}" --clobber
+        run: gh release upload ${{ github.event.release.tag_name }} "./${{ env.fileName }}" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
