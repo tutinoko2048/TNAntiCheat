@@ -26,3 +26,5 @@ jobs:
 
       - name: Upload Release Asset
         run: gh release upload ${{ github.event.release.id }} "./${{ env.fileName }}" --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
