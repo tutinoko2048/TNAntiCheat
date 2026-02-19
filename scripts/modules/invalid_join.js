@@ -12,6 +12,7 @@ import { Util } from '../util/util';
 export function invalidJoinA(player) {
   if (!config.invalidJoinA.state) return;
 
+  // Method found by @Gotemba912
   if (world.getPlayers().length >= 2 && player.clientSystemInfo.maxRenderDistance === 0) {
     const { id, name } = player;
     ModerationManager.kick(player, '不正なクライアントでの接続を検知しました', false, true);
