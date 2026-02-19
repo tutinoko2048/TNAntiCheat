@@ -37,6 +37,12 @@ export function updateConfig() {
     delete data.others.adminPanel;
   }
 
+  if (typeof data.invalidJoinA === 'undefined') {
+    data.invalidJoinA = {
+      state: true,
+    }
+  }
+
   DataManager.save(data);
 }
 

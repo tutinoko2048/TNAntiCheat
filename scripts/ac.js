@@ -254,6 +254,7 @@ export class TNAntiCheat {
     const banned = modules.banCheck(player);
     if (banned) return;
     modules.xuidBanCheck();
+    modules.invalidJoinA(player);
 
     if (ModerationManager.isMuted(player)) {
       const res = Util.runCommandSafe('ability @s mute true', player);

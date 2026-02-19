@@ -307,6 +307,9 @@ export default {
     dDiff: 15,
     minSpeed: 0.18,
   },
+  invalidJoinA: { // 不正なクライアントの接続を検知
+    state: true,
+  },
   logger: {
     console: false, // 検知メッセージをコンテンツログに出力する
     maxLogs: 50, // 保存するログの数

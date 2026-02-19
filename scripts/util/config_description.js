@@ -214,6 +214,10 @@ export const description = {
     flagCount,
     minBPS: '１秒あたりの最小設置数'
   },
+  invalidJoinA: {
+    desc: '不正なクライアントの接続を検知',
+    state,
+  },
   logger: {
     desc: 'ログの記録に関する設定',
     console: '検知メッセージをコンテンツログに出力する',

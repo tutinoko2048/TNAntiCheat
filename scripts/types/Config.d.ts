@@ -69,6 +69,10 @@ interface PermissionModule {
   ban: PermissionRole & { xuids: string[] };
 }
 
+interface InvalidJoinA {
+  state: boolean;
+}
+
 export interface IConfig {
   permission: PermissionModule;
   itemList: ItemListModule;
@@ -100,6 +104,7 @@ export interface IConfig {
   speedA: IModule;
   flyA: IModule;
   scaffold: ScaffoldModule;
+  invalidJoinA: InvalidJoinA;
   logger: {
     console: boolean;
     maxLogs: number;
